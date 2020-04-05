@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">InstantPastime</string>
+    <string name="title_memory">Memory Game</string>
 </resources>
