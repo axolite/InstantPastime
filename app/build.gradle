@@ -23,7 +23,9 @@ android {
         }
     }
 
-    dynamicFeatures = [":memory"]
+    dynamicFeatures = [":memory", ":nback"]
+
+
 }
 
 dependencies {
