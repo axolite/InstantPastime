@@ -1,4 +1,4 @@
-package ch.h.instantpastime
+package ch.instantpastime
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

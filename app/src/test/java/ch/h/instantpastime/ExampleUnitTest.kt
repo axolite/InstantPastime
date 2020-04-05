@@ -1,4 +1,4 @@
-package ch.h.instantpastime
+package ch.instantpastime
 
 import org.junit.Test
 

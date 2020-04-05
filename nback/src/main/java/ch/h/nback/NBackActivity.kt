@@ -1,4 +1,4 @@
-package ch.h.nback
+package ch.instantpastime.nback
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

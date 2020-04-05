@@ -7,7 +7,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "ch.h.instantpastime"
+        applicationId "ch.instantpastime"
         minSdkVersion 28
         targetSdkVersion 29
         versionCode 1
