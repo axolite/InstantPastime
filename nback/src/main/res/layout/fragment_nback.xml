@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    tools:context=".fragments.NBackFragment">
+
+    <include android:id="@+id/layout_include"
+        layout="@layout/nback_grid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/nback_buttons"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/nback_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/layout_include"
+        app:layout_constraintBottom_toTopOf="@id/restart_button">
+        <LinearLayout android:id="@+id/nback_location_part"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/nback_letter_part"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <ImageView android:id="@+id/nback_location_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+            <Button android:id="@+id/locationButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="@string/same_location"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/nback_letter_part"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toRightOf="@id/nback_location_part"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <ImageView android:id="@+id/nback_letter_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+            <Button android:id="@+id/letterButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="@string/same_sound"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <Button android:id="@+id/restart_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/start_game_short"
+        app:layout_constraintTop_toBottomOf="@id/nback_buttons"
+        app:layout_constraintBottom_toTopOf="@id/pause_button"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <Button android:id="@+id/pause_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/pause_game_short"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/restart_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
