@@ -1,0 +1,8 @@
+<resources>
+    <string name="start_game_short">Start</string>
+    <string name="stop_game_short">Stop</string>
+    <string name="pause_game_short">Pause</string>
+    <string name="resume_game_short">Resume</string>
+    <string name="same_location">Same location</string>
+    <string name="same_sound">Same sound</string>
+</resources>
