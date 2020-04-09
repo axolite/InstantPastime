@@ -10,46 +10,46 @@ class NBackGame {
         const val INDEX_MAX: Int = 8
     }
 
-    val mLetterCount: Int
-    val mLevel: Int
+    val _letterCount: Int
+    val _level: Int
 
     constructor(nbLetters: Int, nBackLevel: Int) {
-        mLetterCount = if (nbLetters >= 0) nbLetters else 0
-        mLevel = if (nBackLevel > 0) nBackLevel else 1
-        mLastLocations = CircularArray(mLevel)
-        mLastLetters = CircularArray(mLevel)
+        _letterCount = if (nbLetters >= 0) nbLetters else 0
+        _level = if (nBackLevel > 0) nBackLevel else 1
+        _lastLocations = CircularArray(_level)
+        _lastLetters = CircularArray(_level)
     }
 
-    private val mLastLocations: CircularArray<Int>
-    private val mLastLetters: CircularArray<Int>
+    private val _lastLocations: CircularArray<Int>
+    private val _lastLetters: CircularArray<Int>
 
     fun getNextIndex(): Pair<Int, Boolean> {
         val newIndex = Random.nextInt(from = INDEX_MIN, until = INDEX_MAX + 1)
 
         // Check if there are enough elements in the buffer.
-        val isSame = if (mLastLocations.size() == mLevel) {
-            val pastIndex = mLastLocations.popFirst()
+        val isSame = if (_lastLocations.size() == _level) {
+            val pastIndex = _lastLocations.popFirst()
             // Check if the past element was the same.
             pastIndex == newIndex
         } else {
             false
         }
-        mLastLocations.addLast(newIndex)
+        _lastLocations.addLast(newIndex)
         return Pair(newIndex, isSame)
     }
 
     fun getNextLetterIndex(): Pair<Int, Boolean> {
-        val newIndex = Random.nextInt(from = 0, until = mLetterCount)
+        val newIndex = Random.nextInt(from = 0, until = _letterCount)
 
         // Check if there are enough elements in the buffer.
-        val isSame = if (mLastLetters.size() == mLevel) {
-            val pastIndex = mLastLetters.popFirst()
+        val isSame = if (_lastLetters.size() == _level) {
+            val pastIndex = _lastLetters.popFirst()
             // Check if the past element was the same.
             pastIndex == newIndex
         } else {
             false
         }
-        mLastLetters.addLast(newIndex)
+        _lastLetters.addLast(newIndex)
         return Pair(newIndex, isSame)
     }
 
