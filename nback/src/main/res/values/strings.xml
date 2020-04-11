@@ -5,4 +5,6 @@
     <string name="resume_game_short">Resume</string>
     <string name="same_location">Same location</string>
     <string name="same_sound">Same sound</string>
+    <string name="home_nback">Home</string>
+    <string name="game_options">Options</string>
 </resources>
