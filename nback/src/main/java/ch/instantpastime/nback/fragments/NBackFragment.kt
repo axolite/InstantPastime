@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 
 import ch.instantpastime.nback.R
 import ch.instantpastime.nback.core.NBackGame
@@ -68,7 +69,8 @@ class NBackFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        game = NBackGame(nbLetters = nbackSound.letterCount, nBackLevel = 1)
+        val nbackSettings = loadNBackSettings()
+        game = NBackGame(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
         mRestartButton = view.findViewById<Button>(R.id.restart_button)
         mLocationButton = view.findViewById<Button>(R.id.locationButton)
@@ -318,4 +320,13 @@ class NBackFragment : Fragment() {
         }
     }
 
+    private fun loadNBackSettings(): NBackSettings {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val level = sharedPreferences.getInt(NBackSettings.NBACK_LEVEL_KEY, 0).also {
+            if (it == 0) {
+                NBackGame.DEFAULT_LEVEL
+            }
+        }
+        return NBackSettings(level)
+    }
 }

@@ -9,11 +9,6 @@ import ch.instantpastime.nback.core.NBackGame
 
 class NBackPreferenceFragment : PreferenceFragmentCompat() {
 
-    companion object {
-        val NBACK_OPTIONS_CAT_KEY = "nback_options_category"
-        val NBACK_LEVEL_KEY ="nback_level"
-    }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager?.context?.let {context ->
             preferenceScreen = buildPreferenceScreen(context)
@@ -22,13 +17,13 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
     private fun buildPreferenceScreen(context: Context): PreferenceScreen? {
         val screen = preferenceManager?.createPreferenceScreen(context)?.apply {
             val gameOptionsCategory = PreferenceCategory(context).apply {
-                key = NBACK_OPTIONS_CAT_KEY
+                key = NBackSettings.NBACK_OPTIONS_CAT_KEY
                 title = getString(R.string.game_options_full)
             }
             addPreference(gameOptionsCategory)
 
             val nbackLevelPref = SeekBarPreference(context).apply {
-                key = NBACK_LEVEL_KEY
+                key = NBackSettings.NBACK_LEVEL_KEY
                 title = getString(R.string.nback_level, NBackGame.MIN_LEVEL, NBackGame.MAX_LEVEL)
                 summary = getString(R.string.nback_level_hint)
                 min = NBackGame.MIN_LEVEL
