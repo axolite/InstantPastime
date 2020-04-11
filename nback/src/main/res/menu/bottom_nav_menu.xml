@@ -7,5 +7,5 @@
     <item
         android:id="@+id/navigation_option"
         android:icon="@drawable/ic_settings_black_24dp"
-        android:title="@string/game_options" />
+        android:title="@string/game_options_short" />
 </menu>

@@ -5,6 +5,12 @@ import kotlin.random.Random
 
 class NBackGame {
 
+    companion object {
+        val MIN_LEVEL = 1
+        val MAX_LEVEL = 4
+        val DEFAULT_LEVEL = 2
+    }
+
     private val _randomLocation: NBackDraw
     private val _randomLetter: NBackDraw
     val _letterCount: Int

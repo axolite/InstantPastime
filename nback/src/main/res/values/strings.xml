@@ -6,5 +6,9 @@
     <string name="same_location">Same location</string>
     <string name="same_sound">Same sound</string>
     <string name="home_nback">Home</string>
-    <string name="game_options">Options</string>
+    <string name="game_options_short">Options</string>
+    <string name="game_options_full">Game options</string>
+    <string name="nback_level">N-Back level (%1$d &#x2013; %2$d)</string>
+    <string name="nback_level_hint">Number of events to remember</string>
+    <string name="nback_level_changed">N-Back level changed %1$d</string>
 </resources>
