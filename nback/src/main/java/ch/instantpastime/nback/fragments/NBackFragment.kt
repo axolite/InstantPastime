@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -88,6 +89,8 @@ class NBackFragment : Fragment() {
         mPauseButton?.setOnClickListener { pauseButtonClicked() }
         mLocationButton?.setOnClickListener { locationButtonClicked() }
         mLetterButton?.setOnClickListener { letterButtonClicked() }
+        applySettings(nbackSettings, view)
+
         return view
     }
 
@@ -328,5 +331,11 @@ class NBackFragment : Fragment() {
             }
         }
         return NBackSettings(level)
+    }
+
+    private fun applySettings(settings: NBackSettings, view: View) {
+        view.findViewById<TextView>(R.id.status_level_text)?.let {
+            it.text = getString(R.string.nback_status_level, settings.level)
+        }
     }
 }
