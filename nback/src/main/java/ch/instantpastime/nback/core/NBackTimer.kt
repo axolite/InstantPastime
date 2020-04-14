@@ -7,7 +7,6 @@ import kotlin.concurrent.schedule
 class NBackTimer(val intervalMillisec: UShort, val callback: () -> Unit) {
 
     private var mTimer: Timer? = null
-    private var mTimerTask: TimerTask? = null
 
     val isStarted: Boolean
         get() = mTimer != null
@@ -36,7 +35,7 @@ class NBackTimer(val intervalMillisec: UShort, val callback: () -> Unit) {
         }
 
         // Assign a new task to the timer.
-        val timerTask = timer.schedule(intervalMillisec.toLong()) {
+        timer.schedule(intervalMillisec.toLong()) {
             // Cancel this TimerTask.
             cancel()
             callback()
