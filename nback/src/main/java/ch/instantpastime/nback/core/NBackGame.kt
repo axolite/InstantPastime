@@ -6,9 +6,12 @@ import kotlin.random.Random
 class NBackGame {
 
     companion object {
-        val MIN_LEVEL = 1
-        val MAX_LEVEL = 4
-        val DEFAULT_LEVEL = 2
+        const val MIN_LEVEL = 1
+        const val MAX_LEVEL = 4
+        const val DEFAULT_LEVEL = 2
+        const val MIN_SECONDS: Double = 0.5
+        const val MAX_SECONDS: Double = 5.0
+        const val DEFAULT_SECONDS: Double = 3.0
     }
 
     private val _randomLocation: NBackDraw

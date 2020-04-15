@@ -4,12 +4,23 @@ import android.util.Log
 import java.util.*
 import kotlin.concurrent.schedule
 
-class NBackTimer(val intervalMillisec: UShort, val callback: () -> Unit) {
+class NBackTimer(intervalMillisec: Long, val callback: () -> Unit) {
 
     private var mTimer: Timer? = null
 
+    var intervalMillisec: Long
+        get() { return _intervalMillisec}
+        set(value) {
+            _intervalMillisec = if (value < 0) { 0 } else value
+        }
+    var _intervalMillisec: Long = 0
+
     val isStarted: Boolean
         get() = mTimer != null
+
+    init {
+        this.intervalMillisec = intervalMillisec
+    }
 
     fun toggle() {
         if (mTimer == null) {

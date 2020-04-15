@@ -36,6 +36,20 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
             }
             gameOptionsCategory.addPreference(nbackLevelPref)
 
+            val secondsPerTrialPref = SeekBarPreference(context).apply {
+                key = NBackSettings.NBACK_SECONDS_KEY
+                title = getString(R.string.nback_seconds_trial)
+                summary = getString(R.string.nback_seconds_trial_hint)
+                min = (NBackGame.MIN_SECONDS + 0.5).toInt()
+                max = (NBackGame.MAX_SECONDS + 0.5).toInt()
+                showSeekBarValue = true
+                setDefaultValue(3)
+                onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
+                    onSecondsPerTrialPreferenceChanged(p, v)
+                }
+            }
+            gameOptionsCategory.addPreference(secondsPerTrialPref)
+
             // Note from https://developer.android.com/guide/topics/ui/settings/programmatic-hierarchy
             // Warning: Make sure to add the PreferenceCategory to the PreferenceScreen before adding children to it.
             // Preferences cannot be added to a PreferenceCategory that isn’t attached to the root screen.
@@ -46,12 +60,12 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
     private fun onNBackLevelPreferenceChanged(preference: Preference, newValue: Any?): Boolean {
 
         return if (newValue is Int && preference is SeekBarPreference) {
-            val oldValue = preference.value;
+            val oldValue = preference.value
             if (oldValue != newValue) {
                 preference.value = newValue
                 Toast.makeText(
                     preference.context,
-                    getString(R.string.nback_level_changed, newValue as Int),
+                    getString(R.string.nback_level_changed, newValue.toInt()),
                     Toast.LENGTH_SHORT
                 ).show()
                 true
@@ -63,5 +77,20 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
             Toast.makeText(preference.context, "No change: wrong type", Toast.LENGTH_SHORT).show()
             false
         }
+    }
+
+    private fun onSecondsPerTrialPreferenceChanged(preference: Preference, newValue: Any?): Boolean {
+        return if (newValue is Int && preference is SeekBarPreference) {
+            val oldValue = preference.value
+            if (oldValue != newValue) {
+                preference.value = newValue
+                Toast.makeText(
+                    preference.context,
+                    resources.getQuantityString(R.plurals.nback_seconds_trial_changed, newValue, newValue),
+                    Toast.LENGTH_SHORT
+                ).show()
+                true
+            } else false
+        } else false
     }
 }

@@ -10,6 +10,12 @@
     <string name="game_options_full">Game options</string>
     <string name="nback_level">N-Back level (%1$d &#x2013; %2$d)</string>
     <string name="nback_level_hint">Number of events to remember</string>
-    <string name="nback_level_changed">N-Back level changed %1$d</string>
+    <string name="nback_level_changed">N-Back level changed to %1$d</string>
     <string name="nback_status_level">Level %1$d</string>
+    <string name="nback_seconds_trial">Seconds per trial</string>
+    <string name="nback_seconds_trial_hint">Number of seconds to respond</string>
+    <plurals name="nback_seconds_trial_changed">
+        <item quantity="one">Changed to %d second per trial</item>
+        <item quantity="other">Changed to %d seconds per trial</item>
+    </plurals>
 </resources>

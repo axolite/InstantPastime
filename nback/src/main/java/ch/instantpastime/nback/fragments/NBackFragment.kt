@@ -36,7 +36,7 @@ class NBackFragment : Fragment() {
 
     private var state: NBackState = NBackState.Idle
     private var game: NBackGame? = null
-    private val timer: NBackTimer = NBackTimer(2000.toUShort(), { -> nextIndex() })
+    private val timer: NBackTimer = NBackTimer((NBackGame.DEFAULT_SECONDS * 1000).toLong(), { -> nextIndex() })
     val nbackSound : NBackSound = NBackSound()
     private var lastIndex: Int = INVALID_INDEX;
 
@@ -325,12 +325,9 @@ class NBackFragment : Fragment() {
 
     private fun loadNBackSettings(): NBackSettings {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val level = sharedPreferences.getInt(NBackSettings.NBACK_LEVEL_KEY, 0).also {
-            if (it == 0) {
-                NBackGame.DEFAULT_LEVEL
-            }
-        }
-        return NBackSettings(level)
+        val level = sharedPreferences.getInt(NBackSettings.NBACK_LEVEL_KEY, NBackGame.DEFAULT_LEVEL)
+        val seconds_per_trial = sharedPreferences.getInt(NBackSettings.NBACK_SECONDS_KEY, (NBackGame.DEFAULT_SECONDS + 0.5).toInt())
+        return NBackSettings(level, seconds_per_trial.toDouble())
     }
 
     private fun applySettings(settings: NBackSettings, view: View) {
