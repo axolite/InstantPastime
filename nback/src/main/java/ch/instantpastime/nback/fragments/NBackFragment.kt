@@ -7,17 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 
 import ch.instantpastime.nback.R
+import ch.instantpastime.nback.core.NBackCountDown
 import ch.instantpastime.nback.core.NBackGame
 import ch.instantpastime.nback.core.NBackSound
-import ch.instantpastime.nback.core.NBackTimer
 
 /**
  * A simple [Fragment] subclass.
@@ -36,7 +33,8 @@ class NBackFragment : Fragment() {
 
     private var state: NBackState = NBackState.Idle
     private var game: NBackGame? = null
-    private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
+    //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
+    private var timer: NBackCountDown? = null
     val nbackSound : NBackSound = NBackSound()
     private var lastIndex: Int = INVALID_INDEX;
 
@@ -47,6 +45,7 @@ class NBackFragment : Fragment() {
     private var mRestartButton: Button? = null
     private var mLocationButton: Button? = null
     private var mLetterButton: Button? = null
+    private var mTimeBar: ProgressBar? = null
 
     /**
      * True when the user says it is the same location, otherwise false.
@@ -72,7 +71,7 @@ class NBackFragment : Fragment() {
     ): View? {
         val nbackSettings = loadNBackSettings()
         game = NBackGame(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
-        timer.milliseconds = nbackSettings.time_per_trial.toLong()
+        timer?.totalMilliseconds = nbackSettings.time_per_trial
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
         mRestartButton = view.findViewById<Button>(R.id.restart_button)
         mLocationButton = view.findViewById<Button>(R.id.locationButton)
@@ -80,6 +79,9 @@ class NBackFragment : Fragment() {
         mLocationFeedbackZone = view.findViewById(R.id.nback_location_feedback)
         mLetterFeedbackZone = view.findViewById(R.id.nback_letter_feedback)
         mPauseButton = view.findViewById(R.id.pause_button)
+        mTimeBar = view.findViewById<ProgressBar>(R.id.nback_time_bar).apply {
+            max = nbackSettings.time_per_trial
+        }
 
         context?.let {
             context?.let { nbackSound.init(it) }
@@ -91,6 +93,20 @@ class NBackFragment : Fragment() {
         mLocationButton?.setOnClickListener { locationButtonClicked() }
         mLetterButton?.setOnClickListener { letterButtonClicked() }
         applySettings(nbackSettings, view)
+
+        timer = NBackCountDown(totalMilliseconds = nbackSettings.time_per_trial,
+            onTick = {
+                mTimeBar?.apply {
+                    progress += NBackCountDown.stepMillisec
+                }
+            },
+            onFinish = {
+                nextIndex()
+                mTimeBar?.apply {
+                    progress = 0
+                }
+            }
+        )
 
         return view
     }
@@ -147,17 +163,17 @@ class NBackFragment : Fragment() {
                         lastSquare.setBackgroundColor(ContextCompat.getColor(ctx, R.color.colorIdleSquare))
                     }
                 }
-                timer.stopTimer()
+                timer?.stopTimer()
             }
             NBackState.Running -> {
                 // Update the controls.
                 context?.let { ctx -> updateControls(newState, ctx) }
-                timer.startTimer()
+                timer?.startTimer()
             }
             NBackState.Paused -> {
                 // Update the controls.
                 context?.let { ctx -> updateControls(newState, ctx) }
-                timer.stopTimer()
+                timer?.stopTimer()
             }
         }
     }
@@ -305,7 +321,7 @@ class NBackFragment : Fragment() {
             mAnswerSameLetter = false
         }
 
-        timer.startTimer()
+        timer?.startTimer()
         Log.d(NBackGame::class.java.simpleName, "index is ${index}")
     }
 
