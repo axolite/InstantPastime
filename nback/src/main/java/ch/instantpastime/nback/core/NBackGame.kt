@@ -1,8 +1,5 @@
 package ch.instantpastime.nback.core
 
-import androidx.collection.CircularArray
-import kotlin.random.Random
-
 class NBackGame {
 
     companion object {
@@ -26,11 +23,17 @@ class NBackGame {
         _randomLetter = NBackDraw(0 until _letterCount, _level)
     }
 
-    fun getNextIndex(): Pair<Int, Boolean> {
+    fun getNextTrial(): NBackTrial {
+        val nextLocation = getNextLocation()
+        val nextSymbol = getNextSymbol()
+        return NBackTrial(nextLocation, nextSymbol)
+    }
+
+    private fun getNextLocation(): NBackElement {
         return _randomLocation.getNextIndex()
     }
 
-    fun getNextLetterIndex(): Pair<Int, Boolean> {
+    private fun getNextSymbol(): NBackElement {
         return _randomLetter.getNextIndex()
     }
 

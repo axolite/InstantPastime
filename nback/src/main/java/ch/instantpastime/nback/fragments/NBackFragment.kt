@@ -296,8 +296,9 @@ class NBackFragment : Fragment() {
 
     fun nextIndex() {
         val game = this.game ?: return
-        val (index, sameLocation) = game.getNextIndex()
-        val (letterIndex, sameLetter) = game.getNextLetterIndex()
+        val next = game.getNextTrial()
+        val (index, sameLocation) = next.location
+        val (letterIndex, sameLetter) = next.symbol
 
         activity?.runOnUiThread {
             val oldSquare = getSquare(lastIndex)
@@ -330,7 +331,7 @@ class NBackFragment : Fragment() {
         }
 
         timer?.startTimer()
-        Log.d(NBackGame::class.java.simpleName, "index is ${index}")
+        Log.d(javaClass.simpleName, "index is ${index}")
     }
 
     fun getSquare(index: Int): ImageView? {

@@ -19,7 +19,7 @@ class NBackDraw(val range: IntRange, val level: Int) {
         }
     private var _randomnessPercentage: Int = 100
 
-    fun getNextIndex(): Pair<Int, Boolean> {
+    fun getNextIndex(): NBackElement {
 
         val (hasPastIndex, pastIndex) = tryPop()
         val newIndex = if (hasPastIndex) {
@@ -33,7 +33,7 @@ class NBackDraw(val range: IntRange, val level: Int) {
         }
 
         lastIndices.addLast(newIndex)
-        return Pair(newIndex, newIndex == pastIndex)
+        return NBackElement(newIndex, newIndex == pastIndex)
     }
 
     private fun tryPop(): Pair<Boolean, Int> {
