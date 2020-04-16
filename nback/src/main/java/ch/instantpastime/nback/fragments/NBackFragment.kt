@@ -46,6 +46,8 @@ class NBackFragment : Fragment() {
     private var mLocationButton: Button? = null
     private var mLetterButton: Button? = null
     private var mTimeBar: ProgressBar? = null
+    private var mScoreText: TextView? = null
+    private var mTrialCountText: TextView? = null
 
     /**
      * True when the user says it is the same location, otherwise false.
@@ -82,6 +84,8 @@ class NBackFragment : Fragment() {
         mTimeBar = view.findViewById<ProgressBar>(R.id.nback_time_bar).apply {
             max = nbackSettings.time_per_trial
         }
+        mScoreText = view.findViewById(R.id.status_score_text)
+        mTrialCountText = view.findViewById(R.id.status_trial_count_text)
 
         context?.let {
             context?.let { nbackSound.init(it) }
@@ -187,6 +191,8 @@ class NBackFragment : Fragment() {
                 }
                 mLocationButton?.visibility = View.INVISIBLE
                 mLetterButton?.visibility = View.INVISIBLE
+                updateTrialCount(0, 0)
+                updateScore(0, 0)
                 Toast.makeText(context, context.getString(R.string.stop_game_short), Toast.LENGTH_SHORT).show()
             }
             NBackState.Paused -> {
@@ -214,6 +220,8 @@ class NBackFragment : Fragment() {
                     isEnabled = true
                     visibility = View.VISIBLE
                 }
+                updateTrialCount(0, 0)
+                updateScore(0, 0)
                 Toast.makeText(context, context.getString(R.string.start_game_short), Toast.LENGTH_SHORT).show()
             }
         }
@@ -351,5 +359,13 @@ class NBackFragment : Fragment() {
         view.findViewById<TextView>(R.id.status_level_text)?.let {
             it.text = getString(R.string.nback_status_level, settings.level)
         }
+    }
+
+    private fun updateTrialCount(doneCount: Int, totalCount: Int) {
+        mTrialCountText?.text = getString(R.string.nback_trial_count, doneCount, totalCount)
+    }
+
+    private fun updateScore(score: Int, maxPossibleScore: Int) {
+        mScoreText?.text = getString(R.string.nback_score, score)
     }
 }
