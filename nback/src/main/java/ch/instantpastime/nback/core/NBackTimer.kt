@@ -61,7 +61,7 @@ class NBackTimer(milliseconds: Long, val callback: () -> Unit) {
                 timer.cancel()
             } catch (ex: Exception) {
                 //NBackGame::stopTimer::name.name
-                Log.d(NBackGame::class.java.simpleName, "stopTimer" , ex)
+                Log.d(javaClass.simpleName, "stopTimer" , ex)
             }
         }
     }

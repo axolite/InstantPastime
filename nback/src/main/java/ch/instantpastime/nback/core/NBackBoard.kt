@@ -1,6 +1,6 @@
 package ch.instantpastime.nback.core
 
-class NBackGame {
+class NBackBoard {
 
     companion object {
         const val MIN_LEVEL = 1

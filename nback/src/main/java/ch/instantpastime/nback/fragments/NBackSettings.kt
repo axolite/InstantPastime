@@ -1,6 +1,6 @@
 package ch.instantpastime.nback.fragments
 
-import ch.instantpastime.nback.core.NBackGame
+import ch.instantpastime.nback.core.NBackBoard
 
 class NBackSettings(level: Int, time_per_trial: Int) {
 
@@ -21,18 +21,18 @@ class NBackSettings(level: Int, time_per_trial: Int) {
     val time_per_trial: Int
 
     init {
-        this.level = if (level < NBackGame.MIN_LEVEL) {
-            NBackGame.MIN_LEVEL
-        } else if (level > NBackGame.MAX_LEVEL) {
-            NBackGame.MAX_LEVEL
+        this.level = if (level < NBackBoard.MIN_LEVEL) {
+            NBackBoard.MIN_LEVEL
+        } else if (level > NBackBoard.MAX_LEVEL) {
+            NBackBoard.MAX_LEVEL
         } else {
             level
         }
 
-        this.time_per_trial = if (time_per_trial < NBackGame.MIN_MILLISEC) {
-            NBackGame.MIN_MILLISEC
-        } else if (time_per_trial > NBackGame.MAX_MILLISEC) {
-            NBackGame.MAX_MILLISEC
+        this.time_per_trial = if (time_per_trial < NBackBoard.MIN_MILLISEC) {
+            NBackBoard.MIN_MILLISEC
+        } else if (time_per_trial > NBackBoard.MAX_MILLISEC) {
+            NBackBoard.MAX_MILLISEC
         } else {
             time_per_trial
         }
