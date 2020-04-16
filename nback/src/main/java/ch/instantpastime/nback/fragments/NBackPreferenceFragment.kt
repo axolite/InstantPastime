@@ -36,19 +36,19 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
             }
             gameOptionsCategory.addPreference(nbackLevelPref)
 
-            val secondsPerTrialPref = SeekBarPreference(context).apply {
-                key = NBackSettings.NBACK_SECONDS_KEY
-                title = getString(R.string.nback_seconds_trial)
-                summary = getString(R.string.nback_seconds_trial_hint)
-                min = (NBackGame.MIN_SECONDS + 0.5).toInt()
-                max = (NBackGame.MAX_SECONDS + 0.5).toInt()
+            val timePerTrialPref = SeekBarPreference(context).apply {
+                key = NBackSettings.NBACK_MILLISECONDS_KEY
+                title = getString(R.string.nback_interval)
+                summary = getString(R.string.nback_interval_hint)
+                min = NBackGame.MIN_MILLISEC
+                max = NBackGame.MAX_MILLISEC
                 showSeekBarValue = true
-                setDefaultValue(3)
+                setDefaultValue(NBackGame.DEFAULT_MILLISEC)
                 onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
-                    onSecondsPerTrialPreferenceChanged(p, v)
+                    onTimePerTrialPreferenceChanged(p, v)
                 }
             }
-            gameOptionsCategory.addPreference(secondsPerTrialPref)
+            gameOptionsCategory.addPreference(timePerTrialPref)
 
             // Note from https://developer.android.com/guide/topics/ui/settings/programmatic-hierarchy
             // Warning: Make sure to add the PreferenceCategory to the PreferenceScreen before adding children to it.
@@ -79,14 +79,14 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private fun onSecondsPerTrialPreferenceChanged(preference: Preference, newValue: Any?): Boolean {
+    private fun onTimePerTrialPreferenceChanged(preference: Preference, newValue: Any?): Boolean {
         return if (newValue is Int && preference is SeekBarPreference) {
             val oldValue = preference.value
             if (oldValue != newValue) {
                 preference.value = newValue
                 Toast.makeText(
                     preference.context,
-                    resources.getQuantityString(R.plurals.nback_seconds_trial_changed, newValue, newValue),
+                    resources.getQuantityString(R.plurals.nback_interval_changed, newValue, newValue),
                     Toast.LENGTH_SHORT
                 ).show()
                 true

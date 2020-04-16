@@ -4,11 +4,11 @@ import android.util.Log
 import java.util.*
 import kotlin.concurrent.schedule
 
-class NBackTimer(intervalMillisec: Long, val callback: () -> Unit) {
+class NBackTimer(milliseconds: Long, val callback: () -> Unit) {
 
     private var mTimer: Timer? = null
 
-    var intervalMillisec: Long
+    var milliseconds: Long
         get() { return _intervalMillisec}
         set(value) {
             _intervalMillisec = if (value < 0) { 0 } else value
@@ -19,7 +19,7 @@ class NBackTimer(intervalMillisec: Long, val callback: () -> Unit) {
         get() = mTimer != null
 
     init {
-        this.intervalMillisec = intervalMillisec
+        this.milliseconds = milliseconds
     }
 
     fun toggle() {
@@ -46,7 +46,7 @@ class NBackTimer(intervalMillisec: Long, val callback: () -> Unit) {
         }
 
         // Assign a new task to the timer.
-        timer.schedule(intervalMillisec.toLong()) {
+        timer.schedule(milliseconds.toLong()) {
             // Cancel this TimerTask.
             cancel()
             callback()

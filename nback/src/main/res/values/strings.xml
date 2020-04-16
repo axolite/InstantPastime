@@ -12,10 +12,10 @@
     <string name="nback_level_hint">Number of events to remember</string>
     <string name="nback_level_changed">N-Back level changed to %1$d</string>
     <string name="nback_status_level">Level %1$d</string>
-    <string name="nback_seconds_trial">Seconds per trial</string>
-    <string name="nback_seconds_trial_hint">Number of seconds to respond</string>
-    <plurals name="nback_seconds_trial_changed">
-        <item quantity="one">Changed to %d second per trial</item>
-        <item quantity="other">Changed to %d seconds per trial</item>
+    <string name="nback_interval">Milliseconds per trial</string>
+    <string name="nback_interval_hint">Number of milliseconds to respond</string>
+    <plurals name="nback_interval_changed">
+        <item quantity="one">Changed to %d ms per trial</item>
+        <item quantity="other">Changed to %d ms per trial</item>
     </plurals>
 </resources>

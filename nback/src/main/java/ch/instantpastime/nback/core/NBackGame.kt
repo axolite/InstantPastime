@@ -9,9 +9,9 @@ class NBackGame {
         const val MIN_LEVEL = 1
         const val MAX_LEVEL = 4
         const val DEFAULT_LEVEL = 2
-        const val MIN_SECONDS: Double = 0.5
-        const val MAX_SECONDS: Double = 5.0
-        const val DEFAULT_SECONDS: Double = 3.0
+        const val MIN_MILLISEC: Int = 1000
+        const val MAX_MILLISEC: Int = 6000
+        const val DEFAULT_MILLISEC: Int = 3000
     }
 
     private val _randomLocation: NBackDraw
