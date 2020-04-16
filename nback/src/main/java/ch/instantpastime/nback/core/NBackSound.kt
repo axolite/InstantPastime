@@ -36,7 +36,7 @@ class NBackSound() {
                             setDataSource(afd)
                         } catch (ex: Exception) {
                             Log.d(
-                                NBackSound::class.java.simpleName,
+                                javaClass.simpleName,
                                 "Error setting player source",
                                 ex
                             )
@@ -44,7 +44,7 @@ class NBackSound() {
 
                         // Set an error listener.
                         setOnErrorListener { mp, what, extra ->
-                            Log.d(NBackSound::class.java.simpleName, "Player error occurred")
+                            Log.d(javaClass.simpleName, "Player error occurred")
                             true
                         }
 
@@ -52,7 +52,7 @@ class NBackSound() {
                         prepareAsync()
                         setOnPreparedListener {
                             it.start()
-                            Log.d(NBackSound::class.java.simpleName, "Player is prepared")
+                            Log.d(javaClass.simpleName, "Player is prepared")
                         }
                         return true
                     }
@@ -70,7 +70,7 @@ class NBackSound() {
         return try {
             context.assets.openFd(fileName)
         } catch (ex: Exception) {
-            Log.d(NBackSound::class.simpleName, "Error loading sound asset '$fileName'", ex)
+            Log.d(javaClass.simpleName, "Error loading sound asset '$fileName'", ex)
             null
         }
     }
