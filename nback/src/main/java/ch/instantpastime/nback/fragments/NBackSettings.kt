@@ -14,7 +14,7 @@ class NBackSettings(level: Int, seconds_per_trial: Double) {
     val seconds_per_trial: Double
 
     init {
-        this.level = if (NBackGame.MIN_LEVEL < level) {
+        this.level = if (level < NBackGame.MIN_LEVEL) {
             NBackGame.MIN_LEVEL
         } else if (level > NBackGame.MAX_LEVEL) {
             NBackGame.MAX_LEVEL
@@ -22,7 +22,7 @@ class NBackSettings(level: Int, seconds_per_trial: Double) {
             level
         }
 
-        this.seconds_per_trial = if (NBackGame.MIN_SECONDS < seconds_per_trial) {
+        this.seconds_per_trial = if (seconds_per_trial < NBackGame.MIN_SECONDS) {
             NBackGame.MIN_SECONDS
         } else if (seconds_per_trial > NBackGame.MAX_SECONDS) {
             NBackGame.MAX_SECONDS

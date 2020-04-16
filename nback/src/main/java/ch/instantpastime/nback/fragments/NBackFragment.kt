@@ -36,7 +36,7 @@ class NBackFragment : Fragment() {
 
     private var state: NBackState = NBackState.Idle
     private var game: NBackGame? = null
-    private val timer: NBackTimer = NBackTimer((NBackGame.DEFAULT_SECONDS * 1000).toLong(), { -> nextIndex() })
+    private var timer: NBackTimer = NBackTimer((NBackGame.DEFAULT_SECONDS * 1000).toLong(), { -> nextIndex() })
     val nbackSound : NBackSound = NBackSound()
     private var lastIndex: Int = INVALID_INDEX;
 
@@ -72,6 +72,7 @@ class NBackFragment : Fragment() {
     ): View? {
         val nbackSettings = loadNBackSettings()
         game = NBackGame(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
+        timer.intervalMillisec = (nbackSettings.seconds_per_trial * 1000).toLong()
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
         mRestartButton = view.findViewById<Button>(R.id.restart_button)
         mLocationButton = view.findViewById<Button>(R.id.locationButton)
