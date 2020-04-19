@@ -1,5 +1,9 @@
 package ch.instantpastime.memory
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.Paint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -127,4 +131,16 @@ fun View.getAllViews(): List<View> {
         .toList()
         .flatMap { it.getAllViews() }
         .plus(this as View)
+}
+
+fun scaleBitmap(bitmap: Bitmap, wantedWidth: Int, wantedHeight: Int): Bitmap? {
+    val output = Bitmap.createBitmap(wantedWidth, wantedHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(output)
+    val m = Matrix()
+    m.setScale(
+        wantedWidth.toFloat() / bitmap.width,
+        wantedHeight.toFloat() / bitmap.height
+    )
+    canvas.drawBitmap(bitmap, m, Paint())
+    return output
 }
