@@ -230,7 +230,7 @@ class MemoryActivity : AppCompatActivity() {
 
         if(imgindex==33){
             welcomeText.setText("Ready!!. (Debugging mode -> Cards not shuffled)")
-            //myBitmaps.shuffle()
+            myBitmaps.shuffle()
 
         }
 
