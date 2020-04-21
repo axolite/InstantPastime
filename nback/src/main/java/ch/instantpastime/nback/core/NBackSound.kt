@@ -62,6 +62,17 @@ class NBackSound() {
         return false
     }
 
+    /**
+     * Helper method for debug.
+     */
+    fun getLetter(index: Int): Char? {
+        return if (0 <= index && index < _sounds.size) {
+            _sounds[index].firstOrNull()
+        } else {
+            null
+        }
+    }
+
     fun exit() {
         _player?.release()
     }

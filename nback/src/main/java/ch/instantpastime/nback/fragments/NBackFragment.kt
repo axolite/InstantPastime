@@ -321,6 +321,10 @@ class NBackFragment : Fragment() {
                 newSquare?.setBackgroundColor(ContextCompat.getColor(context, R.color.colorActiveSquare))
                 // Play or show the next letter.
                 nbackSound.playArticle(context, letterIndex)
+                when (val c = nbackSound.getLetter(letterIndex)) {
+                    null -> { }
+                    else -> { Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT).show() }
+                }
             }
             //Update the actual values.
             mSameLocation = sameLocation
