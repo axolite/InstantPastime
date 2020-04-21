@@ -14,6 +14,7 @@ import androidx.preference.PreferenceManager
 import ch.instantpastime.nback.R
 import ch.instantpastime.nback.core.NBackCountDown
 import ch.instantpastime.nback.core.NBackBoard
+import ch.instantpastime.nback.core.NBackGame
 import ch.instantpastime.nback.core.NBackSound
 
 /**
@@ -33,6 +34,7 @@ class NBackFragment : Fragment() {
 
     private var state: NBackState = NBackState.Idle
     private var game: NBackBoard? = null
+    private val score: NBackGame = NBackGame()
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
     private var timer: NBackCountDown? = null
     val nbackSound : NBackSound = NBackSound()
@@ -168,6 +170,7 @@ class NBackFragment : Fragment() {
                     }
                 }
                 timer?.stopTimer()
+                score.reset()
             }
             NBackState.Running -> {
                 // Update the controls.
@@ -311,6 +314,8 @@ class NBackFragment : Fragment() {
 
             context?.let {context ->
                 // Give a feedback about the correct answer.
+                score.updateScore(answer = mAnswerSameLocation, actual = mSameLocation)
+                score.updateScore(answer = mAnswerSameLetter, actual = mSameLetter)
                 val locationFeedbackColor = getActualFeedbackColor(answer = mAnswerSameLocation, actual = mSameLocation, context = context)
                 val letterFeedbackColor = getActualFeedbackColor(answer = mAnswerSameLetter, actual = mSameLetter, context = context)
                 mLocationFeedbackZone?.setBackgroundColor(locationFeedbackColor)
@@ -321,6 +326,8 @@ class NBackFragment : Fragment() {
                 newSquare?.setBackgroundColor(ContextCompat.getColor(context, R.color.colorActiveSquare))
                 // Play or show the next letter.
                 nbackSound.playArticle(context, letterIndex)
+                updateTrialCount(score.CorrectCount, score.TotalCount)
+                updateScore(score.CorrectCount, score.TotalCount)
                 when (val c = nbackSound.getLetter(letterIndex)) {
                     null -> { }
                     else -> { Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT).show() }
