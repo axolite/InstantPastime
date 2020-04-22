@@ -40,8 +40,8 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
                 key = NBackSettings.NBACK_MILLISECONDS_KEY
                 title = getString(R.string.nback_interval)
                 summary = getString(R.string.nback_interval_hint)
-                min = NBackBoard.MIN_MILLISEC
                 max = NBackBoard.MAX_MILLISEC
+                min = NBackBoard.MIN_MILLISEC
                 showSeekBarValue = true
                 setDefaultValue(NBackBoard.DEFAULT_MILLISEC)
                 onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
