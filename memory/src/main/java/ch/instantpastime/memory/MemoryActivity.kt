@@ -1,11 +1,13 @@
 package ch.instantpastime.memory
 
 import android.app.Dialog
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -16,59 +18,47 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_memory.*
 import org.json.JSONArray
 import org.json.JSONObject
 
+const val num_images = 32
+
 
 class MemoryActivity : AppCompatActivity() {
-    val imageListId = ArrayList<Int>()
-    val drawables = R.drawable::class.java.fields
+
+    companion object{
+        var isMaximize:Boolean=false
+        lateinit var mGoogleAPI : GoogleAPI
+    }
+
+    //val imageListId = ArrayList<Int>()
+    //val drawables = R.drawable::class.java.fields
     val backImage=R.drawable.vacation
     val myCards= ArrayList<ImageView>()
     var previousCardId:Int?=null
     var currentCardId:Int?=null
 
-    open class bitmapClass(image:Bitmap,desc:String,loc:JSONObject){
-        var img_reduce: Bitmap? = null
-        var img_original: Bitmap? = null
-        var img_desc: String? = null
-        var img_loc: JSONObject? = null
-
-
-        init{
-            img_reduce=scaleBitmap(image,200,200)
-            img_original=image
-            img_desc=desc
-            img_loc=loc
-        }
-
-    }
     var myBitmaps= ArrayList<bitmapClass>()
 
     var imgindex=0
-
     var actionOngoing:Boolean=false
-    companion object{
-        var isMaximize:Boolean=false
-        val num_images = 32
 
-    }
+    var handler=Handler()
+    var matching:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memory)
 
+
         //android.os.Debug.waitForDebugger()
 
 
-        val mGoogleAPI=GoogleAPI(this)
-        mGoogleAPI.requestImages("46.136883, 6.132194") //arrival time format yyyy-MM-dd HH:mm:ss
-
-
-
-
+        mGoogleAPI=GoogleAPI(this,num_images)
+        GPS_localistation.get_localitation(this)
 
         box1.setOnClickListener {maximizeBox(back,it,box1,box2,box3,box4)}
         box2.setOnClickListener {maximizeBox(back,it, box1,box2,box3,box4)}
@@ -95,17 +85,12 @@ class MemoryActivity : AppCompatActivity() {
         }
 
 
+//        for (f in drawables) {
+//
+//            imageListId.add(getResources().getIdentifier(f.name,"drawable","ch.instantpastime.memory"))
+//        }
+
         var i=0
-
-        for (f in drawables) { //if the drawable name contains "pic" in the filename...
-
-            //if (f.getName().contains("image"))
-            imageListId.add(getResources().getIdentifier(f.name,"drawable","ch.instantpastime.memory"))
-        }
-        //for (imgResourceId in imageListId) {
-
-        //}
-
         for (myCard in myCards){
             myCard.setOnClickListener {onClick_img(it)}
             myCard.tag=i
@@ -115,8 +100,7 @@ class MemoryActivity : AppCompatActivity() {
         //disableListeners()
 
     }
-    var handler=Handler()
-    var matching:Boolean=false
+
 
 
     fun onClick_img(currentCard:View?){
@@ -128,13 +112,6 @@ class MemoryActivity : AppCompatActivity() {
             currentCardId = currentCard!!.tag as Int
             actionOngoing = true
             if (isMaximize) {
-//                val index = (currentCard!!.tag as Int) % 16
-//                (currentCard as ImageView).setImageDrawable(
-//                    ContextCompat.getDrawable(
-//                        this,
-//                        imageListId[index]
-//                    )
-//                )
                 (currentCard as ImageView).setImageBitmap(myBitmaps[currentCardId!!].img_reduce)
                 currentCard.setEnabled(false)
 
@@ -178,17 +155,16 @@ class MemoryActivity : AppCompatActivity() {
         }
     }
 
-        //Toast.makeText(this@MemoryActivity, img.tag.toString(), Toast.LENGTH_SHORT).show();
-        fun execPostDelayed() {
-            val currentCard=myCards[currentCardId!!]
+    private  fun execPostDelayed() {
+        val currentCard=myCards[currentCardId!!]
 
-            currentCard.setImageDrawable(ContextCompat.getDrawable(this, backImage))
-            myCards[previousCardId!!].setImageDrawable(ContextCompat.getDrawable(this,backImage))
-            currentCard.setEnabled(true)
-            myCards[previousCardId!!].setEnabled(true)
-            previousCardId = null
-            matching = false
-        }
+        currentCard.setImageDrawable(ContextCompat.getDrawable(this, backImage))
+        myCards[previousCardId!!].setImageDrawable(ContextCompat.getDrawable(this,backImage))
+        currentCard.setEnabled(true)
+        myCards[previousCardId!!].setEnabled(true)
+        previousCardId = null
+        matching = false
+    }
 
 
     private fun showDialog(title: String,index:Int) {
@@ -236,5 +212,11 @@ class MemoryActivity : AppCompatActivity() {
 
     }
 
+
+
+    override fun onBackPressed() {
+            super.onBackPressed()
+
+    }
 
 }

@@ -18,10 +18,9 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
-import ch.instantpastime.memory.MemoryActivity.Companion.num_images
 
 
-class GoogleAPI(mActivity:MemoryActivity)  {
+class GoogleAPI(mActivity:MemoryActivity, n_img_requested:Int)  {
 
     /********************************************************************************
      * Google Places
@@ -30,13 +29,16 @@ class GoogleAPI(mActivity:MemoryActivity)  {
     var mActivity: MemoryActivity =mActivity
 
     lateinit var GoogleKey:String
+    var num_img_count = 0
+    var num_images =n_img_requested
+    var i = 0
+
     init {
         GoogleKey =mActivity.getString(R.string.google_maps_key)
         Places.initialize(mActivity, GoogleKey!!)
         placesClient= Places.createClient(mActivity)
     }
-    var num_img_count = 0
-    var i = 0
+
 
     public fun getPhotoAndDetail(placeIds:ArrayList<String>,placesDesc:ArrayList<String>,placesLoc:ArrayList<JSONObject>){
 
