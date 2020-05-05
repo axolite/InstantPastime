@@ -3,6 +3,7 @@
 package ch.instantpastime.memory
 
 import android.graphics.Bitmap
+import ch.instantpastime.memory.fragments.MemoryFragment
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
@@ -20,13 +21,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class GoogleAPI(mActivity:MemoryActivity, n_img_requested:Int)  {
+class GoogleAPI(mActivity:MemoryFragment, n_img_requested:Int)  {
 
     /********************************************************************************
      * Google Places
      ********************************************************************************/
     lateinit var placesClient: PlacesClient
-    var mActivity: MemoryActivity =mActivity
+    var mActivity: MemoryFragment =mActivity
 
     lateinit var GoogleKey:String
     var num_img_count = 0
@@ -35,8 +36,8 @@ class GoogleAPI(mActivity:MemoryActivity, n_img_requested:Int)  {
 
     init {
         GoogleKey =mActivity.getString(R.string.google_maps_key)
-        Places.initialize(mActivity, GoogleKey!!)
-        placesClient= Places.createClient(mActivity)
+        Places.initialize(mActivity.getContext()!!, GoogleKey!!)
+        placesClient= Places.createClient(mActivity.getContext()!!)
     }
 
 

@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
-import ch.instantpastime.memory.MemoryActivity.Companion.isMaximize
+import ch.instantpastime.memory.fragments.MemoryFragment.Companion.isMaximize
 
 
 fun maximizeBox(back: Button, box: View, box1: View, box2: View, box3: View, box4: View) {

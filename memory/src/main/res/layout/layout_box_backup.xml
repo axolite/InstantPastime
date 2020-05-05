@@ -33,7 +33,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Club"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
             <ImageView
                 android:id="@+id/quick_5_2"
@@ -44,7 +44,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Bar"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
             <ImageView
                 android:id="@+id/quick_5_1"
@@ -55,7 +55,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Restaurant"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
         </LinearLayout>
 
@@ -76,7 +76,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Friends"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
             <ImageView
                 android:id="@+id/quick_4_2"
@@ -87,7 +87,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Kids"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
             <ImageView
                 android:id="@+id/quick_4_1"
@@ -98,7 +98,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Gym"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
         </LinearLayout>
 
         <LinearLayout
@@ -117,7 +117,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="GasStation"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
             <ImageView
                 android:id="@+id/quick_3_2"
@@ -128,7 +128,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Shopping"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
             <ImageView
                 android:id="@+id/quick_3_1"
@@ -139,7 +139,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Train"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
         </LinearLayout>
 
         <LinearLayout
@@ -158,7 +158,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Bank"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
             <ImageView
                 android:id="@+id/quick_2_2"
@@ -169,7 +169,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Work"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
             <ImageView
                 android:id="@+id/quick_2_1"
@@ -180,7 +180,7 @@
                 android:layout_weight="1"
                 android:scaleType="fitCenter"
                 android:tag="Home"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
         </LinearLayout>
 
         <LinearLayout
@@ -201,7 +201,7 @@
 
                 android:scaleType="fitCenter"
                 android:tag="Vacation"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
             <ImageView
                 android:id="@+id/quick_1_2"
@@ -213,7 +213,7 @@
                 android:scaleType="fitCenter"
 
                 android:tag="School"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
 
             <ImageView
@@ -226,7 +226,7 @@
                 android:background="#00FFFFFF"
                 android:scaleType="fitCenter"
                 android:tag="CurrentLocation"
-                app:srcCompat="@drawable/vacation" />
+                app:srcCompat="@drawable/back_card" />
 
 
         </LinearLayout>

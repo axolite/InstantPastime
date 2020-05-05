@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/home_nback" />
+    <item
+        android:id="@+id/navigation_option"
+        android:icon="@drawable/ic_settings_black_24dp"
+        android:title="@string/game_options_short" />
+</menu>

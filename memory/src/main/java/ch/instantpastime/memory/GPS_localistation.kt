@@ -8,7 +8,8 @@ import android.os.Build
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
-import ch.instantpastime.memory.MemoryActivity.Companion.mGoogleAPI
+import androidx.fragment.app.Fragment
+import ch.instantpastime.memory.fragments.MemoryFragment.Companion.mGoogleAPI
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -23,11 +24,11 @@ object GPS_localistation : AppCompatActivity ()  {
     private var currentGPSLocation: LatLng?=null
 
 
-    fun get_localitation(mActivity: AppCompatActivity){
-        myFusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity)
+    fun get_localitation(mActivity: Fragment){
+        myFusedLocationClient = LocationServices.getFusedLocationProviderClient(mActivity.getContext()!!)
         locationRequest = LocationRequest()
 
-        if (ActivityCompat.checkSelfPermission(mActivity, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(mActivity.getContext()!!, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             myFusedLocationClient.lastLocation.addOnSuccessListener {
                 currentGPSLocation = LatLng(it.latitude, it.longitude)
                 val mylocation: String = it.latitude.toString() + ", " + it.longitude.toString()

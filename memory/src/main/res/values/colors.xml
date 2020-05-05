@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorActiveSquare">@color/colorPrimaryDark</color>
+    <color name="colorIdleSquare">#FFFFFF</color>
+    <color name="colorNBackCorrect">#8BC34A</color>
+    <color name="colorNBackWrong">#E91E63</color>
+    <color name="colorNBackActual">#00BCD4</color>
+    <color name="colorNBackAnswer">#9C27B0</color>
+    <color name="colorTransparent">#00000000</color>
+</resources>
