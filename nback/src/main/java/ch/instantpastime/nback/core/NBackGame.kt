@@ -38,10 +38,18 @@ class NBackGame {
     fun updateScore(answer: Boolean, actual: Boolean): Correctness {
         val correctness = getCorrectness(answer = answer, actual = actual)
         when (correctness) {
-            Correctness.CORRECT_DIFFERENT -> { CorrectCount++ }
-            Correctness.CORRECT_SAME -> { CorrectCount++ }
-            Correctness.WRONG_ACTUALLY_DIFFERENT -> { WrongCount++ }
-            Correctness.WRONG_ACTUALLY_SAME -> { WrongCount++ }
+            Correctness.CORRECT_DIFFERENT -> {
+                CorrectCount++
+            }
+            Correctness.CORRECT_SAME -> {
+                CorrectCount++
+            }
+            Correctness.WRONG_ACTUALLY_DIFFERENT -> {
+                WrongCount++
+            }
+            Correctness.WRONG_ACTUALLY_SAME -> {
+                WrongCount++
+            }
         }
         TotalCount++
         return correctness

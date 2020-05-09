@@ -4,14 +4,14 @@ import android.content.Context
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
 import android.util.Log
-import java.lang.Exception
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class NBackSound() {
+class NBackSound {
 
     private var _player: MediaPlayer? = null
-    private val _sounds: List<String> = listOf("c.wav", "h.wav", "k.wav", "l.wav", "q.wav", "r.wav", "s.wav", "t.wav")
+    private val _sounds: List<String> =
+        listOf("c.wav", "h.wav", "k.wav", "l.wav", "q.wav", "r.wav", "s.wav", "t.wav")
 
     val letterCount: Int
         get() = _sounds.size

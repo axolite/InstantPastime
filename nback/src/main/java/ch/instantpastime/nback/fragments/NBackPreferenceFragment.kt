@@ -10,10 +10,11 @@ import ch.instantpastime.nback.core.NBackBoard
 class NBackPreferenceFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        preferenceManager?.context?.let {context ->
+        preferenceManager?.context?.let { context ->
             preferenceScreen = buildPreferenceScreen(context)
         }
     }
+
     private fun buildPreferenceScreen(context: Context): PreferenceScreen? {
         val screen = preferenceManager?.createPreferenceScreen(context)?.apply {
             val gameOptionsCategory = PreferenceCategory(context).apply {
@@ -70,7 +71,8 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
                 ).show()
                 true
             } else {
-                Toast.makeText(preference.context, "No change: same value", Toast.LENGTH_SHORT).show()
+                Toast.makeText(preference.context, "No change: same value", Toast.LENGTH_SHORT)
+                    .show()
                 false
             }
         } else {
@@ -86,7 +88,11 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
                 preference.value = newValue
                 Toast.makeText(
                     preference.context,
-                    resources.getQuantityString(R.plurals.nback_interval_changed, newValue, newValue),
+                    resources.getQuantityString(
+                        R.plurals.nback_interval_changed,
+                        newValue,
+                        newValue
+                    ),
                     Toast.LENGTH_SHORT
                 ).show()
                 true

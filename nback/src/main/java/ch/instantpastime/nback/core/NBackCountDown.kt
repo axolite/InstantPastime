@@ -13,12 +13,18 @@ class NBackCountDown(totalMilliseconds: Int, val onTick: () -> Unit, val onFinis
     private var _timer: CountDownTimer? = null
 
     var totalMilliseconds: Int
-        get() { return _totalMillisec }
+        get() {
+            return _totalMillisec
+        }
         set(value) {
             if (value != _totalMillisec) {
-                val newValue = if (value < NBackBoard.MIN_MILLISEC) { NBackBoard.MIN_MILLISEC }
-                else if (value > NBackBoard.MAX_MILLISEC) { NBackBoard.MAX_MILLISEC }
-                else { value }
+                val newValue = if (value < NBackBoard.MIN_MILLISEC) {
+                    NBackBoard.MIN_MILLISEC
+                } else if (value > NBackBoard.MAX_MILLISEC) {
+                    NBackBoard.MAX_MILLISEC
+                } else {
+                    value
+                }
 
                 _totalMillisec = newValue
                 resetTimer()
@@ -33,9 +39,10 @@ class NBackCountDown(totalMilliseconds: Int, val onTick: () -> Unit, val onFinis
     fun startTimer() {
         // Get the existing timer or a new one.
         val timer = _timer.let {
-            if (it == null ) {
+            if (it == null) {
                 // Build a new timer.
-                val newTimer = buildTimer(totalMillisec = totalMilliseconds, stepMillisec = stepMillisec)
+                val newTimer =
+                    buildTimer(totalMillisec = totalMilliseconds, stepMillisec = stepMillisec)
                 _timer = newTimer
                 newTimer
             } else {
@@ -56,7 +63,7 @@ class NBackCountDown(totalMilliseconds: Int, val onTick: () -> Unit, val onFinis
             try {
                 timer.cancel()
             } catch (ex: Exception) {
-                Log.d(javaClass.simpleName, "stopTimer" , ex)
+                Log.d(javaClass.simpleName, "stopTimer", ex)
             }
         }
     }
@@ -66,6 +73,7 @@ class NBackCountDown(totalMilliseconds: Int, val onTick: () -> Unit, val onFinis
             override fun onFinish() {
                 this@NBackCountDown.onFinish()
             }
+
             override fun onTick(millisUntilFinished: Long) {
                 this@NBackCountDown.onTick()
             }

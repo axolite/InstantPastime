@@ -1,7 +1,8 @@
 package ch.instantpastime.nback.core
 
 import androidx.collection.CircularArray
-import kotlin.random.*
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 class NBackDraw(val range: IntRange, val level: Int) {
 
@@ -11,11 +12,17 @@ class NBackDraw(val range: IntRange, val level: Int) {
     private val lastIndices: CircularArray<Int> = CircularArray(level)
 
     var RandomnessPercentage: Int
-        get() { return _randomnessPercentage }
+        get() {
+            return _randomnessPercentage
+        }
         set(value) {
-            _randomnessPercentage = if (0 < value) { 0 }
-            else if (value > 100) { 100 }
-            else { value }
+            _randomnessPercentage = if (0 < value) {
+                0
+            } else if (value > 100) {
+                100
+            } else {
+                value
+            }
         }
     private var _randomnessPercentage: Int = 80
 

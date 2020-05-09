@@ -3,17 +3,16 @@ package ch.instantpastime.nback.fragments
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-
 import ch.instantpastime.nback.R
-import ch.instantpastime.nback.core.NBackCountDown
 import ch.instantpastime.nback.core.NBackBoard
+import ch.instantpastime.nback.core.NBackCountDown
 import ch.instantpastime.nback.core.NBackGame
 import ch.instantpastime.nback.core.NBackSound
 
@@ -35,10 +34,11 @@ class NBackFragment : Fragment() {
     private var state: NBackState = NBackState.Idle
     private var game: NBackBoard? = null
     private val score: NBackGame = NBackGame()
+
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
     private var timer: NBackCountDown? = null
-    val nbackSound : NBackSound = NBackSound()
-    private var lastIndex: Int = INVALID_INDEX;
+    val nbackSound: NBackSound = NBackSound()
+    private var lastIndex: Int = INVALID_INDEX
 
     private var mLocationFeedbackZone: ImageView? = null
     private var mLetterFeedbackZone: ImageView? = null
@@ -55,14 +55,17 @@ class NBackFragment : Fragment() {
      * True when the user says it is the same location, otherwise false.
      */
     private var mAnswerSameLocation: Boolean = false
+
     /**
      * True when the user says it is the same letter, otherwise false.
      */
     private var mAnswerSameLetter: Boolean = false
+
     /**
      * True when it is actually the same location, otherwise false.
      */
     private var mSameLocation: Boolean = false
+
     /**
      * True when it is actually the same letter, otherwise false.
      */
@@ -166,7 +169,12 @@ class NBackFragment : Fragment() {
                 val lastSquare = getSquare(lastIndex)
                 if (lastSquare != null) {
                     context?.let { ctx ->
-                        lastSquare.setBackgroundColor(ContextCompat.getColor(ctx, R.color.colorIdleSquare))
+                        lastSquare.setBackgroundColor(
+                            ContextCompat.getColor(
+                                ctx,
+                                R.color.colorIdleSquare
+                            )
+                        )
                     }
                 }
                 timer?.stopTimer()
@@ -196,7 +204,11 @@ class NBackFragment : Fragment() {
                 mLetterButton?.visibility = View.INVISIBLE
                 updateTrialCount(0, 0)
                 updateScore(0, 0)
-                Toast.makeText(context, context.getString(R.string.stop_game_short), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.stop_game_short),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             NBackState.Paused -> {
                 mPauseButton?.apply {
@@ -205,7 +217,11 @@ class NBackFragment : Fragment() {
                 }
                 mLocationButton?.isEnabled = false
                 mLetterButton?.isEnabled = false
-                Toast.makeText(context, context.getString(R.string.pause_game_short), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.pause_game_short),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             NBackState.Running -> {
                 mPauseButton?.apply {
@@ -225,7 +241,11 @@ class NBackFragment : Fragment() {
                 }
                 updateTrialCount(0, 0)
                 updateScore(0, 0)
-                Toast.makeText(context, context.getString(R.string.start_game_short), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.start_game_short),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -241,7 +261,8 @@ class NBackFragment : Fragment() {
         when (state) {
             NBackState.Running -> processTransition(Transition.Pause)
             NBackState.Paused -> processTransition(Transition.Resume)
-            else -> { }
+            else -> {
+            }
         }
     }
 
@@ -309,28 +330,50 @@ class NBackFragment : Fragment() {
             if (newSquare != null) {
                 lastIndex = index
             } else {
-                lastIndex = INVALID_INDEX;
+                lastIndex = INVALID_INDEX
             }
 
-            context?.let {context ->
+            context?.let { context ->
                 // Give a feedback about the correct answer.
                 score.updateScore(answer = mAnswerSameLocation, actual = mSameLocation)
                 score.updateScore(answer = mAnswerSameLetter, actual = mSameLetter)
-                val locationFeedbackColor = getActualFeedbackColor(answer = mAnswerSameLocation, actual = mSameLocation, context = context)
-                val letterFeedbackColor = getActualFeedbackColor(answer = mAnswerSameLetter, actual = mSameLetter, context = context)
+                val locationFeedbackColor = getActualFeedbackColor(
+                    answer = mAnswerSameLocation,
+                    actual = mSameLocation,
+                    context = context
+                )
+                val letterFeedbackColor = getActualFeedbackColor(
+                    answer = mAnswerSameLetter,
+                    actual = mSameLetter,
+                    context = context
+                )
                 mLocationFeedbackZone?.setBackgroundColor(locationFeedbackColor)
                 mLetterFeedbackZone?.setBackgroundColor(letterFeedbackColor)
 
                 // Colorize the next location.
-                oldSquare?.setBackgroundColor(ContextCompat.getColor(context, R.color.colorIdleSquare))
-                newSquare?.setBackgroundColor(ContextCompat.getColor(context, R.color.colorActiveSquare))
+                oldSquare?.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.colorIdleSquare
+                    )
+                )
+                newSquare?.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.colorActiveSquare
+                    )
+                )
                 // Play or show the next letter.
                 nbackSound.playArticle(context, letterIndex)
                 updateTrialCount(score.CorrectCount, score.TotalCount)
                 updateScore(score.CorrectCount, score.TotalCount)
                 when (val c = nbackSound.getLetter(letterIndex)) {
-                    null -> { }
-                    else -> { Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT).show() }
+                    null -> {
+                    }
+                    else -> {
+                        Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
             //Update the actual values.
@@ -362,8 +405,12 @@ class NBackFragment : Fragment() {
 
     private fun loadNBackSettings(): NBackSettings {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val level = sharedPreferences.getInt(NBackSettings.NBACK_LEVEL_KEY, NBackBoard.DEFAULT_LEVEL)
-        val time_per_trial = sharedPreferences.getInt(NBackSettings.NBACK_MILLISECONDS_KEY, NBackBoard.DEFAULT_MILLISEC)
+        val level =
+            sharedPreferences.getInt(NBackSettings.NBACK_LEVEL_KEY, NBackBoard.DEFAULT_LEVEL)
+        val time_per_trial = sharedPreferences.getInt(
+            NBackSettings.NBACK_MILLISECONDS_KEY,
+            NBackBoard.DEFAULT_MILLISEC
+        )
         return NBackSettings(level, time_per_trial)
     }
 

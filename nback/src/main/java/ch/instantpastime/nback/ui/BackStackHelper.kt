@@ -19,27 +19,45 @@ import kotlinx.android.synthetic.main.activity_nback.*
  */
 class BackStackHelper(private val activity: NBackActivity) {
 
-    data class FragmentTableEntry(val menuItemId: Int, val generator: (x: Bundle?) -> Fragment, val stackTag: String)
+    data class FragmentTableEntry(
+        val menuItemId: Int,
+        val generator: (x: Bundle?) -> Fragment,
+        val stackTag: String
+    )
 
     companion object {
         val GAME_STACK_TAG = "GAME_STACK_TAG"
         val OPTIONS_STACK_TAG = "OPTIONS_STACK_TAG"
         val fragmentTable = listOf(
-            FragmentTableEntry(menuItemId = R.id.navigation_home, generator = { _ -> NBackFragment() }, stackTag = GAME_STACK_TAG),
-            FragmentTableEntry(menuItemId = R.id.navigation_option, generator = { _ -> NBackPreferenceFragment() }, stackTag = OPTIONS_STACK_TAG)
+            FragmentTableEntry(
+                menuItemId = R.id.navigation_home,
+                generator = { _ -> NBackFragment() },
+                stackTag = GAME_STACK_TAG
+            ),
+            FragmentTableEntry(
+                menuItemId = R.id.navigation_option,
+                generator = { _ -> NBackPreferenceFragment() },
+                stackTag = OPTIONS_STACK_TAG
+            )
         )
     }
 
     private var _navigatingFromCode = false
 
     private val supportFragmentManager: FragmentManager
-        get() { return activity.supportFragmentManager }
+        get() {
+            return activity.supportFragmentManager
+        }
 
     private val nav_view: BottomNavigationView
-        get() { return activity.nav_view }
+        get() {
+            return activity.nav_view
+        }
 
     private val nback_fragment_container: FrameLayout
-        get() { return activity.nback_fragment_container}
+        get() {
+            return activity.nback_fragment_container
+        }
 
     fun onBackPressed(): Boolean {
         return if (supportFragmentManager.backStackEntryCount > 0) {
@@ -56,7 +74,8 @@ class BackStackHelper(private val activity: NBackActivity) {
 
     @IdRes
     private fun getCurrentMenuItemId(): Int? {
-        return when (val fragment = supportFragmentManager.findFragmentById(R.id.nback_fragment_container)) {
+        return when (val fragment =
+            supportFragmentManager.findFragmentById(R.id.nback_fragment_container)) {
             null -> null
             else -> getMenuItemIdFrom(fragment)
         }
@@ -70,7 +89,7 @@ class BackStackHelper(private val activity: NBackActivity) {
     private fun getTopMenuItemId(): Int? {
         val lastIndex = supportFragmentManager.backStackEntryCount - 1
         return if (lastIndex >= 0) {
-            supportFragmentManager.getBackStackEntryAt(lastIndex).name?.let {entryName ->
+            supportFragmentManager.getBackStackEntryAt(lastIndex).name?.let { entryName ->
                 fragmentTable.firstOrNull { it.stackTag == entryName }?.menuItemId
             }
         } else {
@@ -109,7 +128,8 @@ class BackStackHelper(private val activity: NBackActivity) {
 
         // Check whether the given menu item is already selected and has a valid fragment.
         return if (nav_view.selectedItemId == menuItemId &&
-            supportFragmentManager.findFragmentById(R.id.nback_fragment_container) != null) {
+            supportFragmentManager.findFragmentById(R.id.nback_fragment_container) != null
+        ) {
             // The requested menu item is already selected and has a valid fragment.
             true
         } else if (popBackStackToFragment(menuItemId)) {

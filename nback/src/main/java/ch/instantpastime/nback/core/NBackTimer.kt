@@ -33,7 +33,7 @@ class NBackTimer(milliseconds: Long, val callback: () -> Unit) {
     fun startTimer() {
         // Get the existing timer or a new one.
         val timer = mTimer.let {
-            if (it == null ) {
+            if (it == null) {
                 // Build a new timer.
                 val newTimer = Timer()
                 mTimer = newTimer
@@ -61,7 +61,7 @@ class NBackTimer(milliseconds: Long, val callback: () -> Unit) {
                 timer.cancel()
             } catch (ex: Exception) {
                 //NBackGame::stopTimer::name.name
-                Log.d(javaClass.simpleName, "stopTimer" , ex)
+                Log.d(javaClass.simpleName, "stopTimer", ex)
             }
         }
     }

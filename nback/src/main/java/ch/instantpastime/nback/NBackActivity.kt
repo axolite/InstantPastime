@@ -1,12 +1,7 @@
 package ch.instantpastime.nback
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MenuItem
-import androidx.annotation.IdRes
-import androidx.fragment.app.Fragment
-import ch.instantpastime.nback.fragments.NBackFragment
-import ch.instantpastime.nback.fragments.NBackPreferenceFragment
+import androidx.appcompat.app.AppCompatActivity
 import ch.instantpastime.nback.ui.BackStackHelper
 import kotlinx.android.synthetic.main.activity_nback.*
 
