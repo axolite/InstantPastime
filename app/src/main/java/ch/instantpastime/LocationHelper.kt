@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
+const val MY_PERMISSION_FINE_LOCATION = 101
+
 class LocationHelper {
 
     fun getLocation(activity: Activity, processLocation: (Location?) -> Unit) {
