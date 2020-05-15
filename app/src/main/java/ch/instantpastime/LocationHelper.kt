@@ -7,6 +7,7 @@ import android.location.Location
 import android.os.Build
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -34,6 +35,31 @@ class LocationHelper {
                         arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                         MY_PERMISSION_FINE_LOCATION
                     )
+                }
+            }
+        } catch (ex: Exception) {
+        }
+    }
+
+    fun getLocation(fragment: Fragment, processLocation: (Location?) -> Unit) {
+        try {
+            val context: Context? = fragment.context
+            if (context != null) {
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                    == PackageManager.PERMISSION_GRANTED
+                ) {
+                    processPermissionStatus(PermissionStatus.Accepted, context, processLocation)
+                } else {
+                    //request permissions
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        fragment.requestPermissions(
+                            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                            MY_PERMISSION_FINE_LOCATION
+                        )
+                    }
                 }
             }
         } catch (ex: Exception) {

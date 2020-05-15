@@ -1,5 +1,6 @@
 package ch.instantpastime.memory.fragments
 
+import android.Manifest
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.drawable.BitmapDrawable
@@ -15,12 +16,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import ch.instantpastime.GoogleMapApi
-import ch.instantpastime.GooglePlaceApi
-import ch.instantpastime.LocationHelper
+import ch.instantpastime.*
 import ch.instantpastime.PlaceInfo
-import ch.instantpastime.PlacePhoto
 import ch.instantpastime.memory.*
+import ch.instantpastime.memory.R
 import kotlinx.android.synthetic.main.fragment_memory.*
 import kotlinx.android.synthetic.main.fragment_memory.view.*
 
@@ -66,7 +65,7 @@ class MemoryFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_memory, container, false)
 
-        //android.os.Debug.waitForDebugger()
+        android.os.Debug.waitForDebugger()
 
         if (locationHelper == null) {
             locationHelper = LocationHelper()
@@ -86,10 +85,7 @@ class MemoryFragment : Fragment() {
                 googlePlaceApi?.init(ctx)
             }
         }
-        val fragmentActivity = activity
-        if (fragmentActivity != null) {
-            locationHelper?.getLocation(fragmentActivity, { processLocation(it) })
-        }
+        locationHelper?.getLocation(this, { processLocation(it) })
 
         view.box1.setOnClickListener {
             maximizeBox(
@@ -310,11 +306,11 @@ class MemoryFragment : Fragment() {
     private fun processLocation(location: Location?) {
         val ctx = context
         if (location != null) {
-            Toast.makeText(
-                ctx,
-                "Your location is (${location.latitude}, ${location.longitude})",
-                Toast.LENGTH_SHORT
-            ).show()
+            // Toast.makeText(
+            //     ctx,
+            //     "Your location is (${location.latitude}, ${location.longitude})",
+            //     Toast.LENGTH_SHORT
+            // ).show()
             googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
         }
     }
@@ -328,20 +324,29 @@ class MemoryFragment : Fragment() {
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val context = context
+        if (context == null) {
+            return
+        }
         when (requestCode) {
             MY_PERMISSION_FINE_LOCATION ->
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    mGpsLocalistation?.locationRequest = LocationRequest()
-//                    mGpsLocalistation?.getPlaces()
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationHelper?.processPermissionStatus(
+                        PermissionStatus.Accepted,
+                        context, { loc -> processLocation(loc) })
+                } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                    locationHelper?.processPermissionStatus(
+                        PermissionStatus.RefusedOnce,
+                        context, { loc -> processLocation(loc) })
                 } else {
-                    Toast.makeText(
-                        context,
-                        "This app requires location permissions to be granted",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    activity?.finish()
+                    locationHelper?.processPermissionStatus(
+                        PermissionStatus.AlwaysRefused,
+                        context, { loc -> processLocation(loc) })
                 }
+            else -> {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            }
         }
     }
+
 }
