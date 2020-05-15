@@ -1,13 +1,11 @@
 package ch.instantpastime.memory.fragments
 
 import android.app.Dialog
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.location.Location
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +15,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import ch.instantpastime.GoogleMapApi
+import ch.instantpastime.GooglePlaceApi
+import ch.instantpastime.LocationHelper
+import ch.instantpastime.PlaceInfo
+import ch.instantpastime.PlacePhoto
 import ch.instantpastime.memory.*
-import ch.instantpastime.memory.R.id.box1
-import com.google.android.gms.location.LocationRequest
 import kotlinx.android.synthetic.main.fragment_memory.*
 import kotlinx.android.synthetic.main.fragment_memory.view.*
-import org.json.JSONObject
 
 
 /**
@@ -38,7 +38,6 @@ class MemoryFragment : Fragment() {
 
     companion object {
         var isMaximize: Boolean = false
-        lateinit var mGoogleAPI: GoogleAPI
     }
 
     //val imageListId = ArrayList<Int>()
@@ -56,7 +55,9 @@ class MemoryFragment : Fragment() {
     var handler = Handler()
     var matching: Boolean = false
 
-    var mGpsLocalistation: GPS_localistation? = null
+    private var locationHelper: LocationHelper? = null
+    private var googleMapApi: GoogleMapApi? = null
+    private var googlePlaceApi: GooglePlaceApi? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,10 +68,28 @@ class MemoryFragment : Fragment() {
 
         //android.os.Debug.waitForDebugger()
 
+        if (locationHelper == null) {
+            locationHelper = LocationHelper()
+        }
 
-        mGoogleAPI = GoogleAPI(this, num_images)
-        mGpsLocalistation = GPS_localistation(this)
-        mGpsLocalistation?.get_localitation()
+        val ctx = context
+        if (ctx != null) {
+            if (googleMapApi == null) {
+                googleMapApi = GoogleMapApi()
+                googleMapApi?.init(ctx)
+            }
+            if (googlePlaceApi == null) {
+                googlePlaceApi = GooglePlaceApi(
+                    NumImages = 32,
+                    imageRequestReady = { imageRequestedReady(it) }
+                )
+                googlePlaceApi?.init(ctx)
+            }
+        }
+        val fragmentActivity = activity
+        if (fragmentActivity != null) {
+            locationHelper?.getLocation(fragmentActivity, { processLocation(it) })
+        }
 
         view.box1.setOnClickListener {
             maximizeBox(
@@ -259,10 +278,12 @@ class MemoryFragment : Fragment() {
     }
 
 
-    fun imageRequestedReady(bitmap: Bitmap, placeDesc: String, placeLoc: JSONObject) {
+    fun imageRequestedReady(placePhoto: PlacePhoto) {
+        val bitmap = placePhoto.response.bitmap
+        val placeInfo = placePhoto.info
 
         if ((bitmap != null) and (imgindex < 32)) {
-            val reciv_img = bitmapClass(bitmap, placeDesc, placeLoc)
+            val reciv_img = bitmapClass(bitmap, placeInfo.placeDesc, placeInfo.placeLoc)
             myBitmaps.add(reciv_img)
             myBitmaps.add(reciv_img)
 
@@ -273,7 +294,7 @@ class MemoryFragment : Fragment() {
 
         welcomeText.setText("Loading images " + (imgindex * 100 / ch.instantpastime.memory.num_images).toString() + "%")
 
-        if (imgindex == 33) {
+        if (imgindex == 32) {
             welcomeText.setText("Ready!!. (Debugging mode -> Cards not shuffled)")
             myBitmaps.shuffle()
             var i = 0
@@ -286,6 +307,22 @@ class MemoryFragment : Fragment() {
 
     }
 
+    private fun processLocation(location: Location?) {
+        val ctx = context
+        if (location != null) {
+            Toast.makeText(
+                ctx,
+                "Your location is (${location.latitude}, ${location.longitude})",
+                Toast.LENGTH_SHORT
+            ).show()
+            googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
+        }
+    }
+
+    private fun processPlaces(places: ArrayList<PlaceInfo>) {
+        googlePlaceApi?.getPhotoAndDetail(places)
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -295,8 +332,8 @@ class MemoryFragment : Fragment() {
         when (requestCode) {
             MY_PERMISSION_FINE_LOCATION ->
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mGpsLocalistation?.locationRequest = LocationRequest()
-                    mGpsLocalistation?.getPlaces()
+//                    mGpsLocalistation?.locationRequest = LocationRequest()
+//                    mGpsLocalistation?.getPlaces()
                 } else {
                     Toast.makeText(
                         context,
