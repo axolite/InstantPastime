@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
@@ -167,7 +168,7 @@ class NBackFragment : Fragment() {
                 context?.let { ctx -> updateControls(newState, ctx) }
                 // Reset the color of the last active square.
                 val lastSquare = getSquare(lastIndex)
-                if (lastSquare != null) {
+                if (lastSquare is ImageView) {
                     context?.let { ctx ->
                         lastSquare.setBackgroundColor(
                             ContextCompat.getColor(
@@ -325,8 +326,8 @@ class NBackFragment : Fragment() {
         val (letterIndex, sameLetter) = next.symbol
 
         activity?.runOnUiThread {
-            val oldSquare = getSquare(lastIndex)
-            val newSquare = getSquare(index)
+            val oldSquare = getSquare(lastIndex) as ImageView?
+            val newSquare = getSquare(index) as ImageView?
             if (newSquare != null) {
                 lastIndex = index
             } else {
@@ -357,6 +358,9 @@ class NBackFragment : Fragment() {
                         R.color.colorIdleSquare
                     )
                 )
+                oldSquare?.setImageDrawable(ContextCompat.getDrawable(context,
+                    R.drawable.ic_letter_placeholder)
+                )
                 newSquare?.setBackgroundColor(
                     ContextCompat.getColor(
                         context,
@@ -371,6 +375,11 @@ class NBackFragment : Fragment() {
                     null -> {
                     }
                     else -> {
+                        val drawableId = getLetterDrawableId(c)
+                        val drawable = ContextCompat.getDrawable(context, drawableId)
+                        if (drawable != null) {
+                            newSquare?.setImageDrawable(drawable)
+                        }
                         Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT)
                             .show()
                     }
@@ -388,7 +397,10 @@ class NBackFragment : Fragment() {
         Log.d(javaClass.simpleName, "index is ${index}")
     }
 
-    fun getSquare(index: Int): ImageView? {
+    /**
+     * Gets the cell in the n-back grid that corresponds to the given index.
+     */
+    fun getSquare(index: Int): View? {
         return when (index) {
             0 -> view?.findViewById(R.id.case0)
             1 -> view?.findViewById(R.id.case1)
@@ -400,6 +412,24 @@ class NBackFragment : Fragment() {
             7 -> view?.findViewById(R.id.case7)
             8 -> view?.findViewById(R.id.case8)
             else -> null
+        }
+    }
+
+    /**
+     * Gets the ID of the vector image that corresponds to the given letter.
+     */
+    @DrawableRes
+    private fun getLetterDrawableId(letter: Char) : Int {
+        return when(letter) {
+            'c' -> R.drawable.ic_letter_c
+            'h' -> R.drawable.ic_letter_h
+            'k' -> R.drawable.ic_letter_k
+            'l' -> R.drawable.ic_letter_l
+            'q' -> R.drawable.ic_letter_q
+            'r' -> R.drawable.ic_letter_r
+            's' -> R.drawable.ic_letter_s
+            't' -> R.drawable.ic_letter_t
+            else -> 0
         }
     }
 

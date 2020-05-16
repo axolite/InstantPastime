@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorActiveSquare">@color/colorPrimaryDark</color>
+    <color name="colorActiveLetter">#FFFFFF</color>
     <color name="colorIdleSquare">#FFFFFF</color>
     <color name="colorNBackCorrect">#8BC34A</color>
     <color name="colorNBackWrong">#E91E63</color>
