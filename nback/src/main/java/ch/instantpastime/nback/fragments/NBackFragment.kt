@@ -1,6 +1,7 @@
 package ch.instantpastime.nback.fragments
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,14 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import ch.instantpastime.nback.R
-import ch.instantpastime.nback.core.NBackBoard
-import ch.instantpastime.nback.core.NBackCountDown
-import ch.instantpastime.nback.core.NBackGame
-import ch.instantpastime.nback.core.NBackSound
+import ch.instantpastime.nback.core.*
 
 /**
  * A simple [Fragment] subclass.
@@ -210,6 +210,9 @@ class NBackFragment : Fragment() {
                     context.getString(R.string.stop_game_short),
                     Toast.LENGTH_SHORT
                 ).show()
+                safeFindViewById<LinearLayout>(R.id.nback_trials_panel)?.let { panel ->
+                    panel.removeAllViews()
+                }
             }
             NBackState.Paused -> {
                 mPauseButton?.apply {
@@ -319,6 +322,53 @@ class NBackFragment : Fragment() {
         }
     }
 
+    private fun updateTrialsList(trial: NBackTrial) {
+
+        val ALPHA_NO_FOCUS = 0.5F
+        val ALPHA_FOCUS = 1.0F
+        val context = context ?: return
+        val drawableId = getGridMiniatureId(trial.location.index)
+        if (drawableId == 0) {
+            return
+        }
+        val drawable = ContextCompat.getDrawable(context, drawableId)?.apply {
+            setTintMode(PorterDuff.Mode.SRC_ATOP)
+            setTint(ContextCompat.getColor(context, R.color.colorActiveSquare))
+        }
+        val imgView = ImageView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(40, 40)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            setImageDrawable(drawable)
+        }
+        val game = game ?: return
+        val panel = safeFindViewById<LinearLayout>(R.id.nback_trials_panel) ?: return
+        val iterator = panel.children.iterator()
+        if (iterator.hasNext()) {
+            val first = iterator.next()
+            if (panel.childCount > game._level) {
+                if (iterator.hasNext()) {
+                    val second = iterator.next()
+                    second.alpha = ALPHA_FOCUS
+                    if (iterator.hasNext()) {
+                        var last = iterator.next()
+                        while (iterator.hasNext()) {
+                            last = iterator.next()
+                        }
+                        last.alpha = ALPHA_NO_FOCUS
+                    }
+                }
+                panel.removeView(first)
+                imgView.alpha = ALPHA_FOCUS
+            } else if (panel.childCount == game._level) {
+                imgView.alpha = ALPHA_FOCUS
+            }
+            else {
+                imgView.alpha = ALPHA_NO_FOCUS
+            }
+        }
+        panel.addView(imgView)
+    }
+
     fun nextIndex() {
         val game = this.game ?: return
         val next = game.getNextTrial()
@@ -384,6 +434,7 @@ class NBackFragment : Fragment() {
                             .show()
                     }
                 }
+                updateTrialsList(next)
             }
             //Update the actual values.
             mSameLocation = sameLocation
@@ -433,6 +484,26 @@ class NBackFragment : Fragment() {
         }
     }
 
+    /**
+     * Gets the ID of the N-back grid thumbnail
+     * that corresponds to the given index.
+     */
+    @DrawableRes
+    private fun getGridMiniatureId(index: Int): Int {
+        return when (index) {
+            0 -> R.drawable.ic_nback_case0
+            1 -> R.drawable.ic_nback_case1
+            2 -> R.drawable.ic_nback_case2
+            3 -> R.drawable.ic_nback_case3
+            4 -> R.drawable.ic_nback_case4
+            5 -> R.drawable.ic_nback_case5
+            6 -> R.drawable.ic_nback_case6
+            7 -> R.drawable.ic_nback_case7
+            8 -> R.drawable.ic_nback_case8
+            else -> 0
+        }
+    }
+
     private fun loadNBackSettings(): NBackSettings {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val level =
@@ -456,5 +527,9 @@ class NBackFragment : Fragment() {
 
     private fun updateScore(score: Int, maxPossibleScore: Int) {
         mScoreText?.text = getString(R.string.nback_score, score)
+    }
+
+    private fun <T:View> safeFindViewById(@IdRes id: Int): T? {
+        return view?.findViewById<View>(id) as? T
     }
 }
