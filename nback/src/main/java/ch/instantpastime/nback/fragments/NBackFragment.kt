@@ -81,17 +81,17 @@ class NBackFragment : Fragment() {
         game = NBackBoard(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
         timer?.totalMilliseconds = nbackSettings.time_per_trial
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
-        mRestartButton = view.findViewById<Button>(R.id.restart_button)
-        mLocationButton = view.findViewById<Button>(R.id.locationButton)
-        mLetterButton = view.findViewById<Button>(R.id.letterButton)
-        mLocationFeedbackZone = view.findViewById(R.id.nback_location_feedback)
-        mLetterFeedbackZone = view.findViewById(R.id.nback_letter_feedback)
-        mPauseButton = view.findViewById(R.id.pause_button)
-        mTimeBar = view.findViewById<ProgressBar>(R.id.nback_time_bar).apply {
-            max = nbackSettings.time_per_trial
-        }
-        mScoreText = view.findViewById(R.id.status_score_text)
-        mTrialCountText = view.findViewById(R.id.status_trial_count_text)
+        mRestartButton = view.safeFindViewById<Button>(R.id.restart_button)
+        mLocationButton = view.safeFindViewById<Button>(R.id.locationButton)
+        mLetterButton = view.safeFindViewById<Button>(R.id.letterButton)
+        mLocationFeedbackZone = view.safeFindViewById(R.id.nback_location_feedback)
+        mLetterFeedbackZone = view.safeFindViewById(R.id.nback_letter_feedback)
+        mPauseButton = view.safeFindViewById(R.id.pause_button)
+//        mTimeBar = view.safeFindViewById<ProgressBar>(R.id.nback_time_bar).apply {
+//            max = nbackSettings.time_per_trial
+//        }
+        mScoreText = view.safeFindViewById(R.id.status_score_text)
+        mTrialCountText = view.safeFindViewById(R.id.status_trial_count_text)
 
         context?.let {
             context?.let { nbackSound.init(it) }
@@ -559,7 +559,7 @@ class NBackFragment : Fragment() {
     }
 
     private fun applySettings(settings: NBackSettings, view: View) {
-        view.findViewById<TextView>(R.id.status_level_text)?.let {
+        view.safeFindViewById<TextView>(R.id.status_level_text)?.let {
             it.text = getString(R.string.nback_status_level, settings.level)
         }
     }
@@ -572,7 +572,11 @@ class NBackFragment : Fragment() {
         mScoreText?.text = getString(R.string.nback_score, score)
     }
 
-    private fun <T:View> safeFindViewById(@IdRes id: Int): T? {
-        return view?.findViewById<View>(id) as? T
+    fun <T:View> Fragment.safeFindViewById(@IdRes id: Int): T? {
+        return this.view?.safeFindViewById<View>(id) as? T
+    }
+
+    fun <T:View> View.safeFindViewById(@IdRes id: Int): T? {
+        return this.findViewById<View>(id) as? T
     }
 }
