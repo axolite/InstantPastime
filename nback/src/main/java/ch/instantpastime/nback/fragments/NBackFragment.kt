@@ -210,7 +210,7 @@ class NBackFragment : Fragment() {
                     context.getString(R.string.stop_game_short),
                     Toast.LENGTH_SHORT
                 ).show()
-                safeFindViewById<LinearLayout>(R.id.nback_trials_panel)?.let { panel ->
+                safeFindViewById<LinearLayout>(R.id.nback_past_locations_panel)?.let { panel ->
                     panel.removeAllViews()
                 }
             }
@@ -322,12 +322,10 @@ class NBackFragment : Fragment() {
         }
     }
 
-    private fun updateTrialsList(trial: NBackTrial) {
+    private fun updatePastLocations(trial: NBackTrial) {
 
-        val ALPHA_NO_FOCUS = 0.5F
-        val ALPHA_FOCUS = 1.0F
         val context = context ?: return
-        val drawableId = getGridMiniatureId(trial.location.index)
+        val drawableId = getMiniLocationId(trial.location.index)
         if (drawableId == 0) {
             return
         }
@@ -341,11 +339,37 @@ class NBackFragment : Fragment() {
             setImageDrawable(drawable)
         }
         val game = game ?: return
-        val panel = safeFindViewById<LinearLayout>(R.id.nback_trials_panel) ?: return
+        val panel = safeFindViewById<LinearLayout>(R.id.nback_past_locations_panel) ?: return
+        updatePastViewGroup(panel = panel, newView = imgView, maxCount = game._level)
+        panel.addView(imgView)
+    }
+
+    private fun updatePastLetters(trial: NBackTrial) {
+        val context = context ?: return
+        val drawableId = getMiniLetterId(trial.symbol.index)
+        if (drawableId == 0) {
+            return
+        }
+        val drawable = ContextCompat.getDrawable(context, drawableId)?.apply {
+        }
+        val imgView = ImageView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(40, 40)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            setImageDrawable(drawable)
+        }
+        val game = game ?: return
+        val panel = safeFindViewById<LinearLayout>(R.id.nback_past_letters_panel) ?: return
+        updatePastViewGroup(panel = panel, newView = imgView, maxCount = game._level)
+        panel.addView(imgView)
+    }
+
+    private fun updatePastViewGroup(panel: ViewGroup, newView: View, maxCount: Int) {
+        val ALPHA_NO_FOCUS = 0.5F
+        val ALPHA_FOCUS = 1.0F
         val iterator = panel.children.iterator()
         if (iterator.hasNext()) {
             val first = iterator.next()
-            if (panel.childCount > game._level) {
+            if (panel.childCount > maxCount) {
                 if (iterator.hasNext()) {
                     val second = iterator.next()
                     second.alpha = ALPHA_FOCUS
@@ -358,15 +382,14 @@ class NBackFragment : Fragment() {
                     }
                 }
                 panel.removeView(first)
-                imgView.alpha = ALPHA_FOCUS
-            } else if (panel.childCount == game._level) {
-                imgView.alpha = ALPHA_FOCUS
+                newView.alpha = ALPHA_FOCUS
+            } else if (panel.childCount == maxCount) {
+                newView.alpha = ALPHA_FOCUS
             }
             else {
-                imgView.alpha = ALPHA_NO_FOCUS
+                newView.alpha = ALPHA_NO_FOCUS
             }
         }
-        panel.addView(imgView)
     }
 
     fun nextIndex() {
@@ -434,7 +457,8 @@ class NBackFragment : Fragment() {
                             .show()
                     }
                 }
-                updateTrialsList(next)
+                updatePastLocations(next)
+                updatePastLetters(next)
             }
             //Update the actual values.
             mSameLocation = sameLocation
@@ -485,11 +509,11 @@ class NBackFragment : Fragment() {
     }
 
     /**
-     * Gets the ID of the N-back grid thumbnail
+     * Gets the ID of the N-back location thumbnail
      * that corresponds to the given index.
      */
     @DrawableRes
-    private fun getGridMiniatureId(index: Int): Int {
+    private fun getMiniLocationId(index: Int): Int {
         return when (index) {
             0 -> R.drawable.ic_nback_case0
             1 -> R.drawable.ic_nback_case1
@@ -500,6 +524,25 @@ class NBackFragment : Fragment() {
             6 -> R.drawable.ic_nback_case6
             7 -> R.drawable.ic_nback_case7
             8 -> R.drawable.ic_nback_case8
+            else -> 0
+        }
+    }
+
+    /**
+     * Gets the ID of the N-back letter thumbnail
+     * that corresponds to the given index.
+     */
+    @DrawableRes
+    private fun getMiniLetterId(index: Int): Int {
+        return when (index) {
+            0 -> R.drawable.ic_letter_c
+            1 -> R.drawable.ic_letter_h
+            2 -> R.drawable.ic_letter_k
+            3 -> R.drawable.ic_letter_l
+            4 -> R.drawable.ic_letter_q
+            5 -> R.drawable.ic_letter_r
+            6 -> R.drawable.ic_letter_s
+            7 -> R.drawable.ic_letter_t
             else -> 0
         }
     }
