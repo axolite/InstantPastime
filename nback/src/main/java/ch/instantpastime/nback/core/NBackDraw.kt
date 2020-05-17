@@ -40,7 +40,11 @@ class NBackDraw(val range: IntRange, val level: Int) {
         }
 
         lastIndices.addLast(newIndex)
-        return NBackElement(newIndex, newIndex == pastIndex)
+        return if (hasPastIndex) {
+            NBackElement(newIndex, isSame = newIndex == pastIndex)
+        } else {
+            NBackElement(newIndex, isSame = null)
+        }
     }
 
     private fun tryPop(): Pair<Boolean, Int> {

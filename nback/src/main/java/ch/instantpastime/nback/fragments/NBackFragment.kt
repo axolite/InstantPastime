@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
@@ -63,14 +64,16 @@ class NBackFragment : Fragment() {
     private var mAnswerSameLetter: Boolean = false
 
     /**
-     * True when it is actually the same location, otherwise false.
+     * True when it is actually the same location, false when different,
+     * null when there isn't enough elements to compare.
      */
-    private var mSameLocation: Boolean = false
+    private var mSameLocation: Boolean? = null
 
     /**
-     * True when it is actually the same letter, otherwise false.
+     * True when it is actually the same letter, false when different,
+     * null when there isn't enough elements to compare.
      */
-    private var mSameLetter: Boolean = false
+    private var mSameLetter: Boolean? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -300,25 +303,39 @@ class NBackFragment : Fragment() {
     }
 
     /**
+     * Gets a color that corresponds to the actual answer (reality),
+     * even when not enough trials have been drawn.
+     */
+    @ColorInt
+    private fun getEarlyFeedbackColor(correctness: NBackGame.Correctness?, context: Context): Int {
+        return if (correctness == null) {
+            ContextCompat.getColor(context, R.color.colorTransparent)
+        } else {
+            getActualFeedbackColor(correctness, context)
+        }
+    }
+
+    /**
      * Gets a color that corresponds to the actual answer (reality).
      */
-    private fun getActualFeedbackColor(answer: Boolean, actual: Boolean, context: Context): Int {
-        return if (actual) {
-            if (answer) {
+    @ColorInt
+    private fun getActualFeedbackColor(correctness: NBackGame.Correctness, context: Context): Int {
+        return when (correctness) {
+            NBackGame.Correctness.CORRECT_SAME ->
                 // The user said "same" and it is: answer is correct.
                 ContextCompat.getColor(context, R.color.colorNBackCorrect)
-            } else {
+
+            NBackGame.Correctness.WRONG_ACTUALLY_SAME ->
                 // The user didn't say "same" but it is: answer is wrong.
                 ContextCompat.getColor(context, R.color.colorNBackActual)
-            }
-        } else {
-            if (answer) {
+
+            NBackGame.Correctness.WRONG_ACTUALLY_DIFFERENT ->
                 // The user said "same" but it's not: answer is wrong.
                 ContextCompat.getColor(context, R.color.colorNBackWrong)
-            } else {
+
+            NBackGame.Correctness.CORRECT_DIFFERENT ->
                 // The user didn't say "same" and it's not: answer is correct.
                 ContextCompat.getColor(context, R.color.colorTransparent)
-            }
         }
     }
 
@@ -398,7 +415,11 @@ class NBackFragment : Fragment() {
         val (index, sameLocation) = next.location
         val (letterIndex, sameLetter) = next.symbol
 
+        // Check the user's current answer.
+        checkCurrentAnswer()
+
         activity?.runOnUiThread {
+            val context = context ?: return@runOnUiThread
             val oldSquare = getSquare(lastIndex) as ImageView?
             val newSquare = getSquare(index) as ImageView?
             if (newSquare != null) {
@@ -407,69 +428,75 @@ class NBackFragment : Fragment() {
                 lastIndex = INVALID_INDEX
             }
 
-            context?.let { context ->
-                // Give a feedback about the correct answer.
-                score.updateScore(answer = mAnswerSameLocation, actual = mSameLocation)
-                score.updateScore(answer = mAnswerSameLetter, actual = mSameLetter)
-                val locationFeedbackColor = getActualFeedbackColor(
-                    answer = mAnswerSameLocation,
-                    actual = mSameLocation,
-                    context = context
+            // Colorize the next location.
+            oldSquare?.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.colorIdleSquare
                 )
-                val letterFeedbackColor = getActualFeedbackColor(
-                    answer = mAnswerSameLetter,
-                    actual = mSameLetter,
-                    context = context
+            )
+            oldSquare?.setImageDrawable(ContextCompat.getDrawable(context,
+                R.drawable.ic_letter_placeholder)
+            )
+            newSquare?.setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    R.color.colorActiveSquare
                 )
-                mLocationFeedbackZone?.setBackgroundColor(locationFeedbackColor)
-                mLetterFeedbackZone?.setBackgroundColor(letterFeedbackColor)
-
-                // Colorize the next location.
-                oldSquare?.setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.colorIdleSquare
-                    )
-                )
-                oldSquare?.setImageDrawable(ContextCompat.getDrawable(context,
-                    R.drawable.ic_letter_placeholder)
-                )
-                newSquare?.setBackgroundColor(
-                    ContextCompat.getColor(
-                        context,
-                        R.color.colorActiveSquare
-                    )
-                )
-                // Play or show the next letter.
-                nbackSound.playArticle(context, letterIndex)
-                updateTrialCount(score.CorrectCount, score.TotalCount)
-                updateScore(score.CorrectCount, score.TotalCount)
-                when (val c = nbackSound.getLetter(letterIndex)) {
-                    null -> {
-                    }
-                    else -> {
-                        val drawableId = getLetterDrawableId(c)
-                        val drawable = ContextCompat.getDrawable(context, drawableId)
-                        if (drawable != null) {
-                            newSquare?.setImageDrawable(drawable)
-                        }
-                        Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+            )
+            // Play or show the next letter.
+            nbackSound.playArticle(context, letterIndex)
+            when (val c = nbackSound.getLetter(letterIndex)) {
+                null -> {
                 }
-                updatePastLocations(next)
-                updatePastLetters(next)
+                else -> {
+                    val drawableId = getLetterDrawableId(c)
+                    val drawable = ContextCompat.getDrawable(context, drawableId)
+                    if (drawable != null) {
+                        newSquare?.setImageDrawable(drawable)
+                    }
+                    Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT)
+                        .show()
+                }
             }
+            updatePastLocations(next)
+            updatePastLetters(next)
+
             //Update the actual values.
             mSameLocation = sameLocation
             mSameLetter = sameLetter
-            // Reset user's answers.
-            mAnswerSameLocation = false
-            mAnswerSameLetter = false
         }
 
         timer?.startTimer()
         Log.d(javaClass.simpleName, "index is ${index}")
+    }
+
+    private fun checkCurrentAnswer() {
+
+        val locationCorrectness = score.updateScore(answer = mAnswerSameLocation, actual = mSameLocation)
+        val letterCorrectness = score.updateScore(answer = mAnswerSameLetter, actual = mSameLetter)
+        activity?.runOnUiThread {
+            val context = context ?: return@runOnUiThread
+
+            // Give a feedback about the correct answer.
+            val locationFeedbackColor = getEarlyFeedbackColor(
+                correctness = locationCorrectness,
+                context = context
+            )
+            val letterFeedbackColor = getEarlyFeedbackColor(
+                correctness = letterCorrectness,
+                context = context
+            )
+            mLocationFeedbackZone?.setBackgroundColor(locationFeedbackColor)
+            mLetterFeedbackZone?.setBackgroundColor(letterFeedbackColor)
+
+            // Update score and counters.
+            updateTrialCount(score.CorrectCount, score.TotalCount)
+            updateScore(score.CorrectCount, score.TotalCount)
+            // Reset user's answers.
+            mAnswerSameLocation = false
+            mAnswerSameLetter = false
+        }
     }
 
     /**

@@ -35,7 +35,16 @@ class NBackGame {
     var WrongCount: Int = 0
     var TotalCount: Int = 0
 
-    fun updateScore(answer: Boolean, actual: Boolean): Correctness {
+    fun updateScore(answer: Boolean, actual: Boolean?): Correctness? {
+        return if (actual != null) {
+            updateScore(answer, actual)
+        } else {
+            TotalCount++
+            null
+        }
+    }
+
+    private fun updateScore(answer: Boolean, actual: Boolean): Correctness {
         val correctness = getCorrectness(answer = answer, actual = actual)
         when (correctness) {
             Correctness.CORRECT_DIFFERENT -> {
