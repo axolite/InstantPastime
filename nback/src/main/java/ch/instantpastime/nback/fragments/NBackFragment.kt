@@ -3,7 +3,6 @@ package ch.instantpastime.nback.fragments
 import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import ch.instantpastime.AsyncRun
 import ch.instantpastime.nback.R
 import ch.instantpastime.nback.core.*
 
@@ -409,17 +409,63 @@ class NBackFragment : Fragment() {
     }
 
     fun nextIndex() {
-        val game = this.game ?: return
-        val next = game.getNextTrial()
-        val (index, sameLocation) = next.location
-        val (letterIndex, sameLetter) = next.symbol
-
         // Check the user's current answer.
         val allCorrect = checkCurrentAnswer()
 
         if (allCorrect == true) {
-            Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
+            continueOnCorrect()
+        } else if (allCorrect == null) {
+            nextIndexContinuation()
+        } else {
+            continueOnIncorrect()
         }
+    }
+
+    private fun continueOnCorrect() {
+        // Clear the green color.
+        AsyncRun {
+            Thread.sleep(500)
+            activity?.runOnUiThread {
+                val context = context ?: return@runOnUiThread
+                val transparentColor = ContextCompat.getColor(context, R.color.colorTransparent)
+                mLocationFeedbackZone?.setBackgroundColor(transparentColor)
+                mLetterFeedbackZone?.setBackgroundColor(transparentColor)
+            }
+        }
+        // Continue without waiting the delay.
+        nextIndexContinuation()
+    }
+    
+    private fun continueOnIncorrect() {
+        activity?.runOnUiThread {
+            mLocationButton?.isEnabled = false
+            mLetterButton?.isEnabled = false
+        }
+        AsyncRun {
+            Thread.sleep(500)
+            // Clear correction of the previous trial.
+            activity?.runOnUiThread {
+                clearCorrection()
+            }
+            // Continue after the delay.
+            nextIndexContinuation()
+        }
+    }
+
+    private fun clearCorrection() {
+        val context = context ?: return
+        val transparentColor = ContextCompat.getColor(context, R.color.colorTransparent)
+        mLocationFeedbackZone?.setBackgroundColor(transparentColor)
+        mLetterFeedbackZone?.setBackgroundColor(transparentColor)
+        mLocationButton?.isEnabled = true
+        mLetterButton?.isEnabled = true
+    }
+
+    private fun nextIndexContinuation() {
+        val game = this.game ?: return
+        val next = game.getNextTrial()
+        val (index, sameLocation) = next.location
+        val (letterIndex, sameLetter) = next.symbol
 
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
@@ -471,7 +517,6 @@ class NBackFragment : Fragment() {
         }
 
         timer?.startTimer()
-        Log.d(javaClass.simpleName, "index is ${index}")
     }
 
     private fun checkCurrentAnswer(): Boolean? {
