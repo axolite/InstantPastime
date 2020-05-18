@@ -40,7 +40,7 @@ class NBackFragment : Fragment() {
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
     private var timer: NBackCountDown? = null
     val nbackSound: NBackSound = NBackSound()
-    private var lastIndex: Int = INVALID_INDEX
+    private var lastDraw: NBackTrial? = null
 
     private var mLocationFeedbackZone: ImageView? = null
     private var mLetterFeedbackZone: ImageView? = null
@@ -170,7 +170,7 @@ class NBackFragment : Fragment() {
                 // Update the controls.
                 context?.let { ctx -> updateControls(newState, ctx) }
                 // Reset the color of the last active square.
-                val lastSquare = getSquare(lastIndex)
+                val lastSquare = getSquare(lastDraw)
                 if (lastSquare is ImageView) {
                     context?.let { ctx ->
                         lastSquare.setBackgroundColor(
@@ -435,7 +435,7 @@ class NBackFragment : Fragment() {
         // Continue without waiting the delay.
         nextIndexContinuation()
     }
-    
+
     private fun continueOnIncorrect() {
         activity?.runOnUiThread {
             mLocationButton?.isEnabled = false
@@ -464,28 +464,22 @@ class NBackFragment : Fragment() {
     private fun nextIndexContinuation() {
         val game = this.game ?: return
         val next = game.getNextTrial()
-        val (index, sameLocation) = next.location
-        val (letterIndex, sameLetter) = next.symbol
 
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
-            val oldSquare = getSquare(lastIndex) as ImageView?
-            val newSquare = getSquare(index) as ImageView?
-            if (newSquare != null) {
-                lastIndex = index
-            } else {
-                lastIndex = INVALID_INDEX
-            }
+            val oldSquare = getSquare(lastDraw) as ImageView?
+            val newSquare = getSquare(next) as ImageView?
+            lastDraw = next
 
             // Colorize the next location.
             oldSquare?.setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.colorIdleSquare
-                )
+                ContextCompat.getColor(context, R.color.colorIdleSquare)
             )
-            oldSquare?.setImageDrawable(ContextCompat.getDrawable(context,
-                R.drawable.ic_letter_placeholder)
+            oldSquare?.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context,
+                    R.drawable.ic_letter_placeholder
+                )
             )
             newSquare?.setBackgroundColor(
                 ContextCompat.getColor(
@@ -494,8 +488,8 @@ class NBackFragment : Fragment() {
                 )
             )
             // Play or show the next letter.
-            nbackSound.playArticle(context, letterIndex)
-            when (val c = nbackSound.getLetter(letterIndex)) {
+            nbackSound.playArticle(context, next.symbol.index)
+            when (val c = nbackSound.getLetter(next.symbol.index)) {
                 null -> {
                 }
                 else -> {
@@ -512,8 +506,8 @@ class NBackFragment : Fragment() {
             updatePastLetters(next)
 
             //Update the actual values.
-            mSameLocation = sameLocation
-            mSameLetter = sameLetter
+            mSameLocation = next.location.isSame
+            mSameLetter = next.symbol.isSame
         }
 
         timer?.startTimer()
@@ -521,7 +515,8 @@ class NBackFragment : Fragment() {
 
     private fun checkCurrentAnswer(): Boolean? {
 
-        val locationCorrectness = score.updateScore(answer = mAnswerSameLocation, actual = mSameLocation)
+        val locationCorrectness = score
+            .updateScore(answer = mAnswerSameLocation, actual = mSameLocation)
         val letterCorrectness = score.updateScore(answer = mAnswerSameLetter, actual = mSameLetter)
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
@@ -553,6 +548,14 @@ class NBackFragment : Fragment() {
                 it == NBackGame.Correctness.WRONG_ACTUALLY_DIFFERENT ||
                 it == NBackGame.Correctness.WRONG_ACTUALLY_SAME } -> false
             else -> true
+        }
+    }
+
+    fun getSquare(trial: NBackTrial?): View? {
+        return if (trial != null) {
+            getSquare(trial.location.index)
+        } else {
+            null
         }
     }
 
