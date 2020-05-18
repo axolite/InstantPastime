@@ -402,8 +402,7 @@ class NBackFragment : Fragment() {
                 newView.alpha = ALPHA_FOCUS
             } else if (panel.childCount == maxCount) {
                 newView.alpha = ALPHA_FOCUS
-            }
-            else {
+            } else {
                 newView.alpha = ALPHA_NO_FOCUS
             }
         }
@@ -416,7 +415,11 @@ class NBackFragment : Fragment() {
         val (letterIndex, sameLetter) = next.symbol
 
         // Check the user's current answer.
-        checkCurrentAnswer()
+        val allCorrect = checkCurrentAnswer()
+
+        if (allCorrect == true) {
+            Toast.makeText(context, "Correct", Toast.LENGTH_SHORT).show()
+        }
 
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
@@ -471,7 +474,7 @@ class NBackFragment : Fragment() {
         Log.d(javaClass.simpleName, "index is ${index}")
     }
 
-    private fun checkCurrentAnswer() {
+    private fun checkCurrentAnswer(): Boolean? {
 
         val locationCorrectness = score.updateScore(answer = mAnswerSameLocation, actual = mSameLocation)
         val letterCorrectness = score.updateScore(answer = mAnswerSameLetter, actual = mSameLetter)
@@ -497,6 +500,15 @@ class NBackFragment : Fragment() {
             mAnswerSameLocation = false
             mAnswerSameLetter = false
         }
+
+        val corrList = listOf(locationCorrectness, letterCorrectness)
+        return when {
+            corrList.any { it == null } -> null
+            corrList.any {
+                it == NBackGame.Correctness.WRONG_ACTUALLY_DIFFERENT ||
+                it == NBackGame.Correctness.WRONG_ACTUALLY_SAME } -> false
+            else -> true
+        }
     }
 
     /**
@@ -521,8 +533,8 @@ class NBackFragment : Fragment() {
      * Gets the ID of the vector image that corresponds to the given letter.
      */
     @DrawableRes
-    private fun getLetterDrawableId(letter: Char) : Int {
-        return when(letter) {
+    private fun getLetterDrawableId(letter: Char): Int {
+        return when (letter) {
             'c' -> R.drawable.ic_letter_c
             'h' -> R.drawable.ic_letter_h
             'k' -> R.drawable.ic_letter_k
@@ -599,11 +611,11 @@ class NBackFragment : Fragment() {
         mScoreText?.text = getString(R.string.nback_score, score)
     }
 
-    fun <T:View> Fragment.safeFindViewById(@IdRes id: Int): T? {
+    fun <T : View> Fragment.safeFindViewById(@IdRes id: Int): T? {
         return this.view?.safeFindViewById<View>(id) as? T
     }
 
-    fun <T:View> View.safeFindViewById(@IdRes id: Int): T? {
+    fun <T : View> View.safeFindViewById(@IdRes id: Int): T? {
         return this.findViewById<View>(id) as? T
     }
 }
