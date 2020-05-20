@@ -52,6 +52,8 @@ class NBackFragment : Fragment() {
     private var mTimeBar: ProgressBar? = null
     private var mScoreText: TextView? = null
     private var mTrialCountText: TextView? = null
+    private var mPastLocationsPanel: LinearLayout? = null
+    private var mPastLettersPanel: LinearLayout? = null
 
     /**
      * True when the user says it is the same location, otherwise false.
@@ -90,6 +92,8 @@ class NBackFragment : Fragment() {
         mLocationFeedbackZone = view.safeFindViewById(R.id.nback_location_feedback)
         mLetterFeedbackZone = view.safeFindViewById(R.id.nback_letter_feedback)
         mPauseButton = view.safeFindViewById(R.id.pause_button)
+        mPastLocationsPanel = view.safeFindViewById(R.id.nback_past_locations_panel)
+        mPastLettersPanel = view.safeFindViewById(R.id.nback_past_letters_panel)
 //        mTimeBar = view.safeFindViewById<ProgressBar>(R.id.nback_time_bar).apply {
 //            max = nbackSettings.time_per_trial
 //        }
@@ -213,8 +217,11 @@ class NBackFragment : Fragment() {
                     context.getString(R.string.stop_game_short),
                     Toast.LENGTH_SHORT
                 ).show()
-                safeFindViewById<LinearLayout>(R.id.nback_past_locations_panel)?.let { panel ->
-                    panel.removeAllViews()
+                mPastLocationsPanel?.apply {
+                    removeAllViews()
+                }
+                mPastLettersPanel?.apply {
+                    removeAllViews()
                 }
             }
             NBackState.Paused -> {
@@ -356,9 +363,10 @@ class NBackFragment : Fragment() {
             setImageDrawable(drawable)
         }
         val game = game ?: return
-        val panel = safeFindViewById<LinearLayout>(R.id.nback_past_locations_panel) ?: return
-        updatePastViewGroup(panel = panel, newView = imgView, maxCount = game._level)
-        panel.addView(imgView)
+        mPastLocationsPanel?.let { panel ->
+            updatePastViewGroup(panel = panel, newView = imgView, maxCount = game._level)
+            panel.addView(imgView)
+        }
     }
 
     private fun updatePastLetters(trial: NBackTrial) {
@@ -375,9 +383,10 @@ class NBackFragment : Fragment() {
             setImageDrawable(drawable)
         }
         val game = game ?: return
-        val panel = safeFindViewById<LinearLayout>(R.id.nback_past_letters_panel) ?: return
-        updatePastViewGroup(panel = panel, newView = imgView, maxCount = game._level)
-        panel.addView(imgView)
+        mPastLettersPanel?.let { panel ->
+            updatePastViewGroup(panel = panel, newView = imgView, maxCount = game._level)
+            panel.addView(imgView)
+        }
     }
 
     private fun updatePastViewGroup(panel: ViewGroup, newView: View, maxCount: Int) {
