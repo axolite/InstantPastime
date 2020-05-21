@@ -3,6 +3,14 @@ package ch.instantpastime.nback.core
 class NBackGame {
 
     companion object {
+        fun getCorrectness(answer: Boolean, actual: Boolean?): Correctness? {
+            return if (actual == null) {
+                null
+            } else {
+                getCorrectness(answer = answer, actual = actual)
+            }
+        }
+
         fun getCorrectness(answer: Boolean, actual: Boolean): Correctness {
             return if (actual) {
                 if (answer) {
@@ -31,42 +39,67 @@ class NBackGame {
         WRONG_ACTUALLY_DIFFERENT,
     }
 
-    var CorrectCount: Int = 0
-    var WrongCount: Int = 0
-    var TotalCount: Int = 0
+    var scoreRecord: NBackScoreRecord = NBackScoreRecord(Total = 0, Correct = 0, Wrong = 0)
+        private set
 
-    fun updateScore(answer: Boolean, actual: Boolean?): Correctness? {
-        return if (actual != null) {
-            updateScore(answer, actual)
+    val CorrectCount: Int
+        get() = ((scoreRecord.Correct / 2.0) + 0.5).toInt()
+
+    val WrongCount: Int
+        get() = ((scoreRecord.Wrong / 2.0) + 0.5).toInt()
+
+    val TotalCount: Int
+        get() = ((scoreRecord.Total / 2.0) + 0.5).toInt()
+
+    val percentCorrect: Int
+        get() = scoreRecord.run {
+            (100 * Correct) / Total
+        }
+
+    fun updateScore(correctness: Correctness?): NBackScoreRecord {
+        return if (correctness != null) {
+            calculateScore(scoreRecord, correctness).also {
+                scoreRecord = it
+            }
         } else {
-            TotalCount++
-            null
+            // Increment the total of the current score and return it.
+            scoreRecord.run {
+                copy(Total = Total + 1)
+            }.also {
+                scoreRecord = it
+            }
         }
     }
 
-    private fun updateScore(answer: Boolean, actual: Boolean): Correctness {
-        val correctness = getCorrectness(answer = answer, actual = actual)
-        when (correctness) {
+    private fun calculateScore(
+        oldScore: NBackScoreRecord,
+        correctness: Correctness
+    ): NBackScoreRecord {
+        return when (correctness) {
             Correctness.CORRECT_DIFFERENT -> {
-                CorrectCount++
+                oldScore.run {
+                    copy(Total = Total + 1, Correct = Correct + 1)
+                }
             }
             Correctness.CORRECT_SAME -> {
-                CorrectCount++
+                oldScore.run {
+                    copy(Total = Total + 1, Correct = Correct + 1)
+                }
             }
             Correctness.WRONG_ACTUALLY_DIFFERENT -> {
-                WrongCount++
+                oldScore.run {
+                    copy(Total = Total + 1, Wrong = Wrong + 1)
+                }
             }
             Correctness.WRONG_ACTUALLY_SAME -> {
-                WrongCount++
+                oldScore.run {
+                    copy(Total = Total + 1, Wrong = Wrong + 1)
+                }
             }
         }
-        TotalCount++
-        return correctness
     }
 
     fun reset() {
-        CorrectCount = 0
-        WrongCount = 0
-        TotalCount = 0
+        scoreRecord = NBackScoreRecord(Total = 0, Correct = 0, Wrong = 0)
     }
 }
