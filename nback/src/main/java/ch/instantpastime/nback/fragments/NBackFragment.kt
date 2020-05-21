@@ -34,7 +34,6 @@ class NBackFragment : Fragment() {
     }
 
     private var state: NBackState = NBackState.Idle
-    private var game: NBackRun? = null
     private var board: NBackBoard? = null
 
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
@@ -61,7 +60,6 @@ class NBackFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val nbackSettings = loadNBackSettings()
-        game = NBackRun(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
         board = NBackBoard(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
         timer?.totalMilliseconds = nbackSettings.time_per_trial
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
@@ -347,9 +345,9 @@ class NBackFragment : Fragment() {
             scaleType = ImageView.ScaleType.FIT_CENTER
             setImageDrawable(drawable)
         }
-        val game = game ?: return
+        val board = board ?: return
         mPastLocationsPanel?.let { panel ->
-            updatePastViewGroup(panel = panel, newView = imgView, maxCount = game._level)
+            updatePastViewGroup(panel = panel, newView = imgView, maxCount = board.Level)
             panel.addView(imgView)
         }
     }
@@ -367,9 +365,9 @@ class NBackFragment : Fragment() {
             scaleType = ImageView.ScaleType.FIT_CENTER
             setImageDrawable(drawable)
         }
-        val game = game ?: return
+        val board = board ?: return
         mPastLettersPanel?.let { panel ->
-            updatePastViewGroup(panel = panel, newView = imgView, maxCount = game._level)
+            updatePastViewGroup(panel = panel, newView = imgView, maxCount = board.Level)
             panel.addView(imgView)
         }
     }
@@ -456,12 +454,11 @@ class NBackFragment : Fragment() {
     }
 
     private fun nextIndexContinuation() {
-        val game = this.game ?: return
         val board = board ?: return
         if (board.nbTrials == board.TotalCount) {
             // Change state here.
         }
-        val next = game.getNextTrial()
+        val next = board.getNextTrial()
 
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread

@@ -8,7 +8,6 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
 
     private var gameRun: NBackRun = NBackRun(nbLetters = nbLetters, nBackLevel = nBackLevel)
     private val score: NBackScore = NBackScore()
-    private var timer: NBackCountDown? = null
     private var lastDraw: NBackTrial? = null
     /**
      * True when the user says it is the same location, otherwise false.
@@ -40,6 +39,9 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
     val CorrectCount: Int
         get() = score.CorrectCount
 
+    val Level: Int
+        get() = gameRun._level
+
     fun toggleLocationAnswer(): Boolean {
         return when (mSameLocation) {
             true -> false
@@ -64,6 +66,10 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
         mSameLetter = null
         mAnswerSameLocation = false
         mAnswerSameLetter = false
+    }
+
+    fun getNextTrial(): NBackTrial {
+        return gameRun.getNextTrial()
     }
 
     fun checkCurrentAnswer(): Pair<NBackScore.Correctness?, NBackScore.Correctness?> {
