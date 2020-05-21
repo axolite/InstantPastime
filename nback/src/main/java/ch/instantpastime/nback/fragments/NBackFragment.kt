@@ -156,10 +156,7 @@ class NBackFragment : Fragment() {
                     context?.let { ctx -> updateControls(newState, ctx) }
                     timer?.stopTimer()
                     score.reset()
-                    board?.mSameLocation = null
-                    board?.mSameLetter = null
-                    board?.mAnswerSameLocation = false
-                    board?.mAnswerSameLetter = false
+                    board?.reset()
                 }
                 NBackState.Running -> {
                     // Update the controls.
@@ -271,19 +268,17 @@ class NBackFragment : Fragment() {
     }
 
     private fun locationButtonClicked() {
-        val board = board ?: return
-        board.mAnswerSameLocation = !board.mAnswerSameLocation
+        val answer = board?.toggleLocationAnswer()
         context?.let {
-            val color = getAnswerFeedbackColor(board.mAnswerSameLocation, it)
+            val color = getAnswerFeedbackColor(answer, it)
             mLocationFeedbackZone?.setBackgroundColor(color)
         }
     }
 
     private fun letterButtonClicked() {
-        val board = board ?: return
-        board.mAnswerSameLetter = !board.mAnswerSameLetter
+        val answer = board?.toggleLetterAnswer()
         context?.let {
-            val color = getAnswerFeedbackColor(board.mAnswerSameLetter, it)
+            val color = getAnswerFeedbackColor(answer, it)
             mLetterFeedbackZone?.setBackgroundColor(color)
         }
     }
@@ -291,8 +286,8 @@ class NBackFragment : Fragment() {
     /**
      * Gets a color that corresponds to the user's answer.
      */
-    private fun getAnswerFeedbackColor(answer: Boolean, context: Context): Int {
-        return if (answer) {
+    private fun getAnswerFeedbackColor(answer: Boolean?, context: Context): Int {
+        return if (answer == true) {
             // User thinks it is the same (location, letter, etc.)
             ContextCompat.getColor(context, R.color.colorNBackAnswer)
         } else {
@@ -521,14 +516,7 @@ class NBackFragment : Fragment() {
     private fun checkCurrentAnswer(): Boolean? {
 
         val board = board ?: return null
-        val locationCorrectness =
-            NBackScore.getCorrectness(
-                answer = board.mAnswerSameLocation,
-                actual = board.mSameLocation)
-        val letterCorrectness =
-            NBackScore.getCorrectness(
-                answer = board.mAnswerSameLetter,
-                actual = board.mSameLetter)
+        val (locationCorrectness, letterCorrectness) = board.checkCurrentAnswer()
         score.updateScore(locationCorrectness)
         score.updateScore(letterCorrectness)
 
