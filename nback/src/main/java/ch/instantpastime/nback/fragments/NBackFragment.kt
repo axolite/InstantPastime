@@ -27,7 +27,6 @@ class NBackFragment : Fragment() {
 
     companion object {
         const val INVALID_INDEX: Int = -1
-        const val DEFAULT_NB_TRIALS: Int = 20
     }
 
     private enum class Transition {
@@ -37,6 +36,7 @@ class NBackFragment : Fragment() {
     private var state: NBackState = NBackState.Idle
     private var game: NBackRun? = null
     private val score: NBackScore = NBackScore()
+    private var board: NBackBoard? = null
 
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
     private var timer: NBackCountDown? = null
@@ -56,30 +56,6 @@ class NBackFragment : Fragment() {
     private var mPastLocationsPanel: LinearLayout? = null
     private var mPastLettersPanel: LinearLayout? = null
 
-    /**
-     * True when the user says it is the same location, otherwise false.
-     */
-    private var mAnswerSameLocation: Boolean = false
-
-    /**
-     * True when the user says it is the same letter, otherwise false.
-     */
-    private var mAnswerSameLetter: Boolean = false
-
-    /**
-     * True when it is actually the same location, false when different,
-     * null when there isn't enough elements to compare.
-     */
-    private var mSameLocation: Boolean? = null
-
-    /**
-     * True when it is actually the same letter, false when different,
-     * null when there isn't enough elements to compare.
-     */
-    private var mSameLetter: Boolean? = null
-    var nbTrials: Int = DEFAULT_NB_TRIALS
-        private set
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,6 +63,7 @@ class NBackFragment : Fragment() {
     ): View? {
         val nbackSettings = loadNBackSettings()
         game = NBackRun(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
+        board = NBackBoard(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
         timer?.totalMilliseconds = nbackSettings.time_per_trial
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
         mRestartButton = view.safeFindViewById<Button>(R.id.restart_button)
@@ -179,10 +156,10 @@ class NBackFragment : Fragment() {
                     context?.let { ctx -> updateControls(newState, ctx) }
                     timer?.stopTimer()
                     score.reset()
-                    mSameLocation = null
-                    mSameLetter = null
-                    mAnswerSameLocation = false
-                    mAnswerSameLetter = false
+                    board?.mSameLocation = null
+                    board?.mSameLetter = null
+                    board?.mAnswerSameLocation = false
+                    board?.mAnswerSameLetter = false
                 }
                 NBackState.Running -> {
                     // Update the controls.
@@ -294,17 +271,19 @@ class NBackFragment : Fragment() {
     }
 
     private fun locationButtonClicked() {
-        mAnswerSameLocation = !mAnswerSameLocation
+        val board = board ?: return
+        board.mAnswerSameLocation = !board.mAnswerSameLocation
         context?.let {
-            val color = getAnswerFeedbackColor(mAnswerSameLocation, it)
+            val color = getAnswerFeedbackColor(board.mAnswerSameLocation, it)
             mLocationFeedbackZone?.setBackgroundColor(color)
         }
     }
 
     private fun letterButtonClicked() {
-        mAnswerSameLetter = !mAnswerSameLetter
+        val board = board ?: return
+        board.mAnswerSameLetter = !board.mAnswerSameLetter
         context?.let {
-            val color = getAnswerFeedbackColor(mAnswerSameLetter, it)
+            val color = getAnswerFeedbackColor(board.mAnswerSameLetter, it)
             mLetterFeedbackZone?.setBackgroundColor(color)
         }
     }
@@ -485,7 +464,8 @@ class NBackFragment : Fragment() {
 
     private fun nextIndexContinuation() {
         val game = this.game ?: return
-        if (nbTrials == score.TotalCount) {
+        val board = board ?: return
+        if (board.nbTrials == score.TotalCount) {
             // Change state here.
         }
         val next = game.getNextTrial()
@@ -531,8 +511,8 @@ class NBackFragment : Fragment() {
             updatePastLetters(next)
 
             //Update the actual values.
-            mSameLocation = next.location.isSame
-            mSameLetter = next.symbol.isSame
+            board.mSameLocation = next.location.isSame
+            board.mSameLetter = next.symbol.isSame
         }
 
         timer?.startTimer()
@@ -540,10 +520,15 @@ class NBackFragment : Fragment() {
 
     private fun checkCurrentAnswer(): Boolean? {
 
+        val board = board ?: return null
         val locationCorrectness =
-            NBackScore.getCorrectness(answer = mAnswerSameLocation, actual = mSameLocation)
+            NBackScore.getCorrectness(
+                answer = board.mAnswerSameLocation,
+                actual = board.mSameLocation)
         val letterCorrectness =
-            NBackScore.getCorrectness(answer = mAnswerSameLetter, actual = mSameLetter)
+            NBackScore.getCorrectness(
+                answer = board.mAnswerSameLetter,
+                actual = board.mSameLetter)
         score.updateScore(locationCorrectness)
         score.updateScore(letterCorrectness)
 
@@ -566,8 +551,8 @@ class NBackFragment : Fragment() {
             updateTrialCount(score.CorrectCount, score.TotalCount)
             updateScore(score.CorrectCount, score.TotalCount)
             // Reset user's answers.
-            mAnswerSameLocation = false
-            mAnswerSameLetter = false
+            board.mAnswerSameLocation = false
+            board.mAnswerSameLetter = false
         }
 
         val corrList = listOf(locationCorrectness, letterCorrectness)
