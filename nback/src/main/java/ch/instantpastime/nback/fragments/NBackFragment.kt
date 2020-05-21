@@ -187,6 +187,10 @@ class NBackFragment : Fragment() {
                 }
                 timer?.stopTimer()
                 score.reset()
+                mSameLocation = null
+                mSameLetter = null
+                mAnswerSameLocation = false
+                mAnswerSameLetter = false
             }
             NBackState.Running -> {
                 // Update the controls.
@@ -524,9 +528,11 @@ class NBackFragment : Fragment() {
 
     private fun checkCurrentAnswer(): Boolean? {
 
-        val locationCorrectness = score
-            .updateScore(answer = mAnswerSameLocation, actual = mSameLocation)
-        val letterCorrectness = score.updateScore(answer = mAnswerSameLetter, actual = mSameLetter)
+        val locationCorrectness = NBackGame.getCorrectness(answer = mAnswerSameLocation, actual = mSameLocation)
+        val letterCorrectness = NBackGame.getCorrectness(answer = mAnswerSameLetter, actual = mSameLetter)
+        score.updateScore(locationCorrectness)
+        score.updateScore(letterCorrectness)
+
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
 
