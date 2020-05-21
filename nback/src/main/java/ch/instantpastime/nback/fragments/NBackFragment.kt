@@ -513,6 +513,17 @@ class NBackFragment : Fragment() {
         val board = board ?: return null
         val (locationCorrectness, letterCorrectness) = board.checkCurrentAnswer()
 
+        updateWithAnswer(locationCorrectness, letterCorrectness)
+
+        return NBackScore.allCorrect(listOf(locationCorrectness, letterCorrectness))
+    }
+
+    private fun updateWithAnswer(
+        locationCorrectness: NBackScore.Correctness?,
+        letterCorrectness: NBackScore.Correctness?
+    ) {
+        val board = board ?: return
+
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
 
@@ -531,18 +542,6 @@ class NBackFragment : Fragment() {
             // Update score and counters.
             updateTrialCount(board.CorrectCount, board.TotalCount)
             updateScore(board.CorrectCount, board.TotalCount)
-            // Reset user's answers.
-            board.mAnswerSameLocation = false
-            board.mAnswerSameLetter = false
-        }
-
-        val corrList = listOf(locationCorrectness, letterCorrectness)
-        return when {
-            corrList.any { it == null } -> null
-            corrList.any {
-                it == NBackScore.Correctness.WRONG_ACTUALLY_DIFFERENT ||
-                it == NBackScore.Correctness.WRONG_ACTUALLY_SAME } -> false
-            else -> true
         }
     }
 

@@ -30,6 +30,34 @@ class NBackScore {
                 }
             }
         }
+
+        fun isCorrect(correctness: Correctness?): Boolean? {
+            return if (correctness == null) {
+                null
+            } else {
+                isCorrect(correctness)
+            }
+        }
+
+        fun isCorrect(correctness: Correctness): Boolean {
+            return when (correctness) {
+                Correctness.CORRECT_DIFFERENT -> true
+                Correctness.CORRECT_SAME -> true
+                Correctness.WRONG_ACTUALLY_DIFFERENT -> false
+                Correctness.WRONG_ACTUALLY_SAME -> false
+            }
+        }
+
+        fun allCorrect(correctnessList: Iterable<Correctness?>): Boolean? {
+            for (correctness in correctnessList) {
+                if (correctness == null) {
+                    return null
+                } else if (!NBackScore.isCorrect(correctness)) {
+                    return false
+                }
+            }
+            return true
+        }
     }
 
     enum class Correctness {

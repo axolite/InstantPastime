@@ -73,14 +73,28 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
     }
 
     fun checkCurrentAnswer(): Pair<NBackScore.Correctness?, NBackScore.Correctness?> {
+        val correctnesses = checkAnswer(
+            locationAnswer = mAnswerSameLetter,
+            letterAnswer = mAnswerSameLetter
+        )
+        // Reset user's answers.
+        mAnswerSameLocation = false
+        mAnswerSameLetter = false
+        return correctnesses
+    }
+
+    private fun checkAnswer(locationAnswer: Boolean, letterAnswer: Boolean)
+            : Pair<NBackScore.Correctness?, NBackScore.Correctness?> {
         val locationCorrectness =
             NBackScore.getCorrectness(
-                answer = mAnswerSameLocation,
-                actual = mSameLocation)
+                answer = locationAnswer,
+                actual = mSameLocation
+            )
         val letterCorrectness =
             NBackScore.getCorrectness(
-                answer = mAnswerSameLetter,
-                actual = mSameLetter)
+                answer = letterAnswer,
+                actual = mSameLetter
+            )
         score.updateScore(locationCorrectness)
         score.updateScore(letterCorrectness)
         return Pair(locationCorrectness, letterCorrectness)
