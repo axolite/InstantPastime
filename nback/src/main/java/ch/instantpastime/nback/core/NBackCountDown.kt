@@ -36,6 +36,11 @@ class NBackCountDown(totalMilliseconds: Int, val onTick: () -> Unit, val onFinis
         this.totalMilliseconds = totalMilliseconds
     }
 
+    val isRunning: Boolean
+        get() {
+            return _timer != null
+        }
+
     fun startTimer() {
         // Get the existing timer or a new one.
         val timer = _timer.let {
@@ -86,6 +91,5 @@ class NBackCountDown(totalMilliseconds: Int, val onTick: () -> Unit, val onFinis
             _timer = null
             timer.cancel()
         }
-        _timer = buildTimer(totalMillisec = totalMilliseconds, stepMillisec = stepMillisec)
     }
 }
