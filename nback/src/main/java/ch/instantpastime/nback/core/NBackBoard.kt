@@ -34,6 +34,12 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
     var nbTrials: Int = DEFAULT_NB_TRIALS
         private set
 
+    val TotalCount: Int
+        get() = score.TotalCount
+
+    val CorrectCount: Int
+        get() = score.CorrectCount
+
     fun toggleLocationAnswer(): Boolean {
         return when (mSameLocation) {
             true -> false
@@ -53,6 +59,7 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
     }
 
     fun reset() {
+        score.reset()
         mSameLocation = null
         mSameLetter = null
         mAnswerSameLocation = false
@@ -68,6 +75,8 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
             NBackScore.getCorrectness(
                 answer = mAnswerSameLetter,
                 actual = mSameLetter)
+        score.updateScore(locationCorrectness)
+        score.updateScore(letterCorrectness)
         return Pair(locationCorrectness, letterCorrectness)
     }
 }

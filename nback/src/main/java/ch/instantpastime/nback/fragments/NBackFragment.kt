@@ -35,7 +35,6 @@ class NBackFragment : Fragment() {
 
     private var state: NBackState = NBackState.Idle
     private var game: NBackRun? = null
-    private val score: NBackScore = NBackScore()
     private var board: NBackBoard? = null
 
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
@@ -155,7 +154,6 @@ class NBackFragment : Fragment() {
                     // Update the controls.
                     context?.let { ctx -> updateControls(newState, ctx) }
                     timer?.stopTimer()
-                    score.reset()
                     board?.reset()
                 }
                 NBackState.Running -> {
@@ -460,7 +458,7 @@ class NBackFragment : Fragment() {
     private fun nextIndexContinuation() {
         val game = this.game ?: return
         val board = board ?: return
-        if (board.nbTrials == score.TotalCount) {
+        if (board.nbTrials == board.TotalCount) {
             // Change state here.
         }
         val next = game.getNextTrial()
@@ -517,8 +515,6 @@ class NBackFragment : Fragment() {
 
         val board = board ?: return null
         val (locationCorrectness, letterCorrectness) = board.checkCurrentAnswer()
-        score.updateScore(locationCorrectness)
-        score.updateScore(letterCorrectness)
 
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
@@ -536,8 +532,8 @@ class NBackFragment : Fragment() {
             mLetterFeedbackZone?.setBackgroundColor(letterFeedbackColor)
 
             // Update score and counters.
-            updateTrialCount(score.CorrectCount, score.TotalCount)
-            updateScore(score.CorrectCount, score.TotalCount)
+            updateTrialCount(board.CorrectCount, board.TotalCount)
+            updateScore(board.CorrectCount, board.TotalCount)
             // Reset user's answers.
             board.mAnswerSameLocation = false
             board.mAnswerSameLetter = false
