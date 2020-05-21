@@ -104,7 +104,7 @@ class NBackFragment : Fragment() {
         mTrialCountText = view.safeFindViewById(R.id.status_trial_count_text)
 
         context?.let {
-            context?.let { nbackSound.init(it) }
+            nbackSound.init(it)
             updateControls(NBackState.Idle, it)
         }
 
@@ -172,117 +172,123 @@ class NBackFragment : Fragment() {
     }
 
     private fun applyState(oldState: NBackState, newState: NBackState) {
-        when (newState) {
-            NBackState.Idle -> {
-                // Update the controls.
-                context?.let { ctx -> updateControls(newState, ctx) }
-                // Reset the color of the last active square.
-                val lastSquare = getSquare(lastDraw)
-                if (lastSquare is ImageView) {
-                    context?.let { ctx ->
-                        lastSquare.setBackgroundColor(
-                            ContextCompat.getColor(
-                                ctx,
-                                R.color.colorIdleSquare
-                            )
-                        )
-                    }
+        activity?.runOnUiThread {
+            when (newState) {
+                NBackState.Idle -> {
+                    // Update the controls.
+                    context?.let { ctx -> updateControls(newState, ctx) }
+                    timer?.stopTimer()
+                    score.reset()
+                    mSameLocation = null
+                    mSameLetter = null
+                    mAnswerSameLocation = false
+                    mAnswerSameLetter = false
                 }
-                timer?.stopTimer()
-                score.reset()
-                mSameLocation = null
-                mSameLetter = null
-                mAnswerSameLocation = false
-                mAnswerSameLetter = false
-            }
-            NBackState.Running -> {
-                // Update the controls.
-                context?.let { ctx -> updateControls(newState, ctx) }
-                timer?.startTimer()
-            }
-            NBackState.Paused -> {
-                // Update the controls.
-                context?.let { ctx -> updateControls(newState, ctx) }
-                timer?.stopTimer()
+                NBackState.Running -> {
+                    // Update the controls.
+                    context?.let { ctx -> updateControls(newState, ctx) }
+                    timer?.startTimer()
+                }
+                NBackState.Paused -> {
+                    // Update the controls.
+                    context?.let { ctx -> updateControls(newState, ctx) }
+                    timer?.stopTimer()
+                }
             }
         }
     }
 
     private fun updateControls(state: NBackState, context: Context) {
-        when (state) {
-            NBackState.Idle -> {
-                mPauseButton?.visibility = View.INVISIBLE
-                mRestartButton?.apply {
-                    text = context.getString(R.string.start_game_short)
+        activity?.runOnUiThread {
+            when (state) {
+                NBackState.Idle -> {
+                    mPauseButton?.visibility = View.INVISIBLE
+                    mRestartButton?.apply {
+                        text = context.getString(R.string.start_game_short)
+                    }
+                    mLocationButton?.visibility = View.INVISIBLE
+                    mLetterButton?.visibility = View.INVISIBLE
+                    updateTrialCount(0, 0)
+                    updateScore(0, 0)
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.stop_game_short),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    mPastLocationsPanel?.apply {
+                        removeAllViews()
+                    }
+                    mPastLettersPanel?.apply {
+                        removeAllViews()
+                    }
+                    getSquare(lastDraw)?.apply {
+                        setBackgroundColor(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.colorIdleSquare
+                            )
+                        )
+                    }
                 }
-                mLocationButton?.visibility = View.INVISIBLE
-                mLetterButton?.visibility = View.INVISIBLE
-                updateTrialCount(0, 0)
-                updateScore(0, 0)
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.stop_game_short),
-                    Toast.LENGTH_SHORT
-                ).show()
-                mPastLocationsPanel?.apply {
-                    removeAllViews()
+                NBackState.Paused -> {
+                    mPauseButton?.apply {
+                        text = context.getString(R.string.resume_game_short)
+                        visibility = View.VISIBLE
+                    }
+                    mLocationButton?.isEnabled = false
+                    mLetterButton?.isEnabled = false
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.pause_game_short),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-                mPastLettersPanel?.apply {
-                    removeAllViews()
+                NBackState.Running -> {
+                    mPauseButton?.apply {
+                        text = context.getString(R.string.pause_game_short)
+                        visibility = View.VISIBLE
+                    }
+                    mRestartButton?.apply {
+                        text = context.getString(R.string.stop_game_short)
+                    }
+                    mLocationButton?.apply {
+                        isEnabled = true
+                        visibility = View.VISIBLE
+                    }
+                    mLetterButton?.apply {
+                        isEnabled = true
+                        visibility = View.VISIBLE
+                    }
+                    updateTrialCount(0, 0)
+                    updateScore(0, 0)
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.start_game_short),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-            }
-            NBackState.Paused -> {
-                mPauseButton?.apply {
-                    text = context.getString(R.string.resume_game_short)
-                    visibility = View.VISIBLE
-                }
-                mLocationButton?.isEnabled = false
-                mLetterButton?.isEnabled = false
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.pause_game_short),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            NBackState.Running -> {
-                mPauseButton?.apply {
-                    text = context.getString(R.string.pause_game_short)
-                    visibility = View.VISIBLE
-                }
-                mRestartButton?.apply {
-                    text = context.getString(R.string.stop_game_short)
-                }
-                mLocationButton?.apply {
-                    isEnabled = true
-                    visibility = View.VISIBLE
-                }
-                mLetterButton?.apply {
-                    isEnabled = true
-                    visibility = View.VISIBLE
-                }
-                updateTrialCount(0, 0)
-                updateScore(0, 0)
-                Toast.makeText(
-                    context,
-                    context.getString(R.string.start_game_short),
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         }
     }
 
     private fun restartButtonClicked() {
-        when (state) {
-            NBackState.Running, NBackState.Paused -> processTransition(Transition.Stop)
-            NBackState.Idle -> processTransition(Transition.Start)
+        AsyncRun {
+            when (state) {
+                NBackState.Running, NBackState.Paused -> processTransition(Transition.Stop)
+                NBackState.Idle -> processTransition(Transition.Start)
+                else -> {
+                }
+            }
         }
     }
 
     private fun pauseButtonClicked() {
-        when (state) {
-            NBackState.Running -> processTransition(Transition.Pause)
-            NBackState.Paused -> processTransition(Transition.Resume)
-            else -> {
+        AsyncRun {
+            when (state) {
+                NBackState.Running -> processTransition(Transition.Pause)
+                NBackState.Paused -> processTransition(Transition.Resume)
+                else -> {
+                }
             }
         }
     }
@@ -534,8 +540,10 @@ class NBackFragment : Fragment() {
 
     private fun checkCurrentAnswer(): Boolean? {
 
-        val locationCorrectness = NBackGame.getCorrectness(answer = mAnswerSameLocation, actual = mSameLocation)
-        val letterCorrectness = NBackGame.getCorrectness(answer = mAnswerSameLetter, actual = mSameLetter)
+        val locationCorrectness =
+            NBackGame.getCorrectness(answer = mAnswerSameLocation, actual = mSameLocation)
+        val letterCorrectness =
+            NBackGame.getCorrectness(answer = mAnswerSameLetter, actual = mSameLetter)
         score.updateScore(locationCorrectness)
         score.updateScore(letterCorrectness)
 
