@@ -1,6 +1,6 @@
 package ch.instantpastime.nback.core
 
-class NBackGame {
+class NBackScore {
 
     companion object {
         fun getCorrectness(answer: Boolean, actual: Boolean?): Correctness? {

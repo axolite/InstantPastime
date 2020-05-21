@@ -36,7 +36,7 @@ class NBackFragment : Fragment() {
 
     private var state: NBackState = NBackState.Idle
     private var game: NBackBoard? = null
-    private val score: NBackGame = NBackGame()
+    private val score: NBackScore = NBackScore()
 
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
     private var timer: NBackCountDown? = null
@@ -327,7 +327,7 @@ class NBackFragment : Fragment() {
      * even when not enough trials have been drawn.
      */
     @ColorInt
-    private fun getEarlyFeedbackColor(correctness: NBackGame.Correctness?, context: Context): Int {
+    private fun getEarlyFeedbackColor(correctness: NBackScore.Correctness?, context: Context): Int {
         return if (correctness == null) {
             ContextCompat.getColor(context, R.color.colorTransparent)
         } else {
@@ -339,21 +339,21 @@ class NBackFragment : Fragment() {
      * Gets a color that corresponds to the actual answer (reality).
      */
     @ColorInt
-    private fun getActualFeedbackColor(correctness: NBackGame.Correctness, context: Context): Int {
+    private fun getActualFeedbackColor(correctness: NBackScore.Correctness, context: Context): Int {
         return when (correctness) {
-            NBackGame.Correctness.CORRECT_SAME ->
+            NBackScore.Correctness.CORRECT_SAME ->
                 // The user said "same" and it is: answer is correct.
                 ContextCompat.getColor(context, R.color.colorNBackCorrect)
 
-            NBackGame.Correctness.WRONG_ACTUALLY_SAME ->
+            NBackScore.Correctness.WRONG_ACTUALLY_SAME ->
                 // The user didn't say "same" but it is: answer is wrong.
                 ContextCompat.getColor(context, R.color.colorNBackActual)
 
-            NBackGame.Correctness.WRONG_ACTUALLY_DIFFERENT ->
+            NBackScore.Correctness.WRONG_ACTUALLY_DIFFERENT ->
                 // The user said "same" but it's not: answer is wrong.
                 ContextCompat.getColor(context, R.color.colorNBackWrong)
 
-            NBackGame.Correctness.CORRECT_DIFFERENT ->
+            NBackScore.Correctness.CORRECT_DIFFERENT ->
                 // The user didn't say "same" and it's not: answer is correct.
                 ContextCompat.getColor(context, R.color.colorTransparent)
         }
@@ -541,9 +541,9 @@ class NBackFragment : Fragment() {
     private fun checkCurrentAnswer(): Boolean? {
 
         val locationCorrectness =
-            NBackGame.getCorrectness(answer = mAnswerSameLocation, actual = mSameLocation)
+            NBackScore.getCorrectness(answer = mAnswerSameLocation, actual = mSameLocation)
         val letterCorrectness =
-            NBackGame.getCorrectness(answer = mAnswerSameLetter, actual = mSameLetter)
+            NBackScore.getCorrectness(answer = mAnswerSameLetter, actual = mSameLetter)
         score.updateScore(locationCorrectness)
         score.updateScore(letterCorrectness)
 
@@ -574,8 +574,8 @@ class NBackFragment : Fragment() {
         return when {
             corrList.any { it == null } -> null
             corrList.any {
-                it == NBackGame.Correctness.WRONG_ACTUALLY_DIFFERENT ||
-                it == NBackGame.Correctness.WRONG_ACTUALLY_SAME } -> false
+                it == NBackScore.Correctness.WRONG_ACTUALLY_DIFFERENT ||
+                it == NBackScore.Correctness.WRONG_ACTUALLY_SAME } -> false
             else -> true
         }
     }
