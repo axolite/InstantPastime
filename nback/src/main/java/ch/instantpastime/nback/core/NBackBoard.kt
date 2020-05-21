@@ -8,7 +8,8 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
 
     private var gameRun: NBackRun = NBackRun(nbLetters = nbLetters, nBackLevel = nBackLevel)
     private val score: NBackScore = NBackScore()
-    private var lastDraw: NBackTrial? = null
+    var lastDraw: NBackTrial? = null
+        private set
     /**
      * True when the user says it is the same location, otherwise false.
      */
@@ -19,17 +20,6 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
      */
     var mAnswerSameLetter: Boolean = false
 
-    /**
-     * True when it is actually the same location, false when different,
-     * null when there isn't enough elements to compare.
-     */
-    var mSameLocation: Boolean? = null
-
-    /**
-     * True when it is actually the same letter, false when different,
-     * null when there isn't enough elements to compare.
-     */
-    var mSameLetter: Boolean? = null
     var nbTrials: Int = DEFAULT_NB_TRIALS
         private set
 
@@ -43,33 +33,28 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
         get() = gameRun._level
 
     fun toggleLocationAnswer(): Boolean {
-        return when (mSameLocation) {
-            true -> false
-            else -> true
-        }.also {
-            mSameLocation = it
+        return mAnswerSameLocation.also {
+            mAnswerSameLocation = !it
         }
     }
 
     fun toggleLetterAnswer(): Boolean {
-        return when (mSameLetter) {
-            true -> false
-            else -> true
-        }.also {
-            mSameLetter = it
+        return mAnswerSameLetter.also {
+            mAnswerSameLetter = !it
         }
     }
 
     fun reset() {
         score.reset()
-        mSameLocation = null
-        mSameLetter = null
+        lastDraw = null
         mAnswerSameLocation = false
         mAnswerSameLetter = false
     }
 
     fun getNextTrial(): NBackTrial {
-        return gameRun.getNextTrial()
+        return gameRun.getNextTrial().also {
+            lastDraw = it
+        }
     }
 
     fun checkCurrentAnswer(): Pair<NBackScore.Correctness?, NBackScore.Correctness?> {
@@ -88,12 +73,16 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
         val locationCorrectness =
             NBackScore.getCorrectness(
                 answer = locationAnswer,
-                actual = mSameLocation
+                // True when it is actually the same location, false when different,
+                // null when there isn't enough elements to compare.
+                actual = lastDraw?.location?.isSame
             )
         val letterCorrectness =
             NBackScore.getCorrectness(
                 answer = letterAnswer,
-                actual = mSameLetter
+                // True when it is actually the same letter, false when different,
+                // null when there isn't enough elements to compare.
+                actual = lastDraw?.symbol?.isSame
             )
         score.updateScore(locationCorrectness)
         score.updateScore(letterCorrectness)

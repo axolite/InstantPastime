@@ -39,7 +39,6 @@ class NBackFragment : Fragment() {
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
     private var timer: NBackCountDown? = null
     val nbackSound: NBackSound = NBackSound()
-    private var lastDraw: NBackTrial? = null
 
     private var mLocationFeedbackZone: ImageView? = null
     private var mLetterFeedbackZone: ImageView? = null
@@ -191,7 +190,7 @@ class NBackFragment : Fragment() {
                     mPastLettersPanel?.apply {
                         removeAllViews()
                     }
-                    getSquare(lastDraw)?.apply {
+                    getSquare(board?.lastDraw)?.apply {
                         setBackgroundColor(
                             ContextCompat.getColor(
                                 context,
@@ -453,18 +452,11 @@ class NBackFragment : Fragment() {
         mLetterButton?.isEnabled = true
     }
 
-    private fun nextIndexContinuation() {
-        val board = board ?: return
-        if (board.nbTrials == board.TotalCount) {
-            // Change state here.
-        }
-        val next = board.getNextTrial()
-
+    private fun updateWithTrial(last: NBackTrial?, next: NBackTrial) {
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
-            val oldSquare = getSquare(lastDraw) as ImageView?
+            val oldSquare = getSquare(last) as ImageView?
             val newSquare = getSquare(next) as ImageView?
-            lastDraw = next
 
             // Colorize the next location.
             oldSquare?.setBackgroundColor(
@@ -499,10 +491,17 @@ class NBackFragment : Fragment() {
             }
             updatePastLocations(next)
             updatePastLetters(next)
+        }
+    }
 
-            //Update the actual values.
-            board.mSameLocation = next.location.isSame
-            board.mSameLetter = next.symbol.isSame
+    private fun nextIndexContinuation() {
+        val board = board ?: return
+        if (board.nbTrials == board.TotalCount) {
+            // Change state here.
+        } else {
+            val last = board.lastDraw
+            val next = board.getNextTrial()
+            updateWithTrial(last = last, next = next)
         }
 
         timer?.startTimer()
