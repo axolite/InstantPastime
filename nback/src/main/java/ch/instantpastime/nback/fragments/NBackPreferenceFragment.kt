@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.preference.*
 import ch.instantpastime.nback.R
-import ch.instantpastime.nback.core.NBackBoard
+import ch.instantpastime.nback.core.NBackRun
 
 class NBackPreferenceFragment : PreferenceFragmentCompat() {
 
@@ -25,12 +25,12 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
 
             val nbackLevelPref = SeekBarPreference(context).apply {
                 key = NBackSettings.NBACK_LEVEL_KEY
-                title = getString(R.string.nback_level, NBackBoard.MIN_LEVEL, NBackBoard.MAX_LEVEL)
+                title = getString(R.string.nback_level, NBackRun.MIN_LEVEL, NBackRun.MAX_LEVEL)
                 summary = getString(R.string.nback_level_hint)
-                min = NBackBoard.MIN_LEVEL
-                max = NBackBoard.MAX_LEVEL
+                min = NBackRun.MIN_LEVEL
+                max = NBackRun.MAX_LEVEL
                 showSeekBarValue = true
-                setDefaultValue(NBackBoard.DEFAULT_LEVEL)
+                setDefaultValue(NBackRun.DEFAULT_LEVEL)
                 onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
                     onNBackLevelPreferenceChanged(p, v)
                 }
@@ -41,10 +41,10 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
                 key = NBackSettings.NBACK_MILLISECONDS_KEY
                 title = getString(R.string.nback_interval)
                 summary = getString(R.string.nback_interval_hint)
-                max = NBackBoard.MAX_MILLISEC
-                min = NBackBoard.MIN_MILLISEC
+                max = NBackRun.MAX_MILLISEC
+                min = NBackRun.MIN_MILLISEC
                 showSeekBarValue = true
-                setDefaultValue(NBackBoard.DEFAULT_MILLISEC)
+                setDefaultValue(NBackRun.DEFAULT_MILLISEC)
                 onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
                     onTimePerTrialPreferenceChanged(p, v)
                 }

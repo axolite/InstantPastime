@@ -18,10 +18,10 @@ class NBackCountDown(totalMilliseconds: Int, val onTick: () -> Unit, val onFinis
         }
         set(value) {
             if (value != _totalMillisec) {
-                val newValue = if (value < NBackBoard.MIN_MILLISEC) {
-                    NBackBoard.MIN_MILLISEC
-                } else if (value > NBackBoard.MAX_MILLISEC) {
-                    NBackBoard.MAX_MILLISEC
+                val newValue = if (value < NBackRun.MIN_MILLISEC) {
+                    NBackRun.MIN_MILLISEC
+                } else if (value > NBackRun.MAX_MILLISEC) {
+                    NBackRun.MAX_MILLISEC
                 } else {
                     value
                 }
@@ -30,7 +30,7 @@ class NBackCountDown(totalMilliseconds: Int, val onTick: () -> Unit, val onFinis
                 resetTimer()
             }
         }
-    private var _totalMillisec: Int = NBackBoard.DEFAULT_MILLISEC
+    private var _totalMillisec: Int = NBackRun.DEFAULT_MILLISEC
 
     init {
         this.totalMilliseconds = totalMilliseconds

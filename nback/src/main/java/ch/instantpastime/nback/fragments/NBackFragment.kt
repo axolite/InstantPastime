@@ -35,7 +35,7 @@ class NBackFragment : Fragment() {
     }
 
     private var state: NBackState = NBackState.Idle
-    private var game: NBackBoard? = null
+    private var game: NBackRun? = null
     private val score: NBackScore = NBackScore()
 
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
@@ -86,7 +86,7 @@ class NBackFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val nbackSettings = loadNBackSettings()
-        game = NBackBoard(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
+        game = NBackRun(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
         timer?.totalMilliseconds = nbackSettings.time_per_trial
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
         mRestartButton = view.safeFindViewById<Button>(R.id.restart_button)
@@ -666,10 +666,10 @@ class NBackFragment : Fragment() {
     private fun loadNBackSettings(): NBackSettings {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
         val level =
-            sharedPreferences.getInt(NBackSettings.NBACK_LEVEL_KEY, NBackBoard.DEFAULT_LEVEL)
+            sharedPreferences.getInt(NBackSettings.NBACK_LEVEL_KEY, NBackRun.DEFAULT_LEVEL)
         val time_per_trial = sharedPreferences.getInt(
             NBackSettings.NBACK_MILLISECONDS_KEY,
-            NBackBoard.DEFAULT_MILLISEC
+            NBackRun.DEFAULT_MILLISEC
         )
         return NBackSettings(level, time_per_trial)
     }
