@@ -27,6 +27,7 @@ class NBackFragment : Fragment() {
 
     companion object {
         const val INVALID_INDEX: Int = -1
+        const val DEFAULT_NB_TRIALS: Int = 20
     }
 
     private enum class Transition {
@@ -76,6 +77,8 @@ class NBackFragment : Fragment() {
      * null when there isn't enough elements to compare.
      */
     private var mSameLetter: Boolean? = null
+    var nbTrials: Int = DEFAULT_NB_TRIALS
+        private set
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -476,6 +479,9 @@ class NBackFragment : Fragment() {
 
     private fun nextIndexContinuation() {
         val game = this.game ?: return
+        if (nbTrials == score.TotalCount) {
+            // Change state here.
+        }
         val next = game.getNextTrial()
 
         activity?.runOnUiThread {
