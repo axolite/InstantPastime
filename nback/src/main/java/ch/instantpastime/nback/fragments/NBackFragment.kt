@@ -124,21 +124,19 @@ class NBackFragment : Fragment() {
     }
 
     private fun progressState(state: NBackState, transition: Transition): NBackState {
-        return when (transition) {
-            Transition.Start -> when (state) {
-                NBackState.Idle -> NBackState.Running
+        return when (state) {
+            NBackState.Idle -> when (transition) {
+                Transition.Start -> NBackState.Running
                 else -> state
             }
-            Transition.Pause -> when (state) {
-                NBackState.Running -> NBackState.Paused
+            NBackState.Running -> when (transition) {
+                Transition.Pause -> NBackState.Paused
+                Transition.Stop -> NBackState.Idle
                 else -> state
             }
-            Transition.Resume -> when (state) {
-                NBackState.Paused -> NBackState.Running
-                else -> state
-            }
-            Transition.Stop -> when (state) {
-                NBackState.Running, NBackState.Paused -> NBackState.Idle
+            NBackState.Paused -> when (transition) {
+                Transition.Resume -> NBackState.Running
+                Transition.Stop -> NBackState.Idle
                 else -> state
             }
         }
