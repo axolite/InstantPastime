@@ -33,14 +33,14 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
         get() = gameRun._level
 
     fun toggleLocationAnswer(): Boolean {
-        return mAnswerSameLocation.also {
-            mAnswerSameLocation = !it
-        }
+        val it = !mAnswerSameLocation
+        mAnswerSameLocation = it
+        return it
     }
 
     fun toggleLetterAnswer(): Boolean {
-        return mAnswerSameLetter.also {
-            mAnswerSameLetter = !it
+        return (!mAnswerSameLetter).also {
+            mAnswerSameLetter = it
         }
     }
 
