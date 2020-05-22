@@ -53,7 +53,6 @@ class NBackFragment : Fragment(), INBackController {
     private var mRestartButton: Button? = null
     private var mLocationButton: Button? = null
     private var mLetterButton: Button? = null
-    private var mTimeBar: ProgressBar? = null
     private var mScoreText: TextView? = null
     private var mTrialCountText: TextView? = null
     private var mPastLocationsPanel: LinearLayout? = null
@@ -80,9 +79,6 @@ class NBackFragment : Fragment(), INBackController {
         mPauseButton = view.safeFindViewById(R.id.pause_button)
         mPastLocationsPanel = view.safeFindViewById(R.id.nback_past_locations_panel)
         mPastLettersPanel = view.safeFindViewById(R.id.nback_past_letters_panel)
-//        mTimeBar = view.safeFindViewById<ProgressBar>(R.id.nback_time_bar).apply {
-//            max = nbackSettings.time_per_trial
-//        }
         mScoreText = view.safeFindViewById(R.id.status_score_text)
         mTrialCountText = view.safeFindViewById(R.id.status_trial_count_text)
 
@@ -99,15 +95,9 @@ class NBackFragment : Fragment(), INBackController {
 
         timer = NBackCountDown(totalMilliseconds = nbackSettings.time_per_trial,
             onTick = {
-                mTimeBar?.apply {
-                    progress += NBackCountDown.stepMillisec
-                }
             },
             onFinish = {
                 board?.tick()
-                mTimeBar?.apply {
-                    progress = 0
-                }
             }
         )
 
