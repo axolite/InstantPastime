@@ -60,7 +60,7 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
 
     fun checkCurrentAnswer(): Pair<NBackScore.Correctness?, NBackScore.Correctness?> {
         val correctnesses = checkAnswer(
-            locationAnswer = mAnswerSameLetter,
+            locationAnswer = mAnswerSameLocation,
             letterAnswer = mAnswerSameLetter
         )
         // Reset user's answers.
