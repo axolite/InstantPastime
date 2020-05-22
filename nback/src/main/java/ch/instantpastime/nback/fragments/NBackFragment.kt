@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
@@ -27,10 +26,6 @@ import ch.instantpastime.nback.ui.NBackResource.getSquare
  */
 class NBackFragment : Fragment(), INBackController {
 
-    companion object {
-        const val INVALID_INDEX: Int = -1
-    }
-
     private enum class Transition {
         Start, Stop, Pause, Resume
     }
@@ -38,7 +33,6 @@ class NBackFragment : Fragment(), INBackController {
     private var state: NBackState = NBackState.Idle
     private var board: NBackBoard? = null
 
-    //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
     /**
      * Timer for the N-Back count-down.
      * Must be started from the UI thread (sic).
@@ -116,14 +110,12 @@ class NBackFragment : Fragment(), INBackController {
 
     private fun processTransition(transition: Transition) {
         val oldState = state
-        val newState = progressState(oldState, transition)
-        if (newState != oldState) {
-            state = newState
-            applyState(oldState = oldState, newState = newState)
-        }
+        val newState = switchState(oldState, transition)
+        state = newState
+        switchAction(oldState = oldState, newState = newState)
     }
 
-    private fun progressState(state: NBackState, transition: Transition): NBackState {
+    private fun switchState(state: NBackState, transition: Transition): NBackState {
         return when (state) {
             NBackState.Idle -> when (transition) {
                 Transition.Start -> NBackState.Running
@@ -142,30 +134,34 @@ class NBackFragment : Fragment(), INBackController {
         }
     }
 
-    private fun applyState(oldState: NBackState, newState: NBackState) {
-        when (newState) {
-            NBackState.Idle -> {
-                // Update the controls.
-                updateControls(newState)
-                stopTimer()
-                board?.reset()
-            }
-            NBackState.Running -> {
-                // Update the controls.
-                updateControls(newState)
-                when (oldState) {
-                    NBackState.Paused -> startTimer()
-                    NBackState.Idle -> board?.drawNext()
-                    else -> activity?.runOnUiThread {
-                        Toast.makeText(context, "Wrong source state: $oldState",
-                            Toast.LENGTH_SHORT).show()
+    private fun switchAction(oldState: NBackState, newState: NBackState) {
+        if (oldState != newState) {
+            when (newState) {
+                NBackState.Idle -> {
+                    // Update the controls.
+                    updateControls(newState)
+                    stopTimer()
+                    board?.reset()
+                }
+                NBackState.Running -> {
+                    // Update the controls.
+                    updateControls(newState)
+                    when (oldState) {
+                        NBackState.Paused -> startTimer()
+                        NBackState.Idle -> board?.drawNext()
+                        else -> activity?.runOnUiThread {
+                            Toast.makeText(
+                                context, "Wrong source state: $oldState",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
-            }
-            NBackState.Paused -> {
-                // Update the controls.
-                updateControls(newState)
-                stopTimer()
+                NBackState.Paused -> {
+                    // Update the controls.
+                    updateControls(newState)
+                    stopTimer()
+                }
             }
         }
     }
