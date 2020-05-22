@@ -69,4 +69,8 @@ class NBackDraw(val range: IntRange, val level: Int) {
     private fun getRandomIndex(): Int {
         return Random.nextInt(range)
     }
+
+    fun clear() {
+        lastIndices.clear()
+    }
 }

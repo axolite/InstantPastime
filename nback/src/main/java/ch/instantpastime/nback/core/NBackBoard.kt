@@ -46,6 +46,7 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
 
     fun reset() {
         score.reset()
+        gameRun.reset()
         lastDraw = null
         mAnswerSameLocation = false
         mAnswerSameLetter = false

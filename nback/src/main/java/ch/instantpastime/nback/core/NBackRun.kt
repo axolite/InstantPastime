@@ -37,4 +37,9 @@ class NBackRun {
         return _randomLetter.getNextIndex()
     }
 
+    fun reset() {
+        _randomLocation.clear()
+        _randomLetter.clear()
+    }
+
 }
