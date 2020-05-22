@@ -23,7 +23,7 @@ import ch.instantpastime.nback.core.*
  * Use the [NBackFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NBackFragment : Fragment() {
+class NBackFragment : Fragment(), INBackController {
 
     companion object {
         const val INVALID_INDEX: Int = -1
@@ -37,6 +37,10 @@ class NBackFragment : Fragment() {
     private var board: NBackBoard? = null
 
     //private var timer: NBackTimer = NBackTimer(NBackGame.DEFAULT_MILLISEC.toLong(), { -> nextIndex() })
+    /**
+     * Timer for the N-Back count-down.
+     * Must be started from the UI thread (sic).
+     */
     private var timer: NBackCountDown? = null
     val nbackSound: NBackSound = NBackSound()
 
@@ -52,6 +56,7 @@ class NBackFragment : Fragment() {
     private var mTrialCountText: TextView? = null
     private var mPastLocationsPanel: LinearLayout? = null
     private var mPastLettersPanel: LinearLayout? = null
+    private var mLastLocationSquare: ImageView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,7 +64,10 @@ class NBackFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val nbackSettings = loadNBackSettings()
-        board = NBackBoard(nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level)
+        board = NBackBoard(
+            nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level,
+            uiControl = this
+        )
         timer?.totalMilliseconds = nbackSettings.time_per_trial
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
         mRestartButton = view.safeFindViewById<Button>(R.id.restart_button)
@@ -78,7 +86,7 @@ class NBackFragment : Fragment() {
 
         context?.let {
             nbackSound.init(it)
-            updateControls(NBackState.Idle, it)
+            updateControls(NBackState.Idle)
         }
 
         mRestartButton?.setOnClickListener { restartButtonClicked() }
@@ -94,7 +102,7 @@ class NBackFragment : Fragment() {
                 }
             },
             onFinish = {
-                nextIndex()
+                board?.tick()
                 mTimeBar?.apply {
                     progress = 0
                 }
@@ -143,30 +151,36 @@ class NBackFragment : Fragment() {
     }
 
     private fun applyState(oldState: NBackState, newState: NBackState) {
-        activity?.runOnUiThread {
-            when (newState) {
-                NBackState.Idle -> {
-                    // Update the controls.
-                    context?.let { ctx -> updateControls(newState, ctx) }
-                    timer?.stopTimer()
-                    board?.reset()
+        when (newState) {
+            NBackState.Idle -> {
+                // Update the controls.
+                updateControls(newState)
+                stopTimer()
+                board?.reset()
+            }
+            NBackState.Running -> {
+                // Update the controls.
+                updateControls(newState)
+                when (oldState) {
+                    NBackState.Paused -> startTimer()
+                    NBackState.Idle -> board?.drawNext()
+                    else -> activity?.runOnUiThread {
+                        Toast.makeText(context, "Wrong source state: $oldState",
+                            Toast.LENGTH_SHORT).show()
+                    }
                 }
-                NBackState.Running -> {
-                    // Update the controls.
-                    context?.let { ctx -> updateControls(newState, ctx) }
-                    timer?.startTimer()
-                }
-                NBackState.Paused -> {
-                    // Update the controls.
-                    context?.let { ctx -> updateControls(newState, ctx) }
-                    timer?.stopTimer()
-                }
+            }
+            NBackState.Paused -> {
+                // Update the controls.
+                updateControls(newState)
+                stopTimer()
             }
         }
     }
 
-    private fun updateControls(state: NBackState, context: Context) {
+    private fun updateControls(state: NBackState) {
         activity?.runOnUiThread {
+            val context = context ?: return@runOnUiThread
             when (state) {
                 NBackState.Idle -> {
                     mPauseButton?.visibility = View.INVISIBLE
@@ -188,14 +202,7 @@ class NBackFragment : Fragment() {
                     mPastLettersPanel?.apply {
                         removeAllViews()
                     }
-                    getSquare(board?.lastDraw)?.apply {
-                        setBackgroundColor(
-                            ContextCompat.getColor(
-                                context,
-                                R.color.colorIdleSquare
-                            )
-                        )
-                    }
+                    clearLocationSquare(mLastLocationSquare)
                 }
                 NBackState.Paused -> {
                     mPauseButton?.apply {
@@ -397,14 +404,18 @@ class NBackFragment : Fragment() {
         }
     }
 
-    fun nextIndex() {
-        // Check the user's current answer.
-        val allCorrect = checkCurrentAnswer()
+    override fun onCorrectResult(
+        locationCorrectness: NBackScore.Correctness?,
+        letterCorrectness: NBackScore.Correctness?
+    ) {
+        // Update the UI with the user's current answer.
+        updateWithAnswer(locationCorrectness, letterCorrectness)
+        val allCorrect = NBackScore.allCorrect(listOf(locationCorrectness, letterCorrectness))
 
         if (allCorrect == true) {
             continueOnCorrect()
         } else if (allCorrect == null) {
-            nextIndexContinuation()
+            board?.drawNext()
         } else {
             continueOnIncorrect()
         }
@@ -422,7 +433,7 @@ class NBackFragment : Fragment() {
             }
         }
         // Continue without waiting the delay.
-        nextIndexContinuation()
+        board?.drawNext()
     }
 
     private fun continueOnIncorrect() {
@@ -437,7 +448,7 @@ class NBackFragment : Fragment() {
                 clearCorrection()
             }
             // Continue after the delay.
-            nextIndexContinuation()
+            board?.drawNext()
         }
     }
 
@@ -450,22 +461,27 @@ class NBackFragment : Fragment() {
         mLetterButton?.isEnabled = true
     }
 
+    private fun clearLocationSquare(oldSquare: ImageView?) {
+        val context = context ?: return
+        oldSquare?.setBackgroundColor(
+            ContextCompat.getColor(context, R.color.colorIdleSquare)
+        )
+        oldSquare?.setImageDrawable(
+            ContextCompat.getDrawable(
+                context,
+                R.drawable.ic_letter_placeholder
+            )
+        )
+    }
+
     private fun updateWithTrial(last: NBackTrial?, next: NBackTrial) {
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
-            val oldSquare = getSquare(last) as ImageView?
-            val newSquare = getSquare(next) as ImageView?
+            val oldSquare = mLastLocationSquare
+            val newSquare = getSquare(next) as? ImageView
 
             // Colorize the next location.
-            oldSquare?.setBackgroundColor(
-                ContextCompat.getColor(context, R.color.colorIdleSquare)
-            )
-            oldSquare?.setImageDrawable(
-                ContextCompat.getDrawable(
-                    context,
-                    R.drawable.ic_letter_placeholder
-                )
-            )
+            clearLocationSquare(oldSquare)
             newSquare?.setBackgroundColor(
                 ContextCompat.getColor(
                     context,
@@ -489,39 +505,21 @@ class NBackFragment : Fragment() {
             }
             updatePastLocations(next)
             updatePastLetters(next)
+            mLastLocationSquare = newSquare
         }
     }
 
-    private fun nextIndexContinuation() {
-        val board = board ?: return
-        if (board.nbTrials == board.TotalCount) {
-            // Change state here.
-        } else {
-            val last = board.lastDraw
-            val next = board.getNextTrial()
-            updateWithTrial(last = last, next = next)
-        }
-
-        timer?.startTimer()
-    }
-
-    private fun checkCurrentAnswer(): Boolean? {
-
-        val board = board ?: return null
-        val (locationCorrectness, letterCorrectness) = board.checkCurrentAnswer()
-
-        updateWithAnswer(locationCorrectness, letterCorrectness)
-
-        return NBackScore.allCorrect(listOf(locationCorrectness, letterCorrectness))
+    override fun onNextTrial(last: NBackTrial?, next: NBackTrial) {
+        updateWithTrial(last = last, next = next)
+        startTimer()
     }
 
     private fun updateWithAnswer(
         locationCorrectness: NBackScore.Correctness?,
         letterCorrectness: NBackScore.Correctness?
     ) {
-        val board = board ?: return
-
         activity?.runOnUiThread {
+            val board = board ?: return@runOnUiThread
             val context = context ?: return@runOnUiThread
 
             // Give a feedback about the correct answer.
@@ -648,6 +646,18 @@ class NBackFragment : Fragment() {
 
     private fun updateScore(score: Int, maxPossibleScore: Int) {
         mScoreText?.text = getString(R.string.nback_score, score)
+    }
+
+    private fun startTimer() {
+        activity?.runOnUiThread {
+            timer?.startTimer()
+        }
+    }
+
+    private fun stopTimer() {
+        activity?.runOnUiThread {
+            timer?.stopTimer()
+        }
     }
 
     fun <T : View> Fragment.safeFindViewById(@IdRes id: Int): T? {

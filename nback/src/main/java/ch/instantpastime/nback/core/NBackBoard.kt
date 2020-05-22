@@ -1,11 +1,12 @@
 package ch.instantpastime.nback.core
 
-class NBackBoard(nbLetters: Int, nBackLevel: Int) {
+class NBackBoard(nbLetters: Int, nBackLevel: Int, val uiControl: INBackController) : INBackBoard {
 
     companion object {
         const val DEFAULT_NB_TRIALS: Int = 20
     }
 
+    private val play: NBackPlay = NBackPlay(this)
     private var gameRun: NBackRun = NBackRun(nbLetters = nbLetters, nBackLevel = nBackLevel)
     private val score: NBackScore = NBackScore()
     var lastDraw: NBackTrial? = null
@@ -47,6 +48,7 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
     fun reset() {
         score.reset()
         gameRun.reset()
+        play.raiseReset()
         lastDraw = null
         mAnswerSameLocation = false
         mAnswerSameLetter = false
@@ -88,5 +90,34 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int) {
         score.updateScore(locationCorrectness)
         score.updateScore(letterCorrectness)
         return Pair(locationCorrectness, letterCorrectness)
+    }
+
+    fun drawNext() {
+        play.raiseDraw()
+    }
+
+    fun tick() {
+        play.raiseTick()
+    }
+
+    override fun onEnterBlank() {
+    }
+
+    override fun onEnterDrawing() {
+        val last = lastDraw
+        val next = getNextTrial()
+        play.raiseDrawn(last = last, next = next)
+    }
+
+    override fun onEnterWaiting(last: NBackTrial?, next: NBackTrial) {
+        uiControl.onNextTrial(last = last, next = next)
+    }
+
+    override fun onEnterCorrecting() {
+        val (locationCorrectness, letterCorrectness) = checkCurrentAnswer()
+        uiControl.onCorrectResult(locationCorrectness, letterCorrectness)
+    }
+
+    override fun onEnterFinished() {
     }
 }
