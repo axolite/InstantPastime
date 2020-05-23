@@ -21,17 +21,35 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int, val uiControl: INBackControlle
      */
     var mAnswerSameLetter: Boolean = false
 
-    var nbTrials: Int = DEFAULT_NB_TRIALS
+    var goal: Int = DEFAULT_NB_TRIALS
         private set
 
-    val TotalCount: Int
+    private val actualGoal: Int
+        get() = goal + Level
+
+    /**
+     * Number of trials that have been drawn (i.e. generated).
+     */
+    var drawCount: Int = 0
+        private set
+
+    /**
+     * Number of trials that have been corrected.
+     */
+    val checkCount: Int
         get() = score.TotalCount
 
+    /**
+     * Number of trials that have been checked as correct.
+     */
     val CorrectCount: Int
         get() = score.CorrectCount
 
     val Level: Int
         get() = gameRun._level
+
+    val expectAnswer: Boolean
+        get() = drawCount > Level
 
     fun toggleLocationAnswer(): Boolean {
         val it = !mAnswerSameLocation
@@ -50,12 +68,14 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int, val uiControl: INBackControlle
         gameRun.reset()
         play.raiseReset()
         lastDraw = null
+        drawCount = 0
         mAnswerSameLocation = false
         mAnswerSameLetter = false
     }
 
     fun getNextTrial(): NBackTrial {
         return gameRun.getNextTrial().also {
+            drawCount += 1
             lastDraw = it
         }
     }
@@ -93,11 +113,19 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int, val uiControl: INBackControlle
     }
 
     fun drawNext() {
-        play.raiseDraw()
+        if (drawCount < actualGoal) {
+            play.raiseDraw()
+        } else {
+            play.raiseTotalReached()
+        }
     }
 
     fun tick() {
-        play.raiseTick()
+        if (drawCount <= Level) {
+            play.raiseDraw()
+        } else {
+            play.raiseTick()
+        }
     }
 
     override fun onEnterBlank() {
@@ -119,5 +147,6 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int, val uiControl: INBackControlle
     }
 
     override fun onEnterFinished() {
+        uiControl.onFinished(CorrectCount, checkCount)
     }
 }
