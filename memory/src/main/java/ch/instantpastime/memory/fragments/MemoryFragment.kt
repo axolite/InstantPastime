@@ -65,8 +65,6 @@ class MemoryFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_memory, container, false)
 
-        android.os.Debug.waitForDebugger()
-
         if (locationHelper == null) {
             locationHelper = LocationHelper()
         }
