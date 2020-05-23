@@ -61,9 +61,9 @@ class StartActivity : AppCompatActivity(){
         /* Define Slides ************************************************* */
         /* ******* Layouts *********************************************** */
         slides = intArrayOf(
-            ch.instantpastime.R.layout.activity_start_content01,
-            ch.instantpastime.R.layout.activity_start_content01,
-            ch.instantpastime.R.layout.activity_start_content01
+            R.layout.activity_start_content01,
+            R.layout.activity_start_content01,
+            R.layout.activity_start_content01
         )
         /* ******* Images ************************************************ */
         images = intArrayOf(
@@ -119,7 +119,6 @@ class StartActivity : AppCompatActivity(){
     }
 
     private fun launchHomeScreen() {
-        MemoryActivity.prefManager.setFirstTimeLaunch("memory")
         //startActivity(Intent(this@StartActivity, MemoryActivity::class.java))
         finish()
     }
@@ -164,12 +163,12 @@ class StartActivity : AppCompatActivity(){
                 mActivity!!.applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE)
                         as LayoutInflater?
 
-            val view : View = layoutInflater!!.inflate(ch.instantpastime.R.layout.activity_start_content01, container, false)
+            val view : View = layoutInflater!!.inflate(R.layout.activity_start_content01, container, false)
 
-            image = view.findViewById(ch.instantpastime.R.id.start_image)
+            image = view.findViewById(R.id.start_image)
             image.setImageResource(images[position])
 
-            text = view.findViewById(ch.instantpastime.R.id.start_text)
+            text = view.findViewById(R.id.start_text)
             text.setText(texts[position])
 
             container.addView(view)

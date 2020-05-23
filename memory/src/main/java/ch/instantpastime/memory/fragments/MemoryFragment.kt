@@ -317,6 +317,8 @@ class MemoryFragment : Fragment() {
             if (MemoryActivity.prefManager.isFirstTimeLaunch("memory")){
                 callingFromSettings = false
                 startActivity(Intent(ctx, StartActivity::class.java))
+                MemoryActivity.prefManager.setFirstTimeLaunch("memory")
+
             }
             //**************************************************************************
 
