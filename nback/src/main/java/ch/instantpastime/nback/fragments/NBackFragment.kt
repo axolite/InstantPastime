@@ -1,5 +1,6 @@
 package ch.instantpastime.nback.fragments
 
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -191,6 +192,7 @@ class NBackFragment : Fragment(), INBackController {
                         removeAllViews()
                     }
                     clearLocationSquare(mLastLocationSquare)
+                    clearCorrection()
                 }
                 NBackState.Paused -> {
                     mPauseButton?.apply {
@@ -214,11 +216,11 @@ class NBackFragment : Fragment(), INBackController {
                         text = context.getString(R.string.stop_game_short)
                     }
                     mLocationButton?.apply {
-                        isEnabled = true
+                        isEnabled = board?.expectAnswer == true
                         visibility = View.VISIBLE
                     }
                     mLetterButton?.apply {
-                        isEnabled = true
+                        isEnabled = board?.expectAnswer == true
                         visibility = View.VISIBLE
                     }
                     updateTrialCount(0, 0)
@@ -409,6 +411,14 @@ class NBackFragment : Fragment(), INBackController {
         }
     }
 
+    override fun onFinished(correct: Int, total: Int) {
+        AlertDialog.Builder(context)
+            .setTitle("Finished")
+            .setPositiveButton("Got it") { _, _ -> }
+            .setMessage("Score: $correct/$total")
+            .show()
+    }
+
     private fun continueOnCorrect() {
         // Clear the green color.
         AsyncRun {
@@ -426,8 +436,7 @@ class NBackFragment : Fragment(), INBackController {
 
     private fun continueOnIncorrect() {
         activity?.runOnUiThread {
-            mLocationButton?.isEnabled = false
-            mLetterButton?.isEnabled = false
+            updateAnswerZone(false)
         }
         AsyncRun {
             Thread.sleep(500)
@@ -445,8 +454,7 @@ class NBackFragment : Fragment(), INBackController {
         val transparentColor = ContextCompat.getColor(context, R.color.colorTransparent)
         mLocationFeedbackZone?.setBackgroundColor(transparentColor)
         mLetterFeedbackZone?.setBackgroundColor(transparentColor)
-        mLocationButton?.isEnabled = true
-        mLetterButton?.isEnabled = true
+        updateAnswerZone(board?.expectAnswer == true)
     }
 
     private fun clearLocationSquare(oldSquare: ImageView?) {
@@ -460,6 +468,13 @@ class NBackFragment : Fragment(), INBackController {
                 R.drawable.ic_letter_placeholder
             )
         )
+    }
+
+    private fun updateAnswerZone(isEnabled: Boolean) {
+        activity?.runOnUiThread {
+            mLocationButton?.isEnabled = isEnabled
+            mLetterButton?.isEnabled = isEnabled
+        }
     }
 
     private fun updateWithTrial(last: NBackTrial?, next: NBackTrial) {
@@ -494,6 +509,7 @@ class NBackFragment : Fragment(), INBackController {
             updatePastLocations(next)
             updatePastLetters(next)
             mLastLocationSquare = newSquare
+            updateAnswerZone(board?.expectAnswer == true)
         }
     }
 
@@ -523,8 +539,8 @@ class NBackFragment : Fragment(), INBackController {
             mLetterFeedbackZone?.setBackgroundColor(letterFeedbackColor)
 
             // Update score and counters.
-            updateTrialCount(board.CorrectCount, board.TotalCount)
-            updateScore(board.CorrectCount, board.TotalCount)
+            updateTrialCount(board.CorrectCount, board.drawCount)
+            updateScore(board.CorrectCount, board.drawCount)
         }
     }
 

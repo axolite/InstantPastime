@@ -29,6 +29,10 @@ class NBackPlay(val board: INBackBoard) {
         processTransition(Transition.Draw)
     }
 
+    fun raiseTotalReached() {
+        processTransition(Transition.TotalReached)
+    }
+
     fun raiseTick() {
         processTransition(Transition.Timeout)
     }
@@ -64,6 +68,7 @@ class NBackPlay(val board: INBackBoard) {
             }
             is State.Waiting -> when (transition) {
                 Transition.Timeout -> State.Correcting
+                Transition.Draw -> State.Drawing
                 Transition.Reset -> State.Blank
                 else -> state
             }
