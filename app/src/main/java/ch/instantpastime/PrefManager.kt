@@ -21,8 +21,7 @@ class PrefManager(var _context : Context) {
     companion object {
         // Shared preferences file name
         private const val PREF_NAME = "start_guide"
-        private const val IS_FIRST_TIME_LAUNCH_MEMORY = "IsFirstTimeLaunch_Memory"
-        private const val IS_FIRST_TIME_LAUNCH_NBACK = "IsFirstTimeLaunch_Nback"
+        private const val IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch"
     }
 
     fun prefManager(context : Context?) {
@@ -31,24 +30,14 @@ class PrefManager(var _context : Context) {
         editor = pref.edit()
     }
 
-    fun setFirstTimeLaunch(game:String) {
-        if (game == "memory") {
-            editor.putBoolean(IS_FIRST_TIME_LAUNCH_MEMORY, false)
-        }
-        else if (game == "nback"){
-            editor.putBoolean(IS_FIRST_TIME_LAUNCH_NBACK, false)
-        }
+    fun setFirstTimeLaunch() {
+        editor.putBoolean(IS_FIRST_TIME_LAUNCH, false)
         editor.commit()
     }
 
-    fun isFirstTimeLaunch(game:String) : Boolean {
+    fun isFirstTimeLaunch() : Boolean {
         prefManager(_context)
-        if (game == "memory") {
-            return pref.getBoolean(IS_FIRST_TIME_LAUNCH_MEMORY, true)
-        }
-        else if (game == "nback"){
-            return pref.getBoolean(IS_FIRST_TIME_LAUNCH_NBACK, true)
-        }
-        return false
+        return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true)
+
     }
 }

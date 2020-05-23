@@ -14,7 +14,7 @@
     </dist:module>
 
     <application>
-        <activity android:name=".StartActivity">
+        <activity android:name="ch.instantpastime.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

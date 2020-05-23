@@ -18,12 +18,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import ch.instantpastime.*
+import ch.instantpastime.memory.MemoryActivity.Companion.prefManager
+import ch.instantpastime.memory.MemoryActivity.Companion.tuto_images
+import ch.instantpastime.memory.MemoryActivity.Companion.tuto_slides
+import ch.instantpastime.memory.MemoryActivity.Companion.tuto_texts
+import ch.instantpastime.memory.bitmapClass
+import ch.instantpastime.memory.maximizeBox
+import kotlinx.android.synthetic.main.fragment_memory.*
 import ch.instantpastime.PlaceInfo
 import ch.instantpastime.memory.*
 import ch.instantpastime.memory.R
-import kotlinx.android.synthetic.main.fragment_memory.*
 import kotlinx.android.synthetic.main.fragment_memory.view.*
-
 
 /**
  * A simple [Fragment] subclass.
@@ -314,10 +319,15 @@ class MemoryFragment : Fragment() {
             googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
 
             //**** Launch Tuto while the pictures are being loaded *********************
-            if (MemoryActivity.prefManager.isFirstTimeLaunch("memory")){
+            if (prefManager.isFirstTimeLaunch()){
                 callingFromSettings = false
-                startActivity(Intent(ctx, StartActivity::class.java))
-                MemoryActivity.prefManager.setFirstTimeLaunch("memory")
+
+                val intent = Intent(ctx, StartActivity::class.java)
+                intent.putExtra( "tuto_slides",  tuto_slides )
+                intent.putExtra("tuto_images", tuto_images )
+                intent.putExtra("tuto_texts", tuto_texts )
+                startActivity(intent)
+                prefManager.setFirstTimeLaunch()
 
             }
             //**************************************************************************

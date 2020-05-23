@@ -25,6 +25,9 @@ class MemoryActivity : AppCompatActivity() {
 
     companion object{
         lateinit var prefManager : PrefManager
+        lateinit var tuto_slides: IntArray
+        lateinit var tuto_images: IntArray
+        lateinit var tuto_texts: IntArray
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +69,30 @@ class MemoryActivity : AppCompatActivity() {
                 return true
             }
         })
+
+        /* *************************************************************** */
+        /* Define Slides for Tuto **************************************** */
+        /* ******* Layouts *********************************************** */
+        tuto_slides = intArrayOf(
+            ch.instantpastime.R.layout.activity_start_content01,
+            ch.instantpastime.R.layout.activity_start_content01,
+            ch.instantpastime.R.layout.activity_start_content01
+        )
+        /* ******* Images ************************************************ */
+        tuto_images = intArrayOf(
+            R.drawable.tutoslide01,
+            R.drawable.tutoslide02,
+            R.drawable.tutoslide03
+
+        )
+        /* ******* Texts ************************************************* */
+        tuto_texts = intArrayOf(
+            R.string.start01,
+            R.string.start02,
+            R.string.start03
+        )
+        /* *************************************************************** */
+
 
     }
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

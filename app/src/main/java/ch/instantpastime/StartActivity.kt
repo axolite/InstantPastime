@@ -2,9 +2,10 @@
 https://www.androidhive.info/2016/05/android-build-intro-slider-app/
  */
 
-package ch.instantpastime.memory
+package ch.instantpastime
 
 /* Import ******************************************************** */
+
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,7 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
-import ch.instantpastime.PrefManager
+
 
 /* *************************************************************** */
 
@@ -28,6 +29,7 @@ var mAdapter : StartActivity.ViewPagerAdapter? = null
 lateinit var slides: IntArray
 lateinit var images: IntArray
 lateinit var texts: IntArray
+
 lateinit var layoutDots : LinearLayout
 lateinit var startNext : Button
 lateinit var startSkip : Button
@@ -42,14 +44,6 @@ class StartActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /*prefManager = PrefManager(this)
-        if((!prefManager.isFirstTimeLaunch()) and
-            (!callingFromSettings)){
-            callingFromSettings = false
-            launchHomeScreen()
-            finish()
-        }*/
-
         setContentView(ch.instantpastime.R.layout.activity_start)
 
         viewSlides = findViewById(ch.instantpastime.R.id.view_slides)
@@ -57,28 +51,11 @@ class StartActivity : AppCompatActivity(){
         startNext = findViewById(ch.instantpastime.R.id.start_button_next)
         startSkip = findViewById(ch.instantpastime.R.id.start_button_skip)
 
-        /* *************************************************************** */
-        /* Define Slides ************************************************* */
-        /* ******* Layouts *********************************************** */
-        slides = intArrayOf(
-            R.layout.activity_start_content01,
-            R.layout.activity_start_content01,
-            R.layout.activity_start_content01
-        )
-        /* ******* Images ************************************************ */
-        images = intArrayOf(
-            R.drawable.tutoslide01,
-            R.drawable.tutoslide02,
-            R.drawable.tutoslide03
 
-        )
-        /* ******* Texts ************************************************* */
-        texts = intArrayOf(
-            R.string.start01,
-            R.string.start02,
-            R.string.start03
-        )
-        /* *************************************************************** */
+        val intent = intent
+        slides = intent.getIntArrayExtra("tuto_slides")!!
+        images = intent.getIntArrayExtra("tuto_images")!!
+        texts = intent.getIntArrayExtra("tuto_texts")!!
 
 
         mAdapter = ViewPagerAdapter(this)
@@ -166,10 +143,10 @@ class StartActivity : AppCompatActivity(){
             val view : View = layoutInflater!!.inflate(R.layout.activity_start_content01, container, false)
 
             image = view.findViewById(R.id.start_image)
-            image.setImageResource(images[position])
+            image.setImageResource(images[position]!!)
 
             text = view.findViewById(R.id.start_text)
-            text.setText(texts[position])
+            text.setText(texts[position]!!)
 
             container.addView(view)
             return view
