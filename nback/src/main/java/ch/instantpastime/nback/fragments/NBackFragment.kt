@@ -1,7 +1,7 @@
 package ch.instantpastime.nback.fragments
 
-import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -15,6 +15,7 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import ch.instantpastime.AsyncRun
+import ch.instantpastime.ScoreActivity
 import ch.instantpastime.nback.R
 import ch.instantpastime.nback.core.*
 import ch.instantpastime.nback.ui.NBackResource
@@ -420,11 +421,11 @@ class NBackFragment : Fragment(), INBackController {
     }
 
     override fun onFinished(correct: Int, total: Int) {
-        AlertDialog.Builder(context)
-            .setTitle("Finished")
-            .setPositiveButton("Got it") { _, _ -> }
-            .setMessage("Score: $correct/$total")
-            .show()
+        val intent = Intent(activity, ScoreActivity::class.java).apply {
+            val score = (100 * correct) / total
+            putExtra(ScoreActivity.SCORE_ARG, score)
+        }
+        startActivity(intent)
     }
 
     private fun continueOnCorrect() {
