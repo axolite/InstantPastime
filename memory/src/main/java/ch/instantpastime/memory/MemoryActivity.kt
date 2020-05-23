@@ -1,11 +1,13 @@
 package ch.instantpastime.memory
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import ch.instantpastime.PrefManager
 import ch.instantpastime.memory.ui.BackStackHelper
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_memory.*
@@ -16,9 +18,14 @@ const val num_images = 32
 lateinit var drawer_toolbar: ActionBarDrawerToggle
 
 
+
 class MemoryActivity : AppCompatActivity() {
 
     private val backStackHelper = BackStackHelper(this)
+
+    companion object{
+        lateinit var prefManager : PrefManager
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //android.os.Debug.waitForDebugger()
@@ -26,6 +33,8 @@ class MemoryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_memory)
         nav_view.setOnNavigationItemSelectedListener { backStackHelper.onNavigationItemSelected(it) }
         backStackHelper.loadFragment(nav_view.selectedItemId)
+
+        prefManager = PrefManager(this)
 
         var drawerlayout = findViewById(R.id.activity_main) as DrawerLayout
 
@@ -57,6 +66,7 @@ class MemoryActivity : AppCompatActivity() {
                 return true
             }
         })
+
     }
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return if (drawer_toolbar.onOptionsItemSelected(item)) true else super.onOptionsItemSelected(item)

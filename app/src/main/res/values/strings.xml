@@ -2,4 +2,9 @@
     <string name="app_name">InstantPastime</string>
     <string name="title_memory">Memory Game</string>
     <string name="title_nback">N-Back</string>
+
+    <string name="action_next">NEXT</string>
+    <string name="action_skip">SKIP</string>
+    <string name="action_got">START NOW</string>
+
 </resources>

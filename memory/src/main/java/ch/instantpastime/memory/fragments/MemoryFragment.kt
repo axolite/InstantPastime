@@ -2,6 +2,7 @@ package ch.instantpastime.memory.fragments
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.BitmapDrawable
 import android.location.Location
@@ -162,6 +163,7 @@ class MemoryFragment : Fragment() {
 
 
         //disableListeners()
+
         return view
     }
 
@@ -310,6 +312,14 @@ class MemoryFragment : Fragment() {
             //     Toast.LENGTH_SHORT
             // ).show()
             googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
+
+            //**** Launch Tuto while the pictures are being loaded *********************
+            if (MemoryActivity.prefManager.isFirstTimeLaunch("memory")){
+                callingFromSettings = false
+                startActivity(Intent(ctx, StartActivity::class.java))
+            }
+            //**************************************************************************
+
         }
     }
 

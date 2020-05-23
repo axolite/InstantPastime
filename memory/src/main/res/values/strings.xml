@@ -26,4 +26,8 @@
     <string name="nback_score">Score: %1$d</string>
     <string name="nback_trial_count">%1$d / %2$d</string>
 
+    <string name="start01">Welcome to InstantPastime application !\n\nSwipe across these few instructions for a first overview of its features.\n\nIf you wish to skip it, you can access it again from the "About" page of the application (see below).\n\n Enjoy !</string>
+    <string name="start02">TUTO Slide 2</string>
+    <string name="start03">TUTO Slide 3</string>
+
 </resources>
