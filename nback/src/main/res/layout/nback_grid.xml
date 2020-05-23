@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     android:columnCount="3"
     android:rowCount="3"
+    android:background="@color/colorNBackGrid"
+    android:padding="2dp"
     tools:showIn="@layout/fragment_nback">
     <ImageView android:id="@+id/case0"
         android:src="@drawable/ic_letter_placeholder"

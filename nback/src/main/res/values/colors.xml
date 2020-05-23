@@ -7,5 +7,10 @@
     <color name="colorNBackWrong">#E91E63</color>
     <color name="colorNBackActual">#00BCD4</color>
     <color name="colorNBackAnswer">#9C27B0</color>
+    <color name="colorNBackGrid">@color/colorAccent</color>
     <color name="colorTransparent">#00000000</color>
+    <!--
+    Color palette tool:
+    https://www.materialpalette.com/
+    -->
 </resources>

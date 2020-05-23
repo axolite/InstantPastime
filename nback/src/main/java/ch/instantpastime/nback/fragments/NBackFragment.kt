@@ -79,7 +79,7 @@ class NBackFragment : Fragment(), INBackController {
 
         context?.let {
             nbackSound.init(it)
-            updateControls(NBackState.Idle)
+            updateControls(state)
         }
 
         mRestartButton?.setOnClickListener { restartButtonClicked() }
@@ -335,7 +335,10 @@ class NBackFragment : Fragment(), INBackController {
             setTint(ContextCompat.getColor(context, R.color.colorActiveSquare))
         }
         val imgView = ImageView(context).apply {
-            layoutParams = LinearLayout.LayoutParams(40, 40)
+            layoutParams = LinearLayout.LayoutParams(40, 40).apply {
+                val pixMargin = dpToPix(1)
+                setMargins(pixMargin, pixMargin, pixMargin, pixMargin)
+            }
             scaleType = ImageView.ScaleType.FIT_CENTER
             setImageDrawable(drawable)
         }
@@ -353,9 +356,14 @@ class NBackFragment : Fragment(), INBackController {
             return
         }
         val drawable = ContextCompat.getDrawable(context, drawableId)?.apply {
+            // setTintMode(PorterDuff.Mode.SRC_ATOP)
+            // setTint(ContextCompat.getColor(context, R.color.colorActiveLetter))
         }
         val imgView = ImageView(context).apply {
-            layoutParams = LinearLayout.LayoutParams(40, 40)
+            layoutParams = LinearLayout.LayoutParams(40, 40).apply {
+                val pixMargin = dpToPix(1)
+                setMargins(pixMargin, pixMargin, pixMargin, pixMargin)
+            }
             scaleType = ImageView.ScaleType.FIT_CENTER
             setImageDrawable(drawable)
         }
@@ -587,5 +595,15 @@ class NBackFragment : Fragment(), INBackController {
 
     fun <T : View> View.safeFindViewById(@IdRes id: Int): T? {
         return this.findViewById<View>(id) as? T
+    }
+
+    /**
+     * Converts device-independent pixels (dp) into pixels.
+     * Source: https://stackoverflow.com/a/5255256
+     */
+    fun dpToPix(dps: Int): Int {
+        val context = context ?: return dps
+        val scale = context.resources.displayMetrics.density
+        return (dps.toFloat() * scale + 0.5).toInt()
     }
 }
