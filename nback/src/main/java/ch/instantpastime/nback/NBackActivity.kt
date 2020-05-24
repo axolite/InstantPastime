@@ -1,16 +1,13 @@
 package ch.instantpastime.nback
 
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import ch.instantpastime.LocationActivity
+import ch.instantpastime.LocationHelper
 import ch.instantpastime.nback.ui.BackStackHelper
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_nback.*
@@ -26,12 +23,6 @@ class NBackActivity : AppCompatActivity() {
      */
     val nbSymbols: Int = 8
 
-    /**
-     * True to use contextual images in the game,
-     * false to use stock images or letters.
-     */
-    var useContextualImages: Boolean = true
-
     override fun onCreate(savedInstanceState: Bundle?) {
         //android.os.Debug.waitForDebugger()
         super.onCreate(savedInstanceState)
@@ -40,12 +31,13 @@ class NBackActivity : AppCompatActivity() {
         backStackHelper.loadFragment(nav_view.selectedItemId)
         initDrawer()
 
-        // Launch the location activity if needed.
-        if (useContextualImages &&
-            ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
-            startLocationActivity()
+        // Start location activity if needed.
+        if (LocationHelper.needLocationActivity(this)) {
+            LocationHelper.startLocationActivity(this, nbImages = nbSymbols)
+        } else if (LocationHelper.wantUseLocation(this, defValue = false)) {
+            // The user wants to use location and it is authorized.
+        } else {
+            // The user doesn't want to use location.
         }
     }
 
@@ -100,12 +92,5 @@ class NBackActivity : AppCompatActivity() {
         if (!backStackHelper.onBackPressed()) {
             super.onBackPressed()
         }
-    }
-
-    private fun startLocationActivity() {
-        val intent = Intent(this, LocationActivity::class.java).apply {
-            putExtra(LocationActivity.NB_IMAGES_ARG, nbSymbols)
-        }
-        startActivity(intent)
     }
 }

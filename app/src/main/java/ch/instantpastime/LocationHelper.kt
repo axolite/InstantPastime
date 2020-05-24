@@ -2,6 +2,7 @@ package ch.instantpastime
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
@@ -92,6 +93,44 @@ class LocationHelper {
             LocationServices.getFusedLocationProviderClient(context)
         locationClient?.lastLocation?.addOnSuccessListener {
             processLocation(it)
+        }
+    }
+
+    companion object {
+
+        /**
+         * True if location is authorized.
+         */
+        fun canUseLocation(context: Context): Boolean {
+            return ContextCompat.checkSelfPermission(
+                context,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+
+        /**
+         * True if the user wants to use location,
+         * as recorded in the shared preference.
+         */
+        fun wantUseLocation(context: Context, defValue: Boolean): Boolean {
+            return PrefManager.getLocationPref(context, defValue)
+        }
+
+        /**
+         * True if the user should be asked whether they want to use location.
+         */
+        fun needLocationActivity(context: Context): Boolean {
+            return wantUseLocation(context, defValue = true) && !canUseLocation(context)
+        }
+
+        /**
+         * Starts an activity @see LocationActivity to ask the user for location.
+         */
+        fun startLocationActivity(context: Context, nbImages: Int) {
+            val intent = Intent(context, LocationActivity::class.java).apply {
+                putExtra(LocationActivity.NB_IMAGES_ARG, nbImages)
+            }
+            context.startActivity(intent)
         }
     }
 

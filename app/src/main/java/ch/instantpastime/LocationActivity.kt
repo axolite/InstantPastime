@@ -58,6 +58,9 @@ class LocationActivity : AppCompatActivity() {
         loc_refused_panel.visibility = View.GONE
         loc_accepted_panel.visibility = View.VISIBLE
 
+        // Save in preferences.
+        PrefManager.saveLocationPref(this, value = true)
+
         if (locationHelper == null) {
             locationHelper = LocationHelper()
         }
@@ -85,6 +88,10 @@ class LocationActivity : AppCompatActivity() {
         loc_question_panel.visibility = View.GONE
         loc_accepted_panel.visibility = View.GONE
         loc_refused_panel.visibility = View.VISIBLE
+
+        // Save in preferences.
+        PrefManager.saveLocationPref(this, value = false)
+
         AsyncRun {
             Thread.sleep(3000)
             runOnUiThread {
@@ -132,13 +139,15 @@ class LocationActivity : AppCompatActivity() {
         googlePlaceApi?.getPhotoAndDetail(places)
     }
 
-    fun imageRequestedReady(placePhoto: PlacePhoto) {
+    private fun imageRequestedReady(placePhoto: PlacePhoto) {
         val bitmap = placePhoto.response.bitmap
         val placeInfo = placePhoto.info
 
         contextualImages.add(bitmap)
 
-        loc_progress_text.text = getString(R.string.loc_image_progress, contextualImages.size, nbImagesNeeded)
+        loc_progress_text.text = getString(
+            R.string.loc_image_progress, contextualImages.size, nbImagesNeeded
+        )
 
         Log.d("[IMG]", "Received image ${contextualImages.size}/${googlePlaceApi?.NumImages}")
 
