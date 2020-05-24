@@ -20,4 +20,10 @@
     </plurals>
     <string name="nback_score">Score: %1$d</string>
     <string name="nback_trial_count">%1$d / %2$d</string>
+    <string name="game_context">Game context</string>
+    <string name="nback_symbols_long">N-back symbols</string>
+    <string name="nback_symbols_images">Images</string>
+    <string name="nback_symbols_letters">Letters</string>
+    <string name="nback_sound">Sound</string>
+    <string name="nback_sound_hint">Play sound of letters</string>
 </resources>

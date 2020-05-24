@@ -6,8 +6,12 @@ class NBackSettings(level: Int, time_per_trial: Int) {
 
     companion object {
         val NBACK_OPTIONS_CAT_KEY = "nback_options_category"
+        val NBACK_CONTEXT_CAT_KEY = "nback_context_category"
+
         val NBACK_LEVEL_KEY = "nback_level"
         val NBACK_MILLISECONDS_KEY = "nback_milliseconds"
+        val NBACK_SYMBOL_KEY = "nback_symbol"
+        val NBACK_SOUND_KEY = "nback_sound"
     }
 
     /**
