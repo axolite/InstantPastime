@@ -12,4 +12,10 @@
     <string name="trophy">Trophy</string>
     <string name="thank_you">Thank you</string>
     <string name="score">Score</string>
+    <string name="loc_allow">Allow location</string>
+    <string name="loc_refuse">No way</string>
+    <string name="loc_can_change_later">This can be changed later in</string>
+    <string name="loc_breadcrumb"><![CDATA[Settings > Location]]></string>
+    <string name="loc_long_question">Download images of places near your current location?</string>
+    <string name="loc_location">Location</string>
 </resources>
