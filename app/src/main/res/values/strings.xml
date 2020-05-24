@@ -18,4 +18,6 @@
     <string name="loc_breadcrumb"><![CDATA[Settings > Location]]></string>
     <string name="loc_long_question">Download images of places near your current location?</string>
     <string name="loc_location">Location</string>
+    <string name="loc_ack_refusal">Fine, we won\'t use your location</string>
+    <string name="loc_image_progress">Image %1$d/%2$d</string>
 </resources>
