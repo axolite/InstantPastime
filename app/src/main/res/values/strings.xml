@@ -14,10 +14,10 @@
     <string name="score">Score</string>
     <string name="loc_allow">Allow location</string>
     <string name="loc_refuse">No way</string>
-    <string name="loc_can_change_later">This can be changed later in</string>
+    <string name="loc_can_change_later">Can be changed later in</string>
     <string name="loc_breadcrumb"><![CDATA[Settings > Location]]></string>
     <string name="loc_long_question">Download images of places near your current location?</string>
     <string name="loc_location">Location</string>
-    <string name="loc_ack_refusal">Fine, we won\'t use your location</string>
+    <string name="loc_ack_refusal">We won\'t use your location</string>
     <string name="loc_image_progress">Image %1$d/%2$d</string>
 </resources>
