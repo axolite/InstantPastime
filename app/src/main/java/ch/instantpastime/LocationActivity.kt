@@ -16,6 +16,22 @@ class LocationActivity : AppCompatActivity() {
 
     companion object {
         const val NB_IMAGES_ARG = "nbImages"
+
+        fun formatLatitude(latitude: Double): String {
+            return if (latitude >= 0) {
+                String.format("%.1f", latitude) + "°E"
+            } else {
+                String.format("%.1f", -latitude) + "°W"
+            }
+        }
+
+        fun formatLongitude(longitude: Double): String {
+            return if (longitude >= 0) {
+                String.format("%.1f", longitude) + " °N"
+            } else {
+                String.format("%.1f", -longitude) + " °S"
+            }
+        }
     }
 
     private var locationHelper: LocationHelper? = null
@@ -78,10 +94,13 @@ class LocationActivity : AppCompatActivity() {
     }
 
     private fun processLocation(location: Location?) {
+        val latitude: Double = location?.latitude ?: 0.0
+        val longitude: Double = location?.latitude ?: 0.0
+
         if (location != null) {
             Toast.makeText(
                 this,
-                "Your location is (${location.latitude}, ${location.longitude})",
+                "Location is ${formatLatitude(latitude)}, ${formatLongitude(longitude)}",
                 Toast.LENGTH_SHORT
             ).show()
             googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
