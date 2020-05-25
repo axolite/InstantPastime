@@ -19,7 +19,7 @@ const val MY_PERMISSION_FINE_LOCATION = 101
  */
 class LocationHelper {
 
-    fun getLocation(activity: Activity, processLocation: (Location?) -> Unit) {
+    fun askLocationAccess(activity: Activity): Boolean {
         try {
             val context: Context = activity
             if (ContextCompat.checkSelfPermission(
@@ -28,7 +28,7 @@ class LocationHelper {
                 )
                 == PackageManager.PERMISSION_GRANTED
             ) {
-                processPermissionStatus(PermissionStatus.Accepted, context, processLocation)
+                return true
             } else {
                 //request permissions
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -39,6 +39,13 @@ class LocationHelper {
                 }
             }
         } catch (ex: Exception) {
+        }
+        return false
+    }
+
+    fun getLocation(activity: Activity, processLocation: (Location?) -> Unit) {
+        if (askLocationAccess(activity)) {
+            processPermissionStatus(PermissionStatus.Accepted, activity, processLocation)
         }
     }
 

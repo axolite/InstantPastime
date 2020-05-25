@@ -4,19 +4,13 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_location.*
 
-class LocationActivity(
-    val loadImagesNow: Boolean = false
-) : AppCompatActivity() {
+class LocationActivity() : AppCompatActivity() {
 
     companion object {
         const val LOCATION_REQ_CODE = 0x4488
@@ -40,15 +34,10 @@ class LocationActivity(
     }
 
     private var locationHelper: LocationHelper? = null
-    private var googleMapApi: GoogleMapApi? = null
-    private var googlePlaceApi: GooglePlaceApi? = null
-    private var nbImagesNeeded: Int = 0
-    private val contextualImages: MutableList<Bitmap> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
-        nbImagesNeeded = intent.getIntExtra(NB_IMAGES_ARG, 0)
 
         findViewById<Button>(R.id.loc_accept_button).apply {
             setOnClickListener { acceptButtonClicked() }
@@ -65,30 +54,15 @@ class LocationActivity(
 
         // Save in preferences.
         PrefManager.saveLocationPref(this, value = true)
-        // Set activity result intent.
-        setResultIntent(value = true)
 
         if (locationHelper == null) {
             locationHelper = LocationHelper()
         }
 
-        // Build infrastructure to download images of nearby places.
-        if (loadImagesNow) {
-            if (googleMapApi == null) {
-                googleMapApi = GoogleMapApi()
-                googleMapApi?.init(this)
-            }
-            if (googlePlaceApi == null) {
-                googlePlaceApi = GooglePlaceApi(
-                    NumImages = nbImagesNeeded,
-                    imageRequestReady = { imageRequestedReady(it) }
-                )
-                googlePlaceApi?.init(this)
-            }
-        }
-
-        locationHelper?.getLocation(this) {
-            processLocation(it)
+        // If false, onRequestPermissionsResult() will be called.
+        if (locationHelper?.askLocationAccess(this) == true) {
+            // Close this activity as location access is already granted.
+            finishWithResult(useLocation = true)
         }
     }
 
@@ -103,28 +77,13 @@ class LocationActivity(
 
         // Save in preferences.
         PrefManager.saveLocationPref(this, value = false)
-        // Set activity result intent.
-        setResultIntent(value = false)
 
         AsyncRun {
             Thread.sleep(3000)
             runOnUiThread {
-                finish()
+                // Close this activity returning user's answer.
+                finishWithResult(useLocation = false)
             }
-        }
-    }
-
-    private fun processLocation(location: Location?) {
-        val latitude: Double = location?.latitude ?: 0.0
-        val longitude: Double = location?.latitude ?: 0.0
-
-        if (location != null) {
-            Toast.makeText(
-                this,
-                "Location is ${formatLatitude(latitude)}, ${formatLongitude(longitude)}",
-                Toast.LENGTH_SHORT
-            ).show()
-            googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
         }
     }
 
@@ -136,12 +95,8 @@ class LocationActivity(
         when (requestCode) {
             MY_PERMISSION_FINE_LOCATION ->
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (loadImagesNow) {
-                        locationHelper?.processPermissionStatus(PermissionStatus.Accepted,
-                            this, { loc -> processLocation(loc) })
-                    } else {
-                        finish()
-                    }
+                    // Close this activity returning user's answer.
+                    finishWithResult(useLocation = true)
                 } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
                     onLocationRefused()
                 } else {
@@ -153,34 +108,23 @@ class LocationActivity(
         }
     }
 
-    private fun processPlaces(places: ArrayList<PlaceInfo>) {
-        googlePlaceApi?.getPhotoAndDetail(places)
-    }
-
-    private fun imageRequestedReady(placePhoto: PlacePhoto) {
-        val bitmap = placePhoto.response.bitmap
-        val placeInfo = placePhoto.info
-
-        contextualImages.add(bitmap)
-
-        loc_progress_text.text = getString(
-            R.string.loc_image_progress, contextualImages.size, nbImagesNeeded
-        )
-
-        Log.d("[IMG]", "Received image ${contextualImages.size}/${googlePlaceApi?.NumImages}")
-
-        if (contextualImages.size >= nbImagesNeeded) {
-            finish()
-        }
-    }
-
     /**
      * Sets the result (user answer) in activity result intent.
      */
-    private fun setResultIntent(value: Boolean) {
+    private fun setResultIntent(useLocation: Boolean) {
         val resIntent = Intent().apply {
-            putExtra(PrefManager.USE_LOCATION_PREF_KEY, value)
+            putExtra(PrefManager.USE_LOCATION_PREF_KEY, useLocation)
         }
         setResult(Activity.RESULT_OK, resIntent)
+    }
+
+    /**
+     * Closes this activity returning its result using an intent.
+     */
+    private fun finishWithResult(useLocation: Boolean) {
+        // Set activity result intent.
+        setResultIntent(useLocation)
+        // Close this activity.
+        finish()
     }
 }

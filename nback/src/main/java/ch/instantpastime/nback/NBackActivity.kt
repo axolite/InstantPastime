@@ -2,16 +2,18 @@ package ch.instantpastime.nback
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import ch.instantpastime.LocationActivity
-import ch.instantpastime.LocationHelper
-import ch.instantpastime.PrefManager
+import ch.instantpastime.*
 import ch.instantpastime.nback.ui.BackStackHelper
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_nback.*
@@ -20,6 +22,10 @@ class NBackActivity : AppCompatActivity() {
 
     private val backStackHelper = BackStackHelper(this)
     private var drawerToolbar: ActionBarDrawerToggle? = null
+    private var locationHelper: LocationHelper? = null
+    private var googleMapApi: GoogleMapApi? = null
+    private var googlePlaceApi: GooglePlaceApi? = null
+    private val contextualImages: MutableList<Bitmap> = mutableListOf()
 
     /**
      * Number of symbols (letters, contextual images) to be
@@ -108,7 +114,72 @@ class NBackActivity : AppCompatActivity() {
     }
 
     private fun fetchContextualImages() {
+        if (locationHelper == null) {
+            locationHelper = LocationHelper()
+        }
+        if (googleMapApi == null) {
+            googleMapApi = GoogleMapApi()
+            googleMapApi?.init(this)
+        }
+        if (googlePlaceApi == null) {
+            googlePlaceApi = GooglePlaceApi(
+                NumImages = nbSymbols,
+                imageRequestReady = { imageRequestedReady(it) }
+            )
+            googlePlaceApi?.init(this)
+        }
 
+        locationHelper?.getLocation(this) {
+            processLocation(it)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            MY_PERMISSION_FINE_LOCATION ->
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationHelper?.processPermissionStatus(PermissionStatus.Accepted, this) {
+                        processLocation(it)
+                    }
+                }
+            else -> {
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            }
+        }
+    }
+
+    private fun processLocation(location: Location?) {
+        if (location != null) {
+            val latitude: Double = location.latitude
+            val longitude: Double = location.latitude
+            Toast.makeText(
+                this,
+                "Location is ${LocationActivity.formatLatitude(latitude)}, ${LocationActivity.formatLongitude(
+                    longitude
+                )}",
+                Toast.LENGTH_SHORT
+            ).show()
+            googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
+        }
+    }
+
+    private fun imageRequestedReady(placePhoto: PlacePhoto) {
+        val bitmap = placePhoto.bitmap
+        contextualImages.add(bitmap)
+        Log.d("[IMG]", "Received image ${contextualImages.size}/${googlePlaceApi?.NumImages}")
+
+        if (contextualImages.size >= nbSymbols) {
+            Toast.makeText(this, "Loaded all $nbSymbols contextual images", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
+
+    private fun processPlaces(places: ArrayList<PlaceInfo>) {
+        googlePlaceApi?.getPhotoAndDetail(places)
     }
 
 }
