@@ -46,8 +46,10 @@ class NBackActivity : AppCompatActivity() {
             LocationHelper.startLocationActivity(this, nbImages = nbSymbols)
         } else if (LocationHelper.wantUseLocation(this, defValue = false)) {
             // The user wants to use location and it is authorized.
+            fetchContextualImages()
         } else {
             // The user doesn't want to use location.
+            useStockImages()
         }
     }
 
@@ -107,6 +109,8 @@ class NBackActivity : AppCompatActivity() {
                         data?.getBooleanExtra(PrefManager.USE_LOCATION_PREF_KEY, false)
                     if (useLocation == true) {
                         fetchContextualImages()
+                    } else {
+                        useStockImages()
                     }
                 }
             }
@@ -132,6 +136,10 @@ class NBackActivity : AppCompatActivity() {
         locationHelper?.getLocation(this) {
             processLocation(it)
         }
+    }
+
+    private fun useStockImages() {
+        Toast.makeText(this, "Using stock images", Toast.LENGTH_SHORT).show()
     }
 
     override fun onRequestPermissionsResult(
@@ -179,6 +187,7 @@ class NBackActivity : AppCompatActivity() {
     }
 
     private fun processPlaces(places: ArrayList<PlaceInfo>) {
+        Toast.makeText(this, "Fetching contextual images", Toast.LENGTH_SHORT).show()
         googlePlaceApi?.getPhotoAndDetail(places)
     }
 
