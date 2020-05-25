@@ -1,5 +1,7 @@
 package ch.instantpastime.nback
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -7,7 +9,9 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import ch.instantpastime.LocationActivity
 import ch.instantpastime.LocationHelper
+import ch.instantpastime.PrefManager
 import ch.instantpastime.nback.ui.BackStackHelper
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_nback.*
@@ -88,9 +92,23 @@ class NBackActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        if (!backStackHelper.onBackPressed()) {
-            super.onBackPressed()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            LocationActivity.LOCATION_REQ_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val useLocation =
+                        data?.getBooleanExtra(PrefManager.USE_LOCATION_PREF_KEY, false)
+                    if (useLocation == true) {
+                        fetchContextualImages()
+                    }
+                }
+            }
         }
     }
+
+    private fun fetchContextualImages() {
+
+    }
+
 }

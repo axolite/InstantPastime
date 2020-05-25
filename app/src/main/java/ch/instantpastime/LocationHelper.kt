@@ -126,11 +126,11 @@ class LocationHelper {
         /**
          * Starts an activity @see LocationActivity to ask the user for location.
          */
-        fun startLocationActivity(context: Context, nbImages: Int) {
-            val intent = Intent(context, LocationActivity::class.java).apply {
+        fun startLocationActivity(activity: Activity, nbImages: Int) {
+            val intent = Intent(activity, LocationActivity::class.java).apply {
                 putExtra(LocationActivity.NB_IMAGES_ARG, nbImages)
             }
-            context.startActivity(intent)
+            activity.startActivityForResult(intent, LocationActivity.LOCATION_REQ_CODE)
         }
     }
 

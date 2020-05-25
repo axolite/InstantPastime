@@ -1,6 +1,8 @@
 package ch.instantpastime
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.location.Location
@@ -12,9 +14,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_location.*
 
-class LocationActivity : AppCompatActivity() {
+class LocationActivity(
+    val loadImagesNow: Boolean = false
+) : AppCompatActivity() {
 
     companion object {
+        const val LOCATION_REQ_CODE = 0x4488
         const val NB_IMAGES_ARG = "nbImages"
 
         fun formatLatitude(latitude: Double): String {
@@ -60,21 +65,28 @@ class LocationActivity : AppCompatActivity() {
 
         // Save in preferences.
         PrefManager.saveLocationPref(this, value = true)
+        // Set activity result intent.
+        setResultIntent(value = true)
 
         if (locationHelper == null) {
             locationHelper = LocationHelper()
         }
-        if (googleMapApi == null) {
-            googleMapApi = GoogleMapApi()
-            googleMapApi?.init(this)
+
+        // Build infrastructure to download images of nearby places.
+        if (loadImagesNow) {
+            if (googleMapApi == null) {
+                googleMapApi = GoogleMapApi()
+                googleMapApi?.init(this)
+            }
+            if (googlePlaceApi == null) {
+                googlePlaceApi = GooglePlaceApi(
+                    NumImages = nbImagesNeeded,
+                    imageRequestReady = { imageRequestedReady(it) }
+                )
+                googlePlaceApi?.init(this)
+            }
         }
-        if (googlePlaceApi == null) {
-            googlePlaceApi = GooglePlaceApi(
-                NumImages = nbImagesNeeded,
-                imageRequestReady = { imageRequestedReady(it) }
-            )
-            googlePlaceApi?.init(this)
-        }
+
         locationHelper?.getLocation(this) {
             processLocation(it)
         }
@@ -91,6 +103,8 @@ class LocationActivity : AppCompatActivity() {
 
         // Save in preferences.
         PrefManager.saveLocationPref(this, value = false)
+        // Set activity result intent.
+        setResultIntent(value = false)
 
         AsyncRun {
             Thread.sleep(3000)
@@ -122,8 +136,12 @@ class LocationActivity : AppCompatActivity() {
         when (requestCode) {
             MY_PERMISSION_FINE_LOCATION ->
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationHelper?.processPermissionStatus(PermissionStatus.Accepted,
-                        this, { loc -> processLocation(loc) })
+                    if (loadImagesNow) {
+                        locationHelper?.processPermissionStatus(PermissionStatus.Accepted,
+                            this, { loc -> processLocation(loc) })
+                    } else {
+                        finish()
+                    }
                 } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
                     onLocationRefused()
                 } else {
@@ -154,5 +172,15 @@ class LocationActivity : AppCompatActivity() {
         if (contextualImages.size >= nbImagesNeeded) {
             finish()
         }
+    }
+
+    /**
+     * Sets the result (user answer) in activity result intent.
+     */
+    private fun setResultIntent(value: Boolean) {
+        val resIntent = Intent().apply {
+            putExtra(PrefManager.USE_LOCATION_PREF_KEY, value)
+        }
+        setResult(Activity.RESULT_OK, resIntent)
     }
 }
