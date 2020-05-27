@@ -14,10 +14,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import ch.instantpastime.*
+import ch.instantpastime.memory.MemoryActivity.Companion.myscore
+import ch.instantpastime.memory.MemoryActivity.Companion.num_images
+import ch.instantpastime.memory.MemoryActivity.Companion.level
+import ch.instantpastime.memory.MemoryActivity.Companion.num_cards
 import ch.instantpastime.memory.MemoryActivity.Companion.prefManager
 import ch.instantpastime.memory.MemoryActivity.Companion.tuto_images
 import ch.instantpastime.memory.MemoryActivity.Companion.tuto_slides
@@ -27,6 +32,7 @@ import ch.instantpastime.memory.maximizeBox
 import kotlinx.android.synthetic.main.fragment_memory.*
 import ch.instantpastime.PlaceInfo
 import ch.instantpastime.memory.*
+
 import ch.instantpastime.memory.R
 import kotlinx.android.synthetic.main.fragment_memory.view.*
 
@@ -36,7 +42,6 @@ import kotlinx.android.synthetic.main.fragment_memory.view.*
  * create an instance of this fragment.
  */
 
-const val num_images = 32
 
 
 class MemoryFragment : Fragment() {
@@ -83,7 +88,7 @@ class MemoryFragment : Fragment() {
             }
             if (googlePlaceApi == null) {
                 googlePlaceApi = GooglePlaceApi(
-                    NumImages = 32,
+                    NumImages = num_images,
                     imageRequestReady = { imageRequestedReady(it) }
                 )
                 googlePlaceApi?.init(ctx)
@@ -148,16 +153,56 @@ class MemoryFragment : Fragment() {
         val viewsBox4 = view.box4.getAllViews()
 
         for (myview in viewsBox1) {
-            if (myview is ImageView) myCards.add(myview)
+            if (myview is ImageView) {
+                if (getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                    myCards.add(myview as ImageView)
+                }
+                else myview.visibility = View.GONE
+            }
+            if (myview is LinearLayout) {
+                if (! getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                    myview.visibility = View.GONE
+                }
+            }
         }
         for (myview in viewsBox2) {
-            if (myview is ImageView) myCards.add(myview)
+            if (myview is ImageView) {
+                if (getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                    myCards.add(myview as ImageView)
+                }
+                else myview.visibility = View.GONE
+            }
+            if (myview is LinearLayout) {
+                if (! getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                    myview.visibility = View.GONE
+                }
+            }
         }
         for (myview in viewsBox3) {
-            if (myview is ImageView) myCards.add(myview)
+            if (myview is ImageView) {
+                if (getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                    myCards.add(myview as ImageView)
+                }
+                else myview.visibility = View.GONE
+            }
+            if (myview is LinearLayout) {
+                if (! getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                    myview.visibility = View.GONE
+                }
+            }
         }
         for (myview in viewsBox4) {
-            if (myview is ImageView) myCards.add(myview)
+            if (myview is ImageView) {
+                if (getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                    myCards.add(myview as ImageView)
+                }
+                else myview.visibility = View.GONE
+            }
+            if (myview is LinearLayout) {
+                if (! getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                    myview.visibility = View.GONE
+                }
+            }
         }
 
 
@@ -197,21 +242,35 @@ class MemoryFragment : Fragment() {
 
                         currentCard.setEnabled(false)
                         previousCardId = null
+                        myscore.num_mathches +=1
                         Toast.makeText(
                             this@MemoryFragment.getContext(),
-                            "Bravo!!",
+                            "Bravo!! Score: " +  myscore.totalScore(),
                             Toast.LENGTH_SHORT
                         )
                             .show();
+
                         showDialog("Description of the image", currentCardId!!)
+
+                        if ( myscore.num_mathches== num_images){
+                            //  End .. Show Score
+                            var finalScore = DialogScore()
+                            finalScore.showDialog(this@MemoryFragment.getContext()!!, myscore.totalScore().toString())
+                            Toast.makeText(
+                                this@MemoryFragment.getContext(),
+                                "You have completed the memory!! Score: " +  myscore.totalScore(),
+                                Toast.LENGTH_SHORT
+                            )
+                                .show();
+                        }
                     } else {
                         matching = true
+                        myscore.num_trials +=1
                         Toast.makeText(
                             this@MemoryFragment.getContext(),
-                            "No match, try again!",
+                            "No match, try again!  Score: " +  myscore.totalScore(),
                             Toast.LENGTH_SHORT
                         ).show();
-
                         handler.postDelayed({
                             execPostDelayed()
                         }, 3000)
@@ -220,7 +279,7 @@ class MemoryFragment : Fragment() {
                 }
             } else {
                 lateinit var box: View
-                val index = ((currentCard!!.tag as Int) / 16) as Int
+                val index = ((currentCard!!.tag as Int) / (num_cards[level]/4)) as Int
                 if (index == 0) box = box1
                 else if (index == 1) box = box2
                 else if (index == 2) box = box3
@@ -283,7 +342,7 @@ class MemoryFragment : Fragment() {
         val bitmap = placePhoto.response.bitmap
         val placeInfo = placePhoto.info
 
-        if ((bitmap != null) and (imgindex < 32)) {
+        if ((bitmap != null) and (imgindex < num_images)) {
             val reciv_img = bitmapClass(bitmap, placeInfo.placeDesc, placeInfo.placeLoc)
             myBitmaps.add(reciv_img)
             myBitmaps.add(reciv_img)
@@ -293,16 +352,18 @@ class MemoryFragment : Fragment() {
 
         imgindex += 1
 
-        welcomeText.setText("Loading images " + (imgindex * 100 / ch.instantpastime.memory.num_images).toString() + "%")
+        welcomeText.setText("Loading images " + (imgindex * 100 / num_images).toString() + "%")
 
-        if (imgindex == 32) {
+        if (imgindex == num_images) {
             welcomeText.setText("Ready!!. (Debugging mode -> Cards not shuffled)")
             myBitmaps.shuffle()
             var i = 0
             for (myCard in myCards) {
+
                 myCard.setOnClickListener { onClick_img(it) }
                 myCard.tag = i
                 i += 1
+
             }
         }
 
@@ -354,7 +415,7 @@ class MemoryFragment : Fragment() {
                     locationHelper?.processPermissionStatus(
                         PermissionStatus.Accepted,
                         context, { loc -> processLocation(loc) })
-                } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
                     locationHelper?.processPermissionStatus(
                         PermissionStatus.RefusedOnce,
                         context, { loc -> processLocation(loc) })

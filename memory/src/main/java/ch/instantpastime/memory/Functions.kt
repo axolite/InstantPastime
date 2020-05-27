@@ -144,3 +144,4 @@ fun scaleBitmap(bitmap: Bitmap, wantedWidth: Int, wantedHeight: Int): Bitmap? {
     canvas.drawBitmap(bitmap, m, Paint())
     return output
 }
+

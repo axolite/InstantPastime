@@ -13,7 +13,7 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_memory.*
 
 
-const val num_images = 32
+
 
 lateinit var drawer_toolbar: ActionBarDrawerToggle
 
@@ -28,7 +28,16 @@ class MemoryActivity : AppCompatActivity() {
         lateinit var tuto_slides: IntArray
         lateinit var tuto_images: IntArray
         lateinit var tuto_texts: IntArray
+
+        var level = 3
+        val num_cards  = intArrayOf(64, 36, 16, 8)
+        var num_images = num_cards[level]/2
+
+        var myscore = MemoryScore()
+
+
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //android.os.Debug.waitForDebugger()
