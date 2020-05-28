@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import ch.instantpastime.*
 import ch.instantpastime.nback.ui.BackStackHelper
+import ch.instantpastime.nback.ui.NBackResource
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_nback.*
 
@@ -191,4 +192,11 @@ class NBackActivity : AppCompatActivity() {
         googlePlaceApi?.getPhotoAndDetail(places)
     }
 
+    fun getCardImage(index: Int): Bitmap? {
+        if (index < contextualImages.size) {
+            return contextualImages[index]
+        } else {
+            return NBackResource.getStockCardImage(this, index)
+        }
+    }
 }
