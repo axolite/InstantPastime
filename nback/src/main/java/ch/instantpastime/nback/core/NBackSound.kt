@@ -1,9 +1,9 @@
 package ch.instantpastime.nback.core
 
 import android.content.Context
-import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
 import android.util.Log
+import ch.instantpastime.nback.ui.NBackResource
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -26,9 +26,9 @@ class NBackSound {
         if (index in 0 until letterCount) {
             _player?.apply {
                 reset()
-                val soundPath: Path? = Paths.get(SoundFolderName, _sounds[index])
+                val soundPath: Path? = Paths.get(NBackResource.SoundFolderName, _sounds[index])
                 if (soundPath != null) {
-                    val afd = openAsset(context, soundPath.toString())
+                    val afd = NBackResource.openAsset(context, soundPath.toString())
                     if (afd != null) {
 
                         // Set the sound file to play.
@@ -75,19 +75,6 @@ class NBackSound {
 
     fun exit() {
         _player?.release()
-    }
-
-    private fun openAsset(context: Context, fileName: String): AssetFileDescriptor? {
-        return try {
-            context.assets.openFd(fileName)
-        } catch (ex: Exception) {
-            Log.d(javaClass.simpleName, "Error loading sound asset '$fileName'", ex)
-            null
-        }
-    }
-
-    companion object {
-        val SoundFolderName = "letters"
     }
 
 }

@@ -1,5 +1,8 @@
 package ch.instantpastime.nback.ui
 
+import android.content.Context
+import android.content.res.AssetFileDescriptor
+import android.util.Log
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
@@ -7,6 +10,18 @@ import ch.instantpastime.nback.R
 import ch.instantpastime.nback.core.NBackTrial
 
 object NBackResource {
+
+    const val SoundFolderName = "letters"
+
+    fun openAsset(context: Context, fileName: String): AssetFileDescriptor? {
+        return try {
+            context.assets.openFd(fileName)
+        } catch (ex: Exception) {
+            Log.d(javaClass.simpleName, "Error loading sound asset '$fileName'", ex)
+            null
+        }
+    }
+
     /**
      * Gets the cell in the n-back grid that corresponds to the given index.
      */
