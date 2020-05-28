@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -27,7 +28,7 @@ class NBackActivity : AppCompatActivity() {
     private var googleMapApi: GoogleMapApi? = null
     private var googlePlaceApi: GooglePlaceApi? = null
     private val contextualImages: MutableList<Bitmap> = mutableListOf()
-    private var frozenContextualImages: List<Bitmap>? = mutableListOf()
+    private var frozenContextualImages: List<Bitmap>? = listOf()
 
     /**
      * Number of symbols (letters, contextual images) to be
@@ -83,6 +84,9 @@ class NBackActivity : AppCompatActivity() {
                             "Installation",
                             Toast.LENGTH_SHORT
                         ).show()
+                    }
+                    ch.instantpastime.R.id.menu_general_preference -> {
+                        showGeneralPreferencesDialog()
                     }
                     else -> {
                     }
@@ -207,5 +211,28 @@ class NBackActivity : AppCompatActivity() {
 
     fun freezeImageSet() {
         frozenContextualImages = contextualImages.toList()
+    }
+
+    private fun showGeneralPreferencesDialog() {
+        val dialog = GeneralPreferenceDialog(this, { enableContextualImages(it) })
+
+        val newAttr = WindowManager.LayoutParams()
+        val oldAttr = dialog.window?.attributes
+        if (oldAttr != null) {
+            newAttr.copyFrom(oldAttr)
+            newAttr.width = WindowManager.LayoutParams.MATCH_PARENT
+            newAttr.height = WindowManager.LayoutParams.MATCH_PARENT
+        }
+        dialog.window?.attributes = newAttr
+        dialog.show()
+    }
+
+    private fun enableContextualImages(b: Boolean) {
+        val msg = if (b) {
+            "Location Checked !"
+        } else {
+            "Location Unchecked !"
+        }
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }

@@ -2,9 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/info"
-        android:title="À propos de.."/>
+        android:title="@string/menu_about"/>
     <item android:id="@+id/install"
-        android:title="Install App"/>
-
+        android:title="@string/menu_install_app"/>
+    <item android:id="@+id/menu_general_preference"
+        android:title="@string/menu_general_preference"/>
 
 </menu>
