@@ -165,7 +165,7 @@ class NBackFragment : Fragment(), INBackController {
                         NBackState.Idle -> {
                             mEnvironmentSettings = loadGameEnvironmentSettings()
                             // Stop fetching contextual images once the game starts.
-                            (activity as? NBackActivity)?.cancelImageReception()
+                            (activity as? NBackActivity)?.freezeImageSet()
                             board?.drawNext()
                         }
                         else -> activity?.runOnUiThread {
