@@ -29,6 +29,13 @@ class NBackActivity : AppCompatActivity() {
     private val contextualImages: MutableList<Bitmap> = mutableListOf()
 
     /**
+     * Once the game has started, stock images
+     * should be used if there are not enough contextual images.
+     * and if a new image received it must be discarded.
+     */
+    var allowImageReception: Boolean = true
+
+    /**
      * Number of symbols (letters, contextual images) to be
      * available in the game.
      */
@@ -119,6 +126,7 @@ class NBackActivity : AppCompatActivity() {
     }
 
     private fun fetchContextualImages() {
+        allowImageReception = true
         if (locationHelper == null) {
             locationHelper = LocationHelper()
         }
@@ -177,6 +185,9 @@ class NBackActivity : AppCompatActivity() {
     }
 
     private fun imageRequestedReady(placePhoto: PlacePhoto) {
+        if (!allowImageReception) {
+            return
+        }
         val bitmap = placePhoto.bitmap
         contextualImages.add(bitmap)
         Log.d("[IMG]", "Received image ${contextualImages.size}/${googlePlaceApi?.NumImages}")
@@ -198,5 +209,13 @@ class NBackActivity : AppCompatActivity() {
         } else {
             return NBackResource.getStockCardImage(this, index)
         }
+    }
+
+    fun cancelImageReception() {
+        // It seems that the com.google.android.gms.tasks.Task returned by
+        // PlacesClient.fetchPhoto(FetchPhotoRequest)) cannot be cancelled,
+        // according to https://stackoverflow.com/a/43478082 .
+        // So use a flag to dismiss the late responses from within the callback.
+        allowImageReception = false
     }
 }
