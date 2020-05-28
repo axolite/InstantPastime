@@ -2,7 +2,9 @@ package ch.instantpastime.nback.fragments
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.PorterDuff
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +17,9 @@ import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import ch.instantpastime.AsyncRun
+import ch.instantpastime.BitmapHelper
 import ch.instantpastime.ScoreActivity
+import ch.instantpastime.nback.NBackActivity
 import ch.instantpastime.nback.R
 import ch.instantpastime.nback.core.*
 import ch.instantpastime.nback.ui.NBackResource
@@ -54,6 +58,14 @@ class NBackFragment : Fragment(), INBackController {
     private var mPastLocationsPanel: LinearLayout? = null
     private var mPastLettersPanel: LinearLayout? = null
     private var mLastLocationSquare: ImageView? = null
+    private var mEnvironmentSettings: NBackEnvironmentSettings? = null
+
+    private val currentSymbolType: NBackEnvironmentSettings.SymbolType
+        get() {
+            return mEnvironmentSettings?.run {
+                symbolType
+            } ?: NBackEnvironmentSettings.SymbolType.Image
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -150,7 +162,10 @@ class NBackFragment : Fragment(), INBackController {
                     updateControls(newState)
                     when (oldState) {
                         NBackState.Paused -> startTimer()
-                        NBackState.Idle -> board?.drawNext()
+                        NBackState.Idle -> {
+                            mEnvironmentSettings = loadGameEnvironmentSettings()
+                            board?.drawNext()
+                        }
                         else -> activity?.runOnUiThread {
                             Toast.makeText(
                                 context, "Wrong source state: $oldState",
@@ -494,31 +509,56 @@ class NBackFragment : Fragment(), INBackController {
 
             // Colorize the next location.
             clearLocationSquare(oldSquare)
-            newSquare?.setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    R.color.colorActiveSquare
-                )
-            )
-            // Play or show the next letter.
-            nbackSound.playArticle(context, next.symbol.index)
-            when (val c = nbackSound.getLetter(next.symbol.index)) {
-                null -> {
-                }
-                else -> {
-                    val drawableId = NBackResource.getLetterDrawableId(c)
-                    val drawable = ContextCompat.getDrawable(context, drawableId)
-                    if (drawable != null) {
-                        newSquare?.setImageDrawable(drawable)
+            when (currentSymbolType) {
+                NBackEnvironmentSettings.SymbolType.Image -> {
+                    if (newSquare != null) {
+                        val bitmap = getScaledCardBitmap(
+                            next.symbol.index,
+                            width = newSquare.width,
+                            height = newSquare.height
+                        )
+                        if (bitmap != null) {
+                            newSquare.background = BitmapDrawable(resources, bitmap)
+                        }
                     }
-                    Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT)
-                        .show()
+                }
+                NBackEnvironmentSettings.SymbolType.Letter -> {
+                    newSquare?.setBackgroundColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.colorActiveSquare
+                        )
+                    )
+                    // Play or show the next letter.
+                    nbackSound.playArticle(context, next.symbol.index)
+                    nbackSound.getLetter(next.symbol.index)?.let { c ->
+                        val drawableId = NBackResource.getLetterDrawableId(c)
+                        val drawable = ContextCompat.getDrawable(context, drawableId)
+                        if (drawable != null) {
+                            newSquare?.setImageDrawable(drawable)
+                        }
+                        Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             }
             updatePastLocations(next)
             updatePastLetters(next)
             mLastLocationSquare = newSquare
             updateAnswerZone(board?.expectAnswer == true)
+        }
+    }
+
+    private fun getScaledCardBitmap(cardIndex: Int, width: Int, height: Int): Bitmap? {
+        val bitmap = (activity as? NBackActivity)?.getCardImage(cardIndex)
+        return if (bitmap != null) {
+            BitmapHelper.scaleBitmap(
+                bitmap,
+                wantedHeight = height,
+                wantedWidth = width
+            )
+        } else {
+            null
         }
     }
 
@@ -562,6 +602,28 @@ class NBackFragment : Fragment(), INBackController {
             NBackRun.DEFAULT_MILLISEC
         )
         return NBackSettings(level, time_per_trial)
+    }
+
+    private fun loadGameEnvironmentSettings(): NBackEnvironmentSettings {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val symbolType = sharedPreferences.getString(
+            NBackSettings.NBACK_SYMBOL_KEY,
+            NBackPreferenceFragment.SYMBOL_IMAGE
+        ).let {
+            when (it) {
+                NBackPreferenceFragment.SYMBOL_IMAGE -> NBackEnvironmentSettings.SymbolType.Image
+                NBackPreferenceFragment.SYMBOL_LETTER -> NBackEnvironmentSettings.SymbolType.Letter
+                else -> NBackEnvironmentSettings.SymbolType.Image
+            }
+        }
+        val playSound = sharedPreferences.getBoolean(
+            NBackSettings.NBACK_SOUND_KEY,
+            symbolType == NBackEnvironmentSettings.SymbolType.Letter
+        )
+        return NBackEnvironmentSettings(
+            symbolType = symbolType,
+            playSound = playSound
+        )
     }
 
     private fun applySettings(settings: NBackSettings, view: View) {
