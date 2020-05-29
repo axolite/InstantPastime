@@ -25,6 +25,13 @@ android {
 
     dynamicFeatures = [":memory", ":nback"]
 
+    sourceSets {
+        main {
+            assets {
+                srcDirs 'src/main/assets', 'src/main/assets/cards'
+            }
+        }
+    }
 
 }
 

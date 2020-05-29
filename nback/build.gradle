@@ -16,7 +16,7 @@ android {
     sourceSets {
         main {
             assets {
-                srcDirs 'src/main/assets', 'src/main/assets/cards', 'src/main/assets/letters'
+                srcDirs 'src/main/assets', 'src/main/assets/letters'
             }
         }
     }
