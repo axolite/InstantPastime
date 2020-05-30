@@ -46,8 +46,8 @@ class NBackFragment : Fragment(), INBackController {
     private var timer: NBackCountDown? = null
     val nbackSound: NBackSound = NBackSound()
 
-    private var mLocationFeedbackZone: ImageView? = null
-    private var mLetterFeedbackZone: ImageView? = null
+    private var mLocationFeedbackZone: View? = null
+    private var mLetterFeedbackZone: View? = null
 
     private var mPauseButton: Button? = null
     private var mRestartButton: Button? = null
@@ -59,6 +59,7 @@ class NBackFragment : Fragment(), INBackController {
     private var mPastLettersPanel: LinearLayout? = null
     private var mLastLocationSquare: ImageView? = null
     private var mEnvironmentSettings: NBackEnvironmentSettings? = null
+    private var cheatCounter: Int = 0
 
     private val currentSymbolType: NBackEnvironmentSettings.SymbolType
         get() {
@@ -82,8 +83,8 @@ class NBackFragment : Fragment(), INBackController {
         mRestartButton = view.safeFindViewById<Button>(R.id.restart_button)
         mLocationButton = view.safeFindViewById<Button>(R.id.locationButton)
         mLetterButton = view.safeFindViewById<Button>(R.id.letterButton)
-        mLocationFeedbackZone = view.safeFindViewById(R.id.nback_location_feedback)
-        mLetterFeedbackZone = view.safeFindViewById(R.id.nback_letter_feedback)
+        mLocationFeedbackZone = view.safeFindViewById(R.id.nback_location_part)
+        mLetterFeedbackZone = view.safeFindViewById(R.id.nback_letter_part)
         mPauseButton = view.safeFindViewById(R.id.pause_button)
         mPastLocationsPanel = view.safeFindViewById(R.id.nback_past_locations_panel)
         mPastLettersPanel = view.safeFindViewById(R.id.nback_past_letters_panel)
@@ -109,7 +110,35 @@ class NBackFragment : Fragment(), INBackController {
             }
         )
 
+        // Enable "cheat" hints.
+        view.safeFindViewById<View>(R.id.case0)?.setOnClickListener { squareClicked(it) }
+        view.safeFindViewById<View>(R.id.case1)?.setOnClickListener { squareClicked(it) }
+        view.safeFindViewById<View>(R.id.case2)?.setOnClickListener { squareClicked(it) }
+        view.safeFindViewById<View>(R.id.case3)?.setOnClickListener { squareClicked(it) }
+        view.safeFindViewById<View>(R.id.case4)?.setOnClickListener { squareClicked(it) }
+        view.safeFindViewById<View>(R.id.case5)?.setOnClickListener { squareClicked(it) }
+        view.safeFindViewById<View>(R.id.case6)?.setOnClickListener { squareClicked(it) }
+        view.safeFindViewById<View>(R.id.case7)?.setOnClickListener { squareClicked(it) }
+        view.safeFindViewById<View>(R.id.case8)?.setOnClickListener { squareClicked(it) }
+        mPastLocationsPanel?.setOnClickListener {
+            mPastLocationsPanel?.visibility = View.GONE
+            mPastLettersPanel?.visibility = View.GONE
+        }
+        mPastLettersPanel?.setOnClickListener {
+            mPastLocationsPanel?.visibility = View.GONE
+            mPastLettersPanel?.visibility = View.GONE
+        }
+
         return view
+    }
+
+    private fun squareClicked(view: View) {
+        cheatCounter++
+        if (cheatCounter >= 7) {
+            cheatCounter = 0
+            mPastLocationsPanel?.visibility = View.VISIBLE
+            mPastLettersPanel?.visibility = View.VISIBLE
+        }
     }
 
     override fun onPause() {
@@ -175,6 +204,8 @@ class NBackFragment : Fragment(), INBackController {
                             ).show()
                         }
                     }
+                    // Reset "cheat" counter.
+                    cheatCounter = 0
                 }
                 NBackState.Paused -> {
                     // Update the controls.

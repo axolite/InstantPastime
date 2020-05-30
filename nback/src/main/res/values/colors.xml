@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorActiveSquare">@color/colorPrimaryDark</color>
+    <color name="colorActiveSquare">@color/colorPrimary</color>
     <color name="colorActiveLetter">#FFFFFF</color>
     <color name="colorIdleSquare">#FFFFFF</color>
-    <color name="colorNBackCorrect">#8BC34A</color>
-    <color name="colorNBackWrong">#E91E63</color>
-    <color name="colorNBackActual">#00BCD4</color>
-    <color name="colorNBackAnswer">#9C27B0</color>
-    <color name="colorNBackGrid">@color/colorAccent</color>
+    <color name="colorNBackCorrect">#9ccc65</color>
+    <color name="colorNBackWrong">#ec407a</color>
+    <color name="colorNBackActual">#26c6da</color>
+    <color name="colorNBackAnswer">#b39ddb</color>
+    <color name="colorNBackGrid">#EFEFEF</color>
     <color name="colorTransparent">#00000000</color>
+    <color name="colorNBackBg">#EFEFEF</color>
     <!--
     Color palette tool:
     https://www.materialpalette.com/
