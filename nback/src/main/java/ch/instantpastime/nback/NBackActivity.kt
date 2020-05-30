@@ -58,6 +58,7 @@ class NBackActivity : AppCompatActivity() {
 
     private fun initDrawer() {
         val drawerLayout = findViewById<View>(R.id.local_drawer_layout) as? DrawerLayout
+        this.drawerLayout = drawerLayout
         if (drawerLayout != null) {
             val drawerToolbar = ActionBarDrawerToggle(this, drawerLayout, 0, 0).apply {
                 syncState()
@@ -91,6 +92,7 @@ class NBackActivity : AppCompatActivity() {
                     else -> {
                     }
                 }
+                drawerLayout?.closeDrawers()
                 true
             }
         }
