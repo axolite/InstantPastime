@@ -26,7 +26,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nback_status_include"
-        app:layout_constraintBottom_toTopOf="@id/nback_buttons"/>
+        app:layout_constraintBottom_toTopOf="@id/nback_info_control"/>
 
     <!-- N-back time progress bar -->
     <!--
@@ -41,80 +41,115 @@
         />
     -->
 
-    <!-- N-back controls -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/nback_buttons"
+    <FrameLayout android:id="@+id/nback_info_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/layout_include"
-        app:layout_constraintBottom_toTopOf="@id/restart_button">
+        app:layout_constraintBottom_toTopOf="@id/restart_button"
+        android:animateLayoutChanges="true">
 
-        <!-- N-back location controls -->
-        <LinearLayout android:id="@+id/nback_location_part"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
+        <!-- N-back panel before enough drawings -->
+        <LinearLayout android:id="@+id/nback_pre_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/nback_letter_part"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <LinearLayout android:id="@+id/nback_past_letters_panel"
-                style="@android:style/Widget.ProgressBar.Horizontal"
+            android:visibility="invisible"
+            android:layout_gravity="center"
+            android:gravity="center"
+            tools:visibility="gone">
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:minWidth="0dp"
-                android:background="@color/colorIdleSquare"
-                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:text="@string/nback_memorize_prepare"
                 android:layout_gravity="center"
-                tools:layout_width="120dp"
-                tools:layout_height="40dp"
-                tools:background="#fff">
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <!-- N-back controls -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/nback_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/layout_include"
+            app:layout_constraintBottom_toTopOf="@id/restart_button"
+            android:visibility="invisible"
+            tools:visibility="visible">
+
+            <!-- N-back location controls -->
+            <LinearLayout android:id="@+id/nback_location_part"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/nback_letter_part"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:background="@color/colorNBackCorrect">
+
+                <LinearLayout android:id="@+id/nback_past_locations_panel"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:layout_width="120dp"
+                    tools:layout_height="40dp"
+                    tools:background="#fff"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:minWidth="0dp"
+                    android:background="@color/colorIdleSquare"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center"/>
+                <Button android:id="@+id/locationButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:text="@string/same_location"/>
             </LinearLayout>
-            <Button android:id="@+id/locationButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:enabled="false"
-                android:text="@string/same_location"/>
-        </LinearLayout>
 
-        <!-- N-back symbol controls -->
-        <LinearLayout android:id="@+id/nback_letter_part"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:orientation="vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            app:layout_constraintLeft_toRightOf="@id/nback_location_part"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <LinearLayout android:id="@+id/nback_past_locations_panel"
-                style="@android:style/Widget.ProgressBar.Horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:minWidth="0dp"
-                android:background="@color/colorIdleSquare"
-                android:orientation="horizontal"
-                android:layout_gravity="center"
-                tools:layout_width="120dp"
-                tools:layout_height="40dp"
-                tools:background="#fff"/>
-            <Button android:id="@+id/letterButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:enabled="false"
-                android:text="@string/same_sound"/>
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- N-back symbol controls -->
+            <LinearLayout android:id="@+id/nback_letter_part"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:orientation="vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                app:layout_constraintLeft_toRightOf="@id/nback_location_part"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:background="@color/colorNBackWrong">
+
+                <LinearLayout android:id="@+id/nback_past_letters_panel"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    tools:layout_width="120dp"
+                    tools:layout_height="40dp"
+                    tools:background="#fff"
+                    style="@android:style/Widget.ProgressBar.Horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:minWidth="0dp"
+                    android:background="@color/colorIdleSquare"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+                </LinearLayout>
+                <Button android:id="@+id/letterButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:text="@string/same_sound"/>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
     <!-- Start/stop button -->
     <Button android:id="@+id/restart_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/start_game_short"
-        app:layout_constraintTop_toBottomOf="@id/nback_buttons"
+        app:layout_constraintTop_toBottomOf="@id/nback_info_control"
         app:layout_constraintBottom_toTopOf="@id/pause_button"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>

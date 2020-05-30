@@ -46,6 +46,9 @@ class NBackFragment : Fragment(), INBackController {
     private var timer: NBackCountDown? = null
     val nbackSound: NBackSound = NBackSound()
 
+    private var mInfoControlPanel: ViewGroup? = null
+    private var mButtonsPanel: ViewGroup? = null
+    private var mPreInfoPanel: ViewGroup? = null
     private var mLocationFeedbackZone: View? = null
     private var mLetterFeedbackZone: View? = null
 
@@ -80,6 +83,9 @@ class NBackFragment : Fragment(), INBackController {
         )
         timer?.totalMilliseconds = nbackSettings.time_per_trial
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
+        mInfoControlPanel = view.safeFindViewById(R.id.nback_info_control)
+        mButtonsPanel = view.safeFindViewById<ViewGroup>(R.id.nback_buttons)
+        mPreInfoPanel = view.safeFindViewById<ViewGroup>(R.id.nback_pre_info)
         mRestartButton = view.safeFindViewById<Button>(R.id.restart_button)
         mLocationButton = view.safeFindViewById<Button>(R.id.locationButton)
         mLetterButton = view.safeFindViewById<Button>(R.id.letterButton)
@@ -221,6 +227,8 @@ class NBackFragment : Fragment(), INBackController {
             val context = context ?: return@runOnUiThread
             when (state) {
                 NBackState.Idle -> {
+                    mPreInfoPanel?.visibility = View.INVISIBLE
+                    mButtonsPanel?.visibility = View.INVISIBLE
                     mPauseButton?.visibility = View.INVISIBLE
                     mRestartButton?.apply {
                         text = context.getString(R.string.start_game_short)
@@ -240,6 +248,7 @@ class NBackFragment : Fragment(), INBackController {
                     mPastLettersPanel?.apply {
                         removeAllViews()
                     }
+
                     clearLocationSquare(mLastLocationSquare)
                     clearCorrection()
                 }
@@ -534,6 +543,13 @@ class NBackFragment : Fragment(), INBackController {
         }
     }
 
+    private fun updateInfoControlZone() {
+        activity?.runOnUiThread {
+            mPreInfoPanel?.visibility = visibleWhen(board?.expectAnswer == false, View.INVISIBLE)
+            mButtonsPanel?.visibility = visibleWhen(board?.expectAnswer == true, View.INVISIBLE)
+        }
+    }
+
     private fun updateWithTrial(last: NBackTrial?, next: NBackTrial) {
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
@@ -579,6 +595,7 @@ class NBackFragment : Fragment(), INBackController {
             updatePastLetters(next)
             mLastLocationSquare = newSquare
             updateAnswerZone(board?.expectAnswer == true)
+            updateInfoControlZone()
         }
     }
 
@@ -702,5 +719,16 @@ class NBackFragment : Fragment(), INBackController {
         val context = context ?: return dps
         val scale = context.resources.displayMetrics.density
         return (dps.toFloat() * scale + 0.5).toInt()
+    }
+
+    /**
+     * Returns @see #View.VISIBLE if true, otherwise @see View.GONE.
+     */
+    fun visibleWhen(value: Boolean, invisibility: Int = View.GONE): Int {
+        return if (value == true) {
+            View.VISIBLE
+        } else {
+            invisibility
+        }
     }
 }

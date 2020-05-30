@@ -26,4 +26,5 @@
     <string name="nback_symbols_letters">Letters</string>
     <string name="nback_sound">Sound</string>
     <string name="nback_sound_hint">Play sound of letters</string>
+    <string name="nback_memorize_prepare">Memorize and prepare to answer 😊</string>
 </resources>
