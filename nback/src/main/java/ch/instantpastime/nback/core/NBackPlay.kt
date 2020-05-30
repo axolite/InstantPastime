@@ -8,6 +8,7 @@ class NBackPlay(val board: INBackBoard) {
         object TotalReached : Transition()
         object Reset : Transition()
     }
+
     sealed class State {
         object Blank : State()
         object Drawing : State()
@@ -62,7 +63,8 @@ class NBackPlay(val board: INBackBoard) {
             State.Drawing -> when (transition) {
                 is Transition.Drawn -> State.Waiting(
                     last = transition.last,
-                    next = transition.next)
+                    next = transition.next
+                )
                 Transition.Reset -> State.Blank
                 else -> state
             }
@@ -105,7 +107,8 @@ class NBackPlay(val board: INBackBoard) {
                 State.Drawing -> board.onEnterDrawing()
                 is State.Waiting -> board.onEnterWaiting(
                     last = newState.last,
-                    next = newState.next)
+                    next = newState.next
+                )
                 State.Correcting -> board.onEnterCorrecting()
                 State.Finished -> board.onEnterFinished()
             }

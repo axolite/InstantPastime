@@ -11,6 +11,7 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int, val uiControl: INBackControlle
     private val score: NBackScore = NBackScore()
     var lastDraw: NBackTrial? = null
         private set
+
     /**
      * True when the user says it is the same location, otherwise false.
      */

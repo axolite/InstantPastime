@@ -9,9 +9,13 @@ class NBackTimer(milliseconds: Long, val callback: () -> Unit) {
     private var mTimer: Timer? = null
 
     var milliseconds: Long
-        get() { return _intervalMillisec}
+        get() {
+            return _intervalMillisec
+        }
         set(value) {
-            _intervalMillisec = if (value < 0) { 0 } else value
+            _intervalMillisec = if (value < 0) {
+                0
+            } else value
         }
     var _intervalMillisec: Long = 0
 

@@ -654,12 +654,13 @@ class NBackFragment : Fragment(), INBackController {
         }
     }
 
-    fun <T : View> Fragment.safeFindViewById(@IdRes id: Int): T? {
-        return this.view?.safeFindViewById<View>(id) as? T
-    }
-
-    fun <T : View> View.safeFindViewById(@IdRes id: Int): T? {
-        return this.findViewById<View>(id) as? T
+    inline fun <reified T : View> View.safeFindViewById(@IdRes id: Int): T? {
+        val view = findViewById<View>(id)
+        return if (view is T) {
+            view
+        } else {
+            null
+        }
     }
 
     /**

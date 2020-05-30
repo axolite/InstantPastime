@@ -16,7 +16,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import ch.instantpastime.*
 import ch.instantpastime.fragments.GeneralPreferenceFragment
 import ch.instantpastime.nback.fragments.NBackFragment
-import ch.instantpastime.nback.fragments.NBackPreferenceFragment
 import ch.instantpastime.nback.ui.FragmentStack
 import ch.instantpastime.nback.ui.MyFragmentHelper
 import ch.instantpastime.nback.ui.NBackResource
@@ -106,7 +105,7 @@ class NBackActivity : AppCompatActivity() {
         val drawerNavView = findViewById<View>(R.id.nav_view_drawer) as? NavigationView
         if (drawerNavView != null) {
             drawerNavView.setNavigationItemSelectedListener {
-                when (val id = it.itemId) {
+                when (it.itemId) {
                     ch.instantpastime.R.id.info -> {
                         Toast.makeText(
                             this@NBackActivity,
