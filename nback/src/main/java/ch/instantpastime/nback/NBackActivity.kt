@@ -80,9 +80,7 @@ class NBackActivity : AppCompatActivity() {
         val tag = MyFragmentHelper.getTagFromMenuId(menuItem.itemId)
 
         if (tag != null && fragmentStack.currentTag != tag) {
-            // Don't allow cache of preference fragment to prevent flickering.
-            val allowCache = tag != NBackPreferenceFragment::class.java.simpleName
-            val fragment = fragmentStack.pushFragment(tag, allowCache = allowCache)
+            val fragment = fragmentStack.pushFragment(tag)
             return fragment != null
         }
         return false
@@ -253,10 +251,8 @@ class NBackActivity : AppCompatActivity() {
     }
 
     private fun showGeneralPreferencesDialog() {
-        // Don't allow cache of preference fragment to prevent flickering whe it is displayed.
         fragmentStack.pushFragment(
-            GeneralPreferenceFragment::class.java.simpleName,
-            allowCache = false
+            GeneralPreferenceFragment::class.java.simpleName
         )
     }
 

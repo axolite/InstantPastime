@@ -31,8 +31,8 @@ class FragmentStack(
         }
     var _currentTag: String = homeTag
 
-    fun pushFragment(tag: String, allowCache: Boolean = true): Fragment? {
-        val fragment = showFragment(tag, allowCache)
+    fun pushFragment(tag: String): Fragment? {
+        val fragment = showFragment(tag)
         if (fragment != null && tagStack.lastOrNull() != tag) {
             tagStack.add(tag)
             currentTag = tag
@@ -40,8 +40,8 @@ class FragmentStack(
         return fragment
     }
 
-    private fun showFragment(tag: String, allowCache: Boolean = true): Fragment? {
-        val fragment = getOrCreateFragment(tag, allowCache)
+    private fun showFragment(tag: String): Fragment? {
+        val fragment = getOrCreateFragment(tag)
         if (fragment != null) {
             activity.supportFragmentManager.beginTransaction()
                 .replace(containerId, fragment, tag)
@@ -50,12 +50,12 @@ class FragmentStack(
         return fragment
     }
 
-    fun getOrCreateFragment(tag: String, allowCache: Boolean = true): Fragment? {
+    fun getOrCreateFragment(tag: String): Fragment? {
         val existing = activity.supportFragmentManager.findFragmentByTag(tag)
         return if (existing != null) {
             existing
         } else {
-            cache.createAndAddFragment(tag, allowCache)
+            cache.createAndAddFragment(tag)
         }
     }
 

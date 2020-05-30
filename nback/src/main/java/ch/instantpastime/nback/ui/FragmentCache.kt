@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.preference.PreferenceFragmentCompat
 import ch.instantpastime.fragments.FragmentCreator
 
 class FragmentCache(
@@ -12,13 +13,14 @@ class FragmentCache(
 
     private val cachedFragments: MutableList<Fragment> = mutableListOf()
 
-    fun createAndAddFragment(tag: String, allowCache: Boolean): Fragment? {
+    fun createAndAddFragment(tag: String): Fragment? {
         val cached = cachedFragments.firstOrNull { it.javaClass.simpleName == tag }
         if (cached != null) {
             return cached
         } else {
             val newFragment = fragmentCreator.createFragment(tag)
-            if (newFragment != null && allowCache) {
+            // Don't cache PreferenceFragmentCompat because it flickers when it is displayed.
+            if (newFragment != null && !(newFragment is PreferenceFragmentCompat)) {
                 cachedFragments.add(newFragment)
             }
             return newFragment
