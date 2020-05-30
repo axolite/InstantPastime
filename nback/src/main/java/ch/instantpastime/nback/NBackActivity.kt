@@ -9,26 +9,34 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import ch.instantpastime.*
-import ch.instantpastime.nback.ui.BackStackHelper
+import ch.instantpastime.fragments.GeneralPreferenceFragment
+import ch.instantpastime.nback.fragments.NBackFragment
+import ch.instantpastime.nback.fragments.NBackPreferenceFragment
+import ch.instantpastime.nback.ui.FragmentStack
+import ch.instantpastime.nback.ui.MyFragmentHelper
 import ch.instantpastime.nback.ui.NBackResource
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_nback.*
 
 class NBackActivity : AppCompatActivity() {
 
-    private val backStackHelper = BackStackHelper(this)
     private var drawerToolbar: ActionBarDrawerToggle? = null
+    private var drawerLayout: DrawerLayout? = null
     private var locationHelper: LocationHelper? = null
     private var googleMapApi: GoogleMapApi? = null
     private var googlePlaceApi: GooglePlaceApi? = null
     private val contextualImages: MutableList<Bitmap> = mutableListOf()
     private var frozenContextualImages: List<Bitmap>? = listOf()
+    private val fragmentStack: FragmentStack = FragmentStack(
+        activity = this,
+        containerId = R.id.nback_fragment_container,
+        homeTag = NBackFragment::class.java.simpleName
+    )
 
     /**
      * Number of symbols (letters, contextual images) to be
@@ -40,8 +48,11 @@ class NBackActivity : AppCompatActivity() {
         //android.os.Debug.waitForDebugger()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nback)
-        nav_view.setOnNavigationItemSelectedListener { backStackHelper.onNavigationItemSelected(it) }
-        backStackHelper.loadFragment(nav_view.selectedItemId)
+
+        nav_view.setOnNavigationItemSelectedListener { bottomMenuItemSelected(it) }
+        fragmentStack.currentTagChanged = { currentFragmentChanged(it) }
+        fragmentStack.pushFragment(fragmentStack.homeTag)
+
         initDrawer()
 
         // Start location activity if needed.
@@ -54,6 +65,32 @@ class NBackActivity : AppCompatActivity() {
             // The user doesn't want to use location.
             useStockImages()
         }
+    }
+
+    private fun currentFragmentChanged(tag: ValueChange<String>) {
+        // Update the active icon in the bottom menu according to the displayed fragment.
+        val menuId = MyFragmentHelper.getMenuIdFromTag(tag.newValue)
+        if (menuId != null && nav_view.selectedItemId != menuId) {
+            nav_view.selectedItemId = menuId
+        }
+    }
+
+    private fun bottomMenuItemSelected(menuItem: MenuItem): Boolean {
+
+        val tag = MyFragmentHelper.getTagFromMenuId(menuItem.itemId)
+
+        if (tag != null && fragmentStack.currentTag != tag) {
+            // Don't allow cache of preference fragment to prevent flickering.
+            val allowCache = tag != NBackPreferenceFragment::class.java.simpleName
+            val fragment = fragmentStack.pushFragment(tag, allowCache = allowCache)
+            return fragment != null
+        }
+        return false
+    }
+
+    @ExperimentalStdlibApi
+    override fun onBackPressed() {
+        fragmentStack.popFragment()
     }
 
     private fun initDrawer() {
@@ -216,17 +253,11 @@ class NBackActivity : AppCompatActivity() {
     }
 
     private fun showGeneralPreferencesDialog() {
-        val dialog = GeneralPreferenceDialog(this, { enableContextualImages(it) })
-
-        val newAttr = WindowManager.LayoutParams()
-        val oldAttr = dialog.window?.attributes
-        if (oldAttr != null) {
-            newAttr.copyFrom(oldAttr)
-            newAttr.width = WindowManager.LayoutParams.MATCH_PARENT
-            newAttr.height = WindowManager.LayoutParams.MATCH_PARENT
-        }
-        dialog.window?.attributes = newAttr
-        dialog.show()
+        // Don't allow cache of preference fragment to prevent flickering whe it is displayed.
+        fragmentStack.pushFragment(
+            GeneralPreferenceFragment::class.java.simpleName,
+            allowCache = false
+        )
     }
 
     private fun enableContextualImages(b: Boolean) {
