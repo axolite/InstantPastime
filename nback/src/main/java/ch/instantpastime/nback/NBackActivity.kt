@@ -19,6 +19,7 @@ import ch.instantpastime.nback.fragments.NBackFragment
 import ch.instantpastime.nback.ui.FragmentStack
 import ch.instantpastime.nback.ui.MyFragmentHelper
 import ch.instantpastime.nback.ui.NBackResource
+import ch.instantpastime.nback.ui.NBackTutoHelper
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_nback.*
 
@@ -61,9 +62,13 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
         } else if (LocationHelper.wantUseLocation(this, defValue = false)) {
             // The user wants to use location and it is authorized.
             fetchContextualImages()
+            // Start tutorial while images are being downloaded.
+            startTutorialIfNeeded()
         } else {
             // The user doesn't want to use location.
             useStockImages()
+            // Start tutorial.
+            startTutorialIfNeeded()
         }
     }
 
@@ -129,6 +134,9 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
                     ch.instantpastime.R.id.menu_general_preference -> {
                         showGeneralPreferencesDialog()
                     }
+                    ch.instantpastime.R.id.menu_tutorial -> {
+                        NBackTutoHelper.startTutoActivity(this)
+                    }
                     else -> {
                     }
                 }
@@ -160,6 +168,8 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
                     } else {
                         useStockImages()
                     }
+                    // Start tutorial if needed.
+                    startTutorialIfNeeded()
                 }
             }
         }
@@ -277,5 +287,15 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
         fragmentStack.pushFragment(
             GeneralPreferenceFragment::class.java.simpleName
         )
+    }
+
+    /**
+     * Starts the tutorial activity if it is the first launch.
+     */
+    private fun startTutorialIfNeeded() {
+        if (PrefManager.getFirstTimeLaunch(this, defValue = true)) {
+            PrefManager.setFirstTime(this, value = false)
+            NBackTutoHelper.startTutoActivity(this)
+        }
     }
 }

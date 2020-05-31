@@ -29,4 +29,7 @@
     <string name="nback_sound">Sound</string>
     <string name="nback_sound_hint">Play sound of letters</string>
     <string name="nback_memorize_prepare">Memorize and prepare to answer 😊</string>
+    <string name="nback_tuto_text1">TUTO n-back Slide 1</string>
+    <string name="nback_tuto_text2">TUTO n-back Slide 2</string>
+    <string name="nback_tuto_text3">TUTO n-back Slide 3</string>
 </resources>
