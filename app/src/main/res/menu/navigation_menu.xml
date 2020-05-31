@@ -9,5 +9,7 @@
         android:title="@string/menu_general_preference"/>
     <item android:id="@+id/menu_tutorial"
         android:title="@string/menu_tutorial"/>
+    <item android:id="@+id/menu_credits"
+        android:title="@string/menu_credits"/>
 
 </menu>
