@@ -40,7 +40,7 @@ class MemoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // ************* DEBUG **********************
-        android.os.Debug.waitForDebugger()
+        //android.os.Debug.waitForDebugger()
         // ******************************************
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memory)
