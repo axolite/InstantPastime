@@ -22,7 +22,7 @@ import ch.instantpastime.nback.ui.NBackResource
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_nback.*
 
-class NBackActivity : AppCompatActivity() {
+class NBackActivity : AppCompatActivity(), ContextualImageUser {
 
     private var drawerToolbar: ActionBarDrawerToggle? = null
     private var drawerLayout: DrawerLayout? = null
@@ -159,7 +159,7 @@ class NBackActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchContextualImages() {
+    override fun fetchContextualImages() {
         if (locationHelper == null) {
             locationHelper = LocationHelper()
         }
@@ -180,8 +180,10 @@ class NBackActivity : AppCompatActivity() {
         }
     }
 
-    private fun useStockImages() {
-        Toast.makeText(this, "Using stock images", Toast.LENGTH_SHORT).show()
+    override fun useStockImages() {
+        // Clear the list of contextual images.
+        frozenContextualImages = null
+        contextualImages.clear()
     }
 
     override fun onRequestPermissionsResult(
@@ -231,7 +233,7 @@ class NBackActivity : AppCompatActivity() {
 
     private fun processPlaces(places: ArrayList<PlaceInfo>) {
         Toast.makeText(this, "Fetching contextual images", Toast.LENGTH_SHORT).show()
-        googlePlaceApi?.getPhotoAndDetail(places)
+        googlePlaceApi?.getPhotoAndDetail(places, nbImagesRequested = nbSymbols)
     }
 
     fun getCardImage(index: Int): Bitmap? {

@@ -23,4 +23,7 @@
     <string name="menu_about">About</string>
     <string name="menu_install_app">Install App</string>
     <string name="menu_general_preference">Preferences</string>
+    <string name="pref_geolocation_category">Geolocation</string>
+    <string name="pref_contextual_image">Contextual images</string>
+    <string name="pref_contextual_image_hint">Use images of nearby places</string>
 </resources>
