@@ -24,7 +24,7 @@ class NBackDraw(val range: IntRange, val level: Int) {
                 value
             }
         }
-    private var _randomnessPercentage: Int = 80
+    private var _randomnessPercentage: Int = 85
 
     fun getNextIndex(): NBackElement {
 

@@ -479,7 +479,7 @@ class NBackFragment : Fragment(), INBackController {
 
     override fun onFinished(correct: Int, total: Int) {
         val intent = Intent(activity, ScoreActivity::class.java).apply {
-            val score = (100 * correct) / total
+            val score = (NBackScore.SCORE_MAX * correct) / total
             putExtra(ScoreActivity.SCORE_ARG, score)
         }
         startActivity(intent)

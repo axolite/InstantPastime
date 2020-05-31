@@ -3,6 +3,9 @@ package ch.instantpastime.nback.core
 class NBackScore {
 
     companion object {
+
+        const val SCORE_MAX = 1000
+
         fun getCorrectness(answer: Boolean, actual: Boolean?): Correctness? {
             return if (actual == null) {
                 null
@@ -81,7 +84,7 @@ class NBackScore {
 
     val percentCorrect: Int
         get() = scoreRecord.run {
-            (100 * Correct) / Total
+            (SCORE_MAX * Correct) / Total
         }
 
     fun updateScore(correctness: Correctness?): NBackScoreRecord {
