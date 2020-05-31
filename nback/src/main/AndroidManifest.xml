@@ -13,9 +13,15 @@
     </dist:module>
 
     <application>
-        <activity android:name="ch.instantpastime.LocationActivity"></activity>
-        <activity android:name="ch.instantpastime.ScoreActivity"></activity>
-        <activity android:name=".NBackActivity">
+        <activity
+            android:name="ch.instantpastime.LocationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name="ch.instantpastime.ScoreActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize" />
+        <activity
+            android:name=".NBackActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -23,9 +29,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="http"
                     android:host="mountainmind.ch"
-                    android:pathPattern="/nback" />
+                    android:pathPattern="/nback"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
     </application>

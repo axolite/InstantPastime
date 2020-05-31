@@ -65,6 +65,11 @@ class MainActivity : AppCompatActivity() {
 
         val drawerNavView = findViewById<View>(R.id.nav_view_drawer) as? NavigationView
         if (drawerNavView != null) {
+
+            // Hide menu items that are not available in the common (main) app.
+            drawerNavView.menu.findItem(R.id.menu_tutorial)?.isVisible = false
+            drawerNavView.menu.findItem(R.id.menu_general_preference)?.isVisible = false
+
             drawerNavView.setNavigationItemSelectedListener {
                 when (it.itemId) {
                     ch.instantpastime.R.id.info -> {
