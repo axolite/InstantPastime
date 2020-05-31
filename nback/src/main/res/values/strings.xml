@@ -29,7 +29,14 @@
     <string name="nback_sound">Sound</string>
     <string name="nback_sound_hint">Play sound of letters</string>
     <string name="nback_memorize_prepare">Memorize and prepare to answer 😊</string>
-    <string name="nback_tuto_text1">TUTO n-back Slide 1</string>
-    <string name="nback_tuto_text2">TUTO n-back Slide 2</string>
-    <string name="nback_tuto_text3">TUTO n-back Slide 3</string>
+    <string name="nback_tuto_text1">Welcome to the N-Back game !\n\n
+        You will see images displayed randomly on a grid,
+        \none after another.
+    </string>
+    <string name="nback_tuto_text2">Sometimes, the image or location
+        \nwill be the same as 2 steps before.</string>
+    <string name="nback_tuto_text3">Memorize the image that was displayed
+        \n2 steps back.
+        \n\nThen click on “Same location” or “Same image”
+        \nto mark points!</string>
 </resources>

@@ -31,4 +31,6 @@
     <string name="pref_contextual_image">Contextual images</string>
     <string name="pref_contextual_image_hint">Use images of nearby places</string>
     <string name="menu_tutorial">Tutorial</string>
+    <string name="try_memory">Try Memory</string>
+    <string name="try_n_back">Try N-Back</string>
 </resources>
