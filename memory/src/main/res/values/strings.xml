@@ -13,10 +13,12 @@
     <string name="home_nback">Home</string>
     <string name="game_options_short">Options</string>
     <string name="game_options_full">Game options</string>
-    <string name="nback_level">N-Back level (%1$d &#x2013; %2$d)</string>
-    <string name="nback_level_hint">Number of events to remember</string>
-    <string name="nback_level_changed">N-Back level changed to %1$d</string>
-    <string name="nback_status_level">Level %1$d</string>
+    <string name="memory_level">Memory level (%1$d &#x2013; %2$d)</string>
+    <string name="memory_level_hint">Number of cards</string>
+    <string name="memory_level_changed">Memory level changed to %1$d</string>
+    <string name="memory_status_level">Level %1$d</string>
+    <string name="memory_score">Score: %1$d</string>
+
     <string name="nback_interval">Milliseconds per trial</string>
     <string name="nback_interval_hint">Number of milliseconds to respond</string>
     <plurals name="nback_interval_changed">
@@ -25,7 +27,10 @@
     </plurals>
     <string name="nback_score">Score: %1$d</string>
     <string name="nback_trial_count">%1$d / %2$d</string>
+    <string name="game_context">Game context</string>
 
+    <string name="memory_sound">Sound</string>
+    <string name="memory_sound_hint">Play sound each match or fail</string>
     <string name="start01">Welcome to InstantPastime application !\n\nSwipe across these few instructions for a first overview of its features.\n\nIf you wish to skip it, you can access it again from the "About" page of the application (see below).\n\n Enjoy !</string>
     <string name="start02">TUTO Slide 2</string>
     <string name="start03">TUTO Slide 3</string>

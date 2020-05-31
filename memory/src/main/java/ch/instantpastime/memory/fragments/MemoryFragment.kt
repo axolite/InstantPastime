@@ -13,16 +13,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import ch.instantpastime.*
-import ch.instantpastime.memory.MemoryActivity.Companion.myscore
-import ch.instantpastime.memory.MemoryActivity.Companion.num_images
-import ch.instantpastime.memory.MemoryActivity.Companion.level
-import ch.instantpastime.memory.MemoryActivity.Companion.num_cards
+
 import ch.instantpastime.memory.MemoryActivity.Companion.prefManager
 import ch.instantpastime.memory.MemoryActivity.Companion.tuto_images
 import ch.instantpastime.memory.MemoryActivity.Companion.tuto_slides
@@ -32,9 +28,16 @@ import ch.instantpastime.memory.maximizeBox
 import kotlinx.android.synthetic.main.fragment_memory.*
 import ch.instantpastime.PlaceInfo
 import ch.instantpastime.memory.*
+import ch.instantpastime.memory.MemoryActivity.Companion.memoryScore
+import ch.instantpastime.memory.MemoryActivity.Companion.memorySettings
+import ch.instantpastime.memory.MemoryActivity.Companion.memorySound
 
 import ch.instantpastime.memory.R
+import ch.instantpastime.memory.core.MemoryScore
+import ch.instantpastime.memory.core.MemorySettings
+import ch.instantpastime.memory.core.MemorySettings.Companion.DEFAULT_LEVEL
 import kotlinx.android.synthetic.main.fragment_memory.view.*
+import kotlinx.android.synthetic.main.memory_status_view.*
 
 /**
  * A simple [Fragment] subclass.
@@ -74,7 +77,18 @@ class MemoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        memoryScore = MemoryScore()
+        memorySound.playSound(context!!,0)
+
+
         val view = inflater.inflate(R.layout.fragment_memory, container, false)
+
+        view.safeFindViewById<TextView>(R.id.status_level_text)?.let {
+            it.text = getString(R.string.memory_status_level, memorySettings.level)
+        }
+        view.safeFindViewById<TextView>(R.id.status_score_text)?.let {
+            it.text = getString(R.string.memory_score, 0)
+        }
 
         if (locationHelper == null) {
             locationHelper = LocationHelper()
@@ -88,7 +102,7 @@ class MemoryFragment : Fragment() {
             }
             if (googlePlaceApi == null) {
                 googlePlaceApi = GooglePlaceApi(
-                    NumImages = num_images,
+                    NumImages = memorySettings.num_images,
                     imageRequestReady = { imageRequestedReady(it) }
                 )
                 googlePlaceApi?.init(ctx)
@@ -154,52 +168,52 @@ class MemoryFragment : Fragment() {
 
         for (myview in viewsBox1) {
             if (myview is ImageView) {
-                if (getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
                     myCards.add(myview as ImageView)
                 }
                 else myview.visibility = View.GONE
             }
             if (myview is LinearLayout) {
-                if (! getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                if (! getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
                     myview.visibility = View.GONE
                 }
             }
         }
         for (myview in viewsBox2) {
             if (myview is ImageView) {
-                if (getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
                     myCards.add(myview as ImageView)
                 }
                 else myview.visibility = View.GONE
             }
             if (myview is LinearLayout) {
-                if (! getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                if (! getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
                     myview.visibility = View.GONE
                 }
             }
         }
         for (myview in viewsBox3) {
             if (myview is ImageView) {
-                if (getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
                     myCards.add(myview as ImageView)
                 }
                 else myview.visibility = View.GONE
             }
             if (myview is LinearLayout) {
-                if (! getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                if (! getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
                     myview.visibility = View.GONE
                 }
             }
         }
         for (myview in viewsBox4) {
             if (myview is ImageView) {
-                if (getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
                     myCards.add(myview as ImageView)
                 }
                 else myview.visibility = View.GONE
             }
             if (myview is LinearLayout) {
-                if (! getResources().getResourceName(myview.id).contains(num_cards[level].toString())) {
+                if (! getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
                     myview.visibility = View.GONE
                 }
             }
@@ -216,6 +230,7 @@ class MemoryFragment : Fragment() {
 
         return view
     }
+
 
     fun onClick_img(currentCard: View?) {
         if (matching) {
@@ -242,35 +257,29 @@ class MemoryFragment : Fragment() {
 
                         currentCard.setEnabled(false)
                         previousCardId = null
-                        myscore.num_mathches +=1
+                        memoryScore.num_mathches +=1
                         Toast.makeText(
                             this@MemoryFragment.getContext(),
-                            "Bravo!! Score: " +  myscore.totalScore(),
+                            "Bravo!! Score: " +  memoryScore.totalScore(),
                             Toast.LENGTH_SHORT
                         )
                             .show();
+                        memorySound.playSound(context!!,1)
+                        status_score_text.text = getString(R.string.memory_score, memoryScore.totalScore())
+                        showDialog("You have matched:", currentCardId!!)
 
-                        showDialog("Description of the image", currentCardId!!)
 
-                        if ( myscore.num_mathches== num_images){
-                            //  End .. Show Score
-                            var finalScore = DialogScore()
-                            finalScore.showDialog(this@MemoryFragment.getContext()!!, myscore.totalScore().toString())
-                            Toast.makeText(
-                                this@MemoryFragment.getContext(),
-                                "You have completed the memory!! Score: " +  myscore.totalScore(),
-                                Toast.LENGTH_SHORT
-                            )
-                                .show();
-                        }
                     } else {
                         matching = true
-                        myscore.num_trials +=1
+                        memoryScore.num_trials +=1
+
                         Toast.makeText(
                             this@MemoryFragment.getContext(),
-                            "No match, try again!  Score: " +  myscore.totalScore(),
+                            "No match, try again!  Score: " +  memoryScore.totalScore(),
                             Toast.LENGTH_SHORT
                         ).show();
+                        memorySound.playSound(context!!,2)
+                        status_score_text.text = getString(R.string.memory_score, memoryScore.totalScore())
                         handler.postDelayed({
                             execPostDelayed()
                         }, 3000)
@@ -279,7 +288,7 @@ class MemoryFragment : Fragment() {
                 }
             } else {
                 lateinit var box: View
-                val index = ((currentCard!!.tag as Int) / (num_cards[level]/4)) as Int
+                val index = ((currentCard!!.tag as Int) / (memorySettings.num_cards/4)) as Int
                 if (index == 0) box = box1
                 else if (index == 1) box = box2
                 else if (index == 2) box = box3
@@ -292,6 +301,8 @@ class MemoryFragment : Fragment() {
             actionOngoing = false
         }
     }
+
+
 
     private fun execPostDelayed() {
         val currentCard = myCards[currentCardId!!]
@@ -320,19 +331,29 @@ class MemoryFragment : Fragment() {
 
         val dialog = Dialog(this@MemoryFragment.getContext()!!)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setCancelable(true)
+        dialog.setCancelable(false)
         dialog.setContentView(R.layout.popup)
 
         val image = dialog.findViewById(R.id.imageView) as ImageView
         image.setImageBitmap(myBitmaps[index].img_original)
         val body = dialog.findViewById(R.id.textView_popup) as TextView
-        body.text =
-            myBitmaps[index].img_desc + "\n Location: " + myBitmaps[index].img_loc.toString()
+        body.text = title + "\n" + myBitmaps[index].img_desc + "\n it can be found in: \n" + myBitmaps[index].img_loc.toString()
 
-//        val okBtn = dialog .findViewById(R.id.button_popup) as Button
-//        okBtn.setOnClickListener {
-//            dialog .dismiss()
-//        }
+        val okBtn = dialog .findViewById(R.id.ok_popup) as Button
+        okBtn.setOnClickListener {
+            if ( memoryScore.num_mathches== memorySettings.num_images){
+                var finalScore = DialogScore()
+                finalScore.showDialog(this@MemoryFragment.getContext()!!, memoryScore.totalScore().toString())
+                Toast.makeText(
+                    this@MemoryFragment.getContext(),
+                    "You have completed the memory!! Score: " +  memoryScore.totalScore(),
+                    Toast.LENGTH_SHORT
+                )
+                    .show();
+                memorySound.playSound(context!!,3)
+            }
+            dialog .dismiss()
+        }
         dialog.show()
 
     }
@@ -342,7 +363,7 @@ class MemoryFragment : Fragment() {
         val bitmap = placePhoto.response.bitmap
         val placeInfo = placePhoto.info
 
-        if ((bitmap != null) and (imgindex < num_images)) {
+        if ((bitmap != null) and (imgindex < memorySettings.num_images)) {
             val reciv_img = bitmapClass(bitmap, placeInfo.placeDesc, placeInfo.placeLoc)
             myBitmaps.add(reciv_img)
             myBitmaps.add(reciv_img)
@@ -352,11 +373,20 @@ class MemoryFragment : Fragment() {
 
         imgindex += 1
 
-        welcomeText.setText("Loading images " + (imgindex * 100 / num_images).toString() + "%")
-
-        if (imgindex == num_images) {
-            welcomeText.setText("Ready!!. (Debugging mode -> Cards not shuffled)")
-            myBitmaps.shuffle()
+        //welcomeText.setText("Loading images " + (imgindex * 100 / memorySettings.num_images).toString() + "%")
+        Toast.makeText(
+            context,
+            "Loading images " + (imgindex * 100 / memorySettings.num_images).toString() + "%",
+            Toast.LENGTH_SHORT
+        ).show()
+        if (imgindex == memorySettings.num_images) {
+            //welcomeText.setText("Ready!!. (Debugging mode -> Cards not shuffled)")
+            Toast.makeText(
+                context,
+                "Ready!!",
+                Toast.LENGTH_SHORT
+            ).show()
+            //myBitmaps.shuffle()
             var i = 0
             for (myCard in myCards) {
 
@@ -427,6 +457,15 @@ class MemoryFragment : Fragment() {
             else -> {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults)
             }
+        }
+    }
+
+    inline fun <reified T : View> View.safeFindViewById(@IdRes id: Int): T? {
+        val view = findViewById<View>(id)
+        return if (view is T) {
+            view
+        } else {
+            null
         }
     }
 

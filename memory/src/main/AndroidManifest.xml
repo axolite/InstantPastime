@@ -14,13 +14,17 @@
     </dist:module>
 
     <application>
-        <activity android:name="ch.instantpastime.StartActivity">
+        <activity
+            android:name="ch.instantpastime.StartActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MemoryActivity">
+        <activity
+            android:name=".MemoryActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 

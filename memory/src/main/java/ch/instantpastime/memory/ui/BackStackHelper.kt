@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import ch.instantpastime.memory.MemoryActivity
 import ch.instantpastime.memory.R
 import ch.instantpastime.memory.fragments.MemoryFragment
+import ch.instantpastime.memory.fragments.MemoryPreferenceFragment
 //import ch.instantpastime.memory.fragments.MemoryPreferenceFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_memory.*
@@ -25,8 +26,8 @@ class BackStackHelper(private val activity: MemoryActivity) {
         val GAME_STACK_TAG = "GAME_STACK_TAG"
         val OPTIONS_STACK_TAG = "OPTIONS_STACK_TAG"
         val fragmentTable = listOf(
-            FragmentTableEntry(menuItemId = R.id.navigation_home, generator = { _ -> MemoryFragment() }, stackTag = GAME_STACK_TAG) //,
-            //FragmentTableEntry(menuItemId = R.id.navigation_option, generator = { _ -> MemoryPreferenceFragment() }, stackTag = OPTIONS_STACK_TAG)
+            FragmentTableEntry(menuItemId = R.id.navigation_home, generator = { _ -> MemoryFragment() }, stackTag = GAME_STACK_TAG) ,
+            FragmentTableEntry(menuItemId = R.id.navigation_option, generator = { _ -> MemoryPreferenceFragment() }, stackTag = OPTIONS_STACK_TAG)
         )
     }
 

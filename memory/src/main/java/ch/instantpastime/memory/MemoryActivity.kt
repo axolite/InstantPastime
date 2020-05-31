@@ -1,6 +1,5 @@
 package ch.instantpastime.memory
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -8,6 +7,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import ch.instantpastime.PrefManager
+import ch.instantpastime.memory.core.MemoryScore
+import ch.instantpastime.memory.core.MemorySettings
+import ch.instantpastime.memory.core.MemorySound
 import ch.instantpastime.memory.ui.BackStackHelper
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_memory.*
@@ -28,19 +30,18 @@ class MemoryActivity : AppCompatActivity() {
         lateinit var tuto_slides: IntArray
         lateinit var tuto_images: IntArray
         lateinit var tuto_texts: IntArray
-
-        var level = 3
-        val num_cards  = intArrayOf(64, 36, 16, 8)
-        var num_images = num_cards[level]/2
-
-        var myscore = MemoryScore()
+        lateinit var memoryScore : MemoryScore
+        lateinit var memorySettings : MemorySettings
+        lateinit var memorySound : MemorySound
 
 
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        //android.os.Debug.waitForDebugger()
+        // ************* DEBUG **********************
+        android.os.Debug.waitForDebugger()
+        // ******************************************
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memory)
         nav_view.setOnNavigationItemSelectedListener { backStackHelper.onNavigationItemSelected(it) }
@@ -48,6 +49,8 @@ class MemoryActivity : AppCompatActivity() {
 
         prefManager = PrefManager(this)
 
+        memorySettings = MemorySettings(this)
+        memorySound = MemorySound()
         var drawerlayout = findViewById(R.id.activity_main) as DrawerLayout
 
         drawer_toolbar = ActionBarDrawerToggle(this, drawerlayout, 0, 0)
