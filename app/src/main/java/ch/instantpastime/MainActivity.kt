@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     private var drawerToolbar: ActionBarDrawerToggle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        android.os.Debug.waitForDebugger()
+        //android.os.Debug.waitForDebugger()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         locationHelper = LocationHelper()
@@ -86,6 +86,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     ch.instantpastime.R.id.menu_tutorial -> {
                         //NBackTutoHelper.startTutoActivity(this)
+                    }
+                    ch.instantpastime.R.id.menu_credits -> {
+                        CreditDialogHelper.showCredits(this)
                     }
                     else -> {
                     }
