@@ -137,6 +137,9 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
                     ch.instantpastime.R.id.menu_tutorial -> {
                         NBackTutoHelper.startTutoActivity(this)
                     }
+                    ch.instantpastime.R.id.menu_credits -> {
+                        CreditDialogHelper.showCredits(this)
+                    }
                     else -> {
                     }
                 }
