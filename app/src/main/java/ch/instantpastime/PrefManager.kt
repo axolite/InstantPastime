@@ -31,12 +31,14 @@ class PrefManager(var _context : Context) {
                 apply()
             }
         }
+
         fun SharedPreferences.setFloat(key: String, value: Float) {
             edit()?.run {
                 putFloat(key, value)
                 apply()
             }
         }
+
         fun SharedPreferences.setInt(key: String, value: Int) {
             edit()?.run {
                 putInt(key, value)
@@ -46,11 +48,26 @@ class PrefManager(var _context : Context) {
 
         fun getLocationPref(context: Context, defValue: Boolean): Boolean {
             return context.getSharedPreferences(LOCATION_CAT_KEY, PRIVATE_MODE)?.getBoolean(
-                USE_LOCATION_PREF_KEY, defValue) ?: defValue
+                USE_LOCATION_PREF_KEY, defValue
+            ) ?: defValue
         }
+
         fun saveLocationPref(context: Context, value: Boolean) {
             context.getSharedPreferences(LOCATION_CAT_KEY, PRIVATE_MODE)?.setBoolean(
-                USE_LOCATION_PREF_KEY, value)
+                USE_LOCATION_PREF_KEY, value
+            )
+        }
+
+        fun getFirstTimeLaunch(context: Context, defValue: Boolean): Boolean {
+            return context.getSharedPreferences(PREF_NAME, PRIVATE_MODE)?.getBoolean(
+                IS_FIRST_TIME_LAUNCH, defValue
+            ) ?: defValue
+        }
+
+        fun setFirstTime(context: Context, value: Boolean) {
+            context.getSharedPreferences(PREF_NAME, PRIVATE_MODE)?.setBoolean(
+                IS_FIRST_TIME_LAUNCH, value
+            )
         }
     }
 

@@ -80,17 +80,17 @@ class LocationHelper {
     ) {
         when (permissionStatus) {
             PermissionStatus.Accepted -> {
-                Toast.makeText(context, "Location accepted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.loc_location_accepted), Toast.LENGTH_SHORT).show()
                 requestLocation(context, processLocation)
             }
             PermissionStatus.AlwaysRefused -> {
-                Toast.makeText(context, "Location always refused", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.loc_location_refused), Toast.LENGTH_SHORT).show()
             }
             PermissionStatus.RefusedOnce -> {
-                Toast.makeText(context, "Location refused once", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.loc_location_refused), Toast.LENGTH_SHORT).show()
             }
             else -> {
-                Toast.makeText(context, "Location not accepted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.loc_location_refused), Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -10,7 +10,7 @@ import com.google.android.libraries.places.api.net.*
  * Allows to get images of a place.
  */
 class GooglePlaceApi(
-    val NumImages: Int,
+    var NumImages: Int,
     val imageRequestReady: (PlacePhoto) -> Unit
 ) {
 
@@ -29,7 +29,15 @@ class GooglePlaceApi(
         placesClient = Places.createClient(context)
     }
 
-    fun getPhotoAndDetail(placeInfos: ArrayList<PlaceInfo>) {
+    fun getPhotoAndDetail(placeInfos: ArrayList<PlaceInfo>, nbImagesRequested: Int = -1) {
+
+        // Adjust the number of images to fetch if needed.
+        if (nbImagesRequested >= 0) {
+            NumImages = nbImagesRequested
+        }
+
+        // Reset the counter of fetched images.
+        ImageCount = 0
 
         for (i in 0..placeInfos.count() - 1) {
             val placeInfo = placeInfos[i]

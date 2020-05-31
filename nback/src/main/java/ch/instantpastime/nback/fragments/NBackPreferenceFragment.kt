@@ -59,45 +59,43 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     private fun PreferenceScreen.addGameOptionsSettings() {
-        apply {
-            val gameOptionsCategory = PreferenceCategory(context).apply {
-                key = NBackSettings.NBACK_OPTIONS_CAT_KEY
-                title = getString(R.string.game_options_full)
-            }
-            addPreference(gameOptionsCategory)
-
-            val nbackLevelPref = SeekBarPreference(context).apply {
-                key = NBackSettings.NBACK_LEVEL_KEY
-                title = getString(R.string.nback_level, NBackRun.MIN_LEVEL, NBackRun.MAX_LEVEL)
-                summary = getString(R.string.nback_level_hint)
-                min = NBackRun.MIN_LEVEL
-                max = NBackRun.MAX_LEVEL
-                showSeekBarValue = true
-                setDefaultValue(NBackRun.DEFAULT_LEVEL)
-                onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
-                    onNBackLevelPreferenceChanged(p, v)
-                }
-            }
-            gameOptionsCategory.addPreference(nbackLevelPref)
-
-            val timePerTrialPref = SeekBarPreference(context).apply {
-                key = NBackSettings.NBACK_MILLISECONDS_KEY
-                title = getString(R.string.nback_interval)
-                summary = getString(R.string.nback_interval_hint)
-                max = NBackRun.MAX_MILLISEC
-                min = NBackRun.MIN_MILLISEC
-                showSeekBarValue = true
-                setDefaultValue(NBackRun.DEFAULT_MILLISEC)
-                onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
-                    onTimePerTrialPreferenceChanged(p, v)
-                }
-            }
-            gameOptionsCategory.addPreference(timePerTrialPref)
-
-            // Note from https://developer.android.com/guide/topics/ui/settings/programmatic-hierarchy
-            // Warning: Make sure to add the PreferenceCategory to the PreferenceScreen before adding children to it.
-            // Preferences cannot be added to a PreferenceCategory that isn’t attached to the root screen.
+        val gameOptionsCategory = PreferenceCategory(context).apply {
+            key = NBackSettings.NBACK_OPTIONS_CAT_KEY
+            title = getString(R.string.game_options_full)
         }
+        addPreference(gameOptionsCategory)
+
+        val nbackLevelPref = SeekBarPreference(context).apply {
+            key = NBackSettings.NBACK_LEVEL_KEY
+            title = getString(R.string.nback_level, NBackRun.MIN_LEVEL, NBackRun.MAX_LEVEL)
+            summary = getString(R.string.nback_level_hint)
+            min = NBackRun.MIN_LEVEL
+            max = NBackRun.MAX_LEVEL
+            showSeekBarValue = true
+            setDefaultValue(NBackRun.DEFAULT_LEVEL)
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
+                onNBackLevelPreferenceChanged(p, v)
+            }
+        }
+        gameOptionsCategory.addPreference(nbackLevelPref)
+
+        val timePerTrialPref = SeekBarPreference(context).apply {
+            key = NBackSettings.NBACK_MILLISECONDS_KEY
+            title = getString(R.string.nback_interval)
+            summary = getString(R.string.nback_interval_hint)
+            max = NBackRun.MAX_MILLISEC
+            min = NBackRun.MIN_MILLISEC
+            showSeekBarValue = true
+            setDefaultValue(NBackRun.DEFAULT_MILLISEC)
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
+                onTimePerTrialPreferenceChanged(p, v)
+            }
+        }
+        gameOptionsCategory.addPreference(timePerTrialPref)
+
+        // Note from https://developer.android.com/guide/topics/ui/settings/programmatic-hierarchy
+        // Warning: Make sure to add the PreferenceCategory to the PreferenceScreen before adding children to it.
+        // Preferences cannot be added to a PreferenceCategory that isn’t attached to the root screen.
     }
 
     private fun PreferenceScreen.addGameContextSettings() {

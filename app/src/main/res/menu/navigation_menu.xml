@@ -7,5 +7,7 @@
         android:title="@string/menu_install_app"/>
     <item android:id="@+id/menu_general_preference"
         android:title="@string/menu_general_preference"/>
+    <item android:id="@+id/menu_tutorial"
+        android:title="@string/menu_tutorial"/>
 
 </menu>

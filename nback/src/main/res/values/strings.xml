@@ -4,7 +4,9 @@
     <string name="pause_game_short">Pause</string>
     <string name="resume_game_short">Resume</string>
     <string name="same_location">Same location</string>
+    <string name="same_image">Same image</string>
     <string name="same_sound">Same sound</string>
+    <string name="same_letter">Same letter</string>
     <string name="home_nback">Home</string>
     <string name="game_options_short">Options</string>
     <string name="game_options_full">Game options</string>
@@ -27,4 +29,7 @@
     <string name="nback_sound">Sound</string>
     <string name="nback_sound_hint">Play sound of letters</string>
     <string name="nback_memorize_prepare">Memorize and prepare to answer 😊</string>
+    <string name="nback_tuto_text1">TUTO n-back Slide 1</string>
+    <string name="nback_tuto_text2">TUTO n-back Slide 2</string>
+    <string name="nback_tuto_text3">TUTO n-back Slide 3</string>
 </resources>

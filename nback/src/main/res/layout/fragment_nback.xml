@@ -139,14 +139,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:enabled="false"
-                    android:text="@string/same_sound"/>
+                    android:text="@string/same_image"/>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 
     <!-- Start/stop button -->
     <Button android:id="@+id/restart_button"
-        android:layout_width="0dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:text="@string/start_game_short"
         app:layout_constraintTop_toBottomOf="@id/nback_info_control"
@@ -156,13 +156,14 @@
 
     <!-- Pause/resume button -->
     <Button android:id="@+id/pause_button"
-        android:layout_width="0dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:text="@string/pause_game_short"
         android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/restart_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="15dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,10 +19,11 @@ import ch.instantpastime.nback.fragments.NBackFragment
 import ch.instantpastime.nback.ui.FragmentStack
 import ch.instantpastime.nback.ui.MyFragmentHelper
 import ch.instantpastime.nback.ui.NBackResource
+import ch.instantpastime.nback.ui.NBackTutoHelper
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_nback.*
 
-class NBackActivity : AppCompatActivity() {
+class NBackActivity : AppCompatActivity(), ContextualImageUser {
 
     private var drawerToolbar: ActionBarDrawerToggle? = null
     private var drawerLayout: DrawerLayout? = null
@@ -30,7 +31,8 @@ class NBackActivity : AppCompatActivity() {
     private var googleMapApi: GoogleMapApi? = null
     private var googlePlaceApi: GooglePlaceApi? = null
     private val contextualImages: MutableList<Bitmap> = mutableListOf()
-    private var frozenContextualImages: List<Bitmap>? = listOf()
+    private var frozenContextualImages: List<Bitmap> = listOf()
+    private var keepContextualImages = true
     private val fragmentStack: FragmentStack = FragmentStack(
         activity = this,
         containerId = R.id.nback_fragment_container,
@@ -60,17 +62,26 @@ class NBackActivity : AppCompatActivity() {
         } else if (LocationHelper.wantUseLocation(this, defValue = false)) {
             // The user wants to use location and it is authorized.
             fetchContextualImages()
+            // Start tutorial while images are being downloaded.
+            startTutorialIfNeeded()
         } else {
             // The user doesn't want to use location.
             useStockImages()
+            // Start tutorial.
+            startTutorialIfNeeded()
         }
     }
 
     private fun currentFragmentChanged(tag: ValueChange<String>) {
         // Update the active icon in the bottom menu according to the displayed fragment.
         val menuId = MyFragmentHelper.getMenuIdFromTag(tag.newValue)
-        if (menuId != null && nav_view.selectedItemId != menuId) {
-            nav_view.selectedItemId = menuId
+        if (menuId != null && menuId != nav_view.selectedItemId) {
+            //nav_view.selectedItemId = menuId
+            nav_view.menu.findItem(menuId).isChecked = true
+        } else {
+            // The fragment doesn't correspond to any menu item, so deselect the current menu.
+            // Doesn't work but why ?
+            // nav_view.menu.findItem(nav_view.selectedItemId).isChecked = false
         }
     }
 
@@ -123,6 +134,9 @@ class NBackActivity : AppCompatActivity() {
                     ch.instantpastime.R.id.menu_general_preference -> {
                         showGeneralPreferencesDialog()
                     }
+                    ch.instantpastime.R.id.menu_tutorial -> {
+                        NBackTutoHelper.startTutoActivity(this)
+                    }
                     else -> {
                     }
                 }
@@ -154,12 +168,24 @@ class NBackActivity : AppCompatActivity() {
                     } else {
                         useStockImages()
                     }
+                    // Start tutorial if needed.
+                    startTutorialIfNeeded()
                 }
             }
         }
     }
 
-    private fun fetchContextualImages() {
+    override fun enableContextualImages(value: Boolean) {
+        if (value) {
+            fetchContextualImages()
+        } else {
+            useStockImages()
+        }
+    }
+
+    fun fetchContextualImages() {
+        keepContextualImages = true
+
         if (locationHelper == null) {
             locationHelper = LocationHelper()
         }
@@ -180,8 +206,11 @@ class NBackActivity : AppCompatActivity() {
         }
     }
 
-    private fun useStockImages() {
-        Toast.makeText(this, "Using stock images", Toast.LENGTH_SHORT).show()
+    fun useStockImages() {
+        keepContextualImages = false
+        // Clear the list of contextual images.
+        contextualImages.clear()
+        frozenContextualImages = listOf()
     }
 
     override fun onRequestPermissionsResult(
@@ -206,32 +235,37 @@ class NBackActivity : AppCompatActivity() {
         if (location != null) {
             val latitude: Double = location.latitude
             val longitude: Double = location.latitude
-            Toast.makeText(
-                this,
-                "Location is ${LocationActivity.formatLatitude(latitude)}, ${LocationActivity.formatLongitude(
-                    longitude
-                )}",
-                Toast.LENGTH_SHORT
-            ).show()
+//            Toast.makeText(
+//                this,
+//                "Location is ${LocationActivity.formatLatitude(latitude)}, ${LocationActivity.formatLongitude(
+//                    longitude
+//                )}",
+//                Toast.LENGTH_SHORT
+//            ).show()
             googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
         }
     }
 
     private fun imageRequestedReady(placePhoto: PlacePhoto) {
 
+        if (!keepContextualImages) {
+            // The user unchecked the option in the meantime, don't keep the images.
+            return
+        }
+
         val bitmap = placePhoto.bitmap
         contextualImages.add(bitmap)
         Log.d("[IMG]", "Received image ${contextualImages.size}/${googlePlaceApi?.NumImages}")
 
         if (contextualImages.size >= nbSymbols) {
-            Toast.makeText(this, "Loaded all $nbSymbols contextual images", Toast.LENGTH_SHORT)
+            Toast.makeText(this, getString(ch.instantpastime.R.string.loc_loaded_images, contextualImages.size), Toast.LENGTH_SHORT)
                 .show()
         }
     }
 
     private fun processPlaces(places: ArrayList<PlaceInfo>) {
-        Toast.makeText(this, "Fetching contextual images", Toast.LENGTH_SHORT).show()
-        googlePlaceApi?.getPhotoAndDetail(places)
+        Toast.makeText(this, getString(ch.instantpastime.R.string.loc_loading_images), Toast.LENGTH_SHORT).show()
+        googlePlaceApi?.getPhotoAndDetail(places, nbImagesRequested = nbSymbols)
     }
 
     fun getCardImage(index: Int): Bitmap? {
@@ -255,12 +289,13 @@ class NBackActivity : AppCompatActivity() {
         )
     }
 
-    private fun enableContextualImages(b: Boolean) {
-        val msg = if (b) {
-            "Location Checked !"
-        } else {
-            "Location Unchecked !"
+    /**
+     * Starts the tutorial activity if it is the first launch.
+     */
+    private fun startTutorialIfNeeded() {
+        if (PrefManager.getFirstTimeLaunch(this, defValue = true)) {
+            PrefManager.setFirstTime(this, value = false)
+            NBackTutoHelper.startTutoActivity(this)
         }
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }
