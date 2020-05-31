@@ -4,7 +4,9 @@
     <string name="pause_game_short">Pause</string>
     <string name="resume_game_short">Resume</string>
     <string name="same_location">Same location</string>
+    <string name="same_image">Same image</string>
     <string name="same_sound">Same sound</string>
+    <string name="same_letter">Same letter</string>
     <string name="home_nback">Home</string>
     <string name="game_options_short">Options</string>
     <string name="game_options_full">Game options</string>

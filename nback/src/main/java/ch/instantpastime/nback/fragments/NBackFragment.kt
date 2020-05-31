@@ -71,6 +71,12 @@ class NBackFragment : Fragment(), INBackController {
             } ?: NBackEnvironmentSettings.SymbolType.Image
         }
 
+    private val sameSymbolText: String
+        get() = when (currentSymbolType) {
+            NBackEnvironmentSettings.SymbolType.Letter -> getString(R.string.same_letter)
+            else -> getString(R.string.same_image)
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -99,7 +105,7 @@ class NBackFragment : Fragment(), INBackController {
 
         context?.let {
             nbackSound.init(it)
-            updateControls(state)
+            updateControls(oldState = null, newState = state)
         }
 
         mRestartButton?.setOnClickListener { restartButtonClicked() }
@@ -188,13 +194,13 @@ class NBackFragment : Fragment(), INBackController {
             when (newState) {
                 NBackState.Idle -> {
                     // Update the controls.
-                    updateControls(newState)
+                    updateControls(oldState = oldState, newState = newState)
                     stopTimer()
                     board?.reset()
                 }
                 NBackState.Running -> {
                     // Update the controls.
-                    updateControls(newState)
+                    updateControls(oldState = oldState, newState = newState)
                     when (oldState) {
                         NBackState.Paused -> startTimer()
                         NBackState.Idle -> {
@@ -215,17 +221,17 @@ class NBackFragment : Fragment(), INBackController {
                 }
                 NBackState.Paused -> {
                     // Update the controls.
-                    updateControls(newState)
+                    updateControls(oldState = oldState, newState = newState)
                     stopTimer()
                 }
             }
         }
     }
 
-    private fun updateControls(state: NBackState) {
+    private fun updateControls(oldState: NBackState?, newState: NBackState) {
         activity?.runOnUiThread {
             val context = context ?: return@runOnUiThread
-            when (state) {
+            when (newState) {
                 NBackState.Idle -> {
                     mPreInfoPanel?.visibility = View.INVISIBLE
                     mButtonsPanel?.visibility = View.INVISIBLE
@@ -237,11 +243,13 @@ class NBackFragment : Fragment(), INBackController {
                     mLetterButton?.visibility = View.INVISIBLE
                     updateTrialCount(0, 0)
                     updateScore(0, 0)
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.stop_game_short),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (oldState != null && oldState != newState) {
+//                        Toast.makeText(
+//                            context,
+//                            context.getString(R.string.stop_game_short),
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+                    }
                     mPastLocationsPanel?.apply {
                         removeAllViews()
                     }
@@ -259,11 +267,13 @@ class NBackFragment : Fragment(), INBackController {
                     }
                     mLocationButton?.isEnabled = false
                     mLetterButton?.isEnabled = false
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.pause_game_short),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (oldState != null && oldState != newState) {
+//                        Toast.makeText(
+//                            context,
+//                            context.getString(R.string.pause_game_short),
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+                    }
                 }
                 NBackState.Running -> {
                     mPauseButton?.apply {
@@ -280,14 +290,17 @@ class NBackFragment : Fragment(), INBackController {
                     mLetterButton?.apply {
                         isEnabled = board?.expectAnswer == true
                         visibility = View.VISIBLE
+                        text = sameSymbolText
                     }
                     updateTrialCount(0, 0)
                     updateScore(0, 0)
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.start_game_short),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (oldState != null && oldState != newState) {
+//                        Toast.makeText(
+//                            context,
+//                            context.getString(R.string.start_game_short),
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+                    }
                 }
             }
         }
@@ -586,8 +599,6 @@ class NBackFragment : Fragment(), INBackController {
                         if (drawable != null) {
                             newSquare?.setImageDrawable(drawable)
                         }
-                        Toast.makeText(context, "Sound ${c.toUpperCase()}", Toast.LENGTH_SHORT)
-                            .show()
                     }
                 }
             }

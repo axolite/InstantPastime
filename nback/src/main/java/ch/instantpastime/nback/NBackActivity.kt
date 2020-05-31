@@ -70,8 +70,13 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
     private fun currentFragmentChanged(tag: ValueChange<String>) {
         // Update the active icon in the bottom menu according to the displayed fragment.
         val menuId = MyFragmentHelper.getMenuIdFromTag(tag.newValue)
-        if (menuId != null && nav_view.selectedItemId != menuId) {
-            nav_view.selectedItemId = menuId
+        if (menuId != null && menuId != nav_view.selectedItemId) {
+            //nav_view.selectedItemId = menuId
+            nav_view.menu.findItem(menuId).isChecked = true
+        } else {
+            // The fragment doesn't correspond to any menu item, so deselect the current menu.
+            // Doesn't work but why ?
+            // nav_view.menu.findItem(nav_view.selectedItemId).isChecked = false
         }
     }
 
