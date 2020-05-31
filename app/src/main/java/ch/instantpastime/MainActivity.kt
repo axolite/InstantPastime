@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
     private var locationHelper: LocationHelper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        android.os.Debug.waitForDebugger()
+        //android.os.Debug.waitForDebugger()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         locationHelper = LocationHelper()
