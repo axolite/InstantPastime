@@ -11,6 +11,7 @@ class FragmentStack(
     val containerId: Int,
     var homeTag: String
 ) {
+    val maxStackSize:Int = 8
     private val cache: FragmentCache = FragmentCache(MyFragmentHelper)
     private val tagStack: MutableList<String> = mutableListOf()
     var currentTagChanged: ((ValueChange<String>) -> Unit)? = null
@@ -34,6 +35,9 @@ class FragmentStack(
     fun pushFragment(tag: String): Fragment? {
         val fragment = showFragment(tag)
         if (fragment != null && tagStack.lastOrNull() != tag) {
+            if (tagStack.size >= maxStackSize) {
+                tagStack.removeAt(0)
+            }
             tagStack.add(tag)
             currentTag = tag
         }
