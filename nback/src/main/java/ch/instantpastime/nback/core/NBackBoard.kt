@@ -29,10 +29,20 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int, val uiControl: INBackControlle
         get() = goal + Level
 
     /**
-     * Number of trials that have been drawn (i.e. generated).
+     * Number of trials that have been drawn (i.e. generated and shown to the user).
      */
     var drawCount: Int = 0
         private set
+
+    /**
+     * Number of trials that have been shown to the user and for which they
+     * hade the possibility to answer.
+     */
+    val answerableCount: Int
+        get() {
+            val q = drawCount - Level
+            return if (q > 0) q else 0
+        }
 
     /**
      * Number of trials that have been corrected.
@@ -51,6 +61,9 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int, val uiControl: INBackControlle
 
     val expectAnswer: Boolean
         get() = drawCount > Level
+
+    val instantScore: Int
+        get() = (NBackScore.SCORE_MAX * score.CorrectCount) / goal
 
     fun toggleLocationAnswer(): Boolean {
         val it = !mAnswerSameLocation

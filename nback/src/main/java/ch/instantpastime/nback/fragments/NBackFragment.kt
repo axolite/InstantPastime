@@ -238,11 +238,12 @@ class NBackFragment : Fragment(), INBackController {
                     mPauseButton?.visibility = View.INVISIBLE
                     mRestartButton?.apply {
                         text = context.getString(R.string.start_game_short)
+                        visibility = View.VISIBLE
                     }
                     mLocationButton?.visibility = View.INVISIBLE
                     mLetterButton?.visibility = View.INVISIBLE
-                    updateTrialCount(0, 0)
-                    updateScore(0, 0)
+                    updateTrialCount(0, board?.goal ?: 0)
+                    updateScoreLabel(0)
                     if (oldState != null && oldState != newState) {
 //                        Toast.makeText(
 //                            context,
@@ -265,6 +266,7 @@ class NBackFragment : Fragment(), INBackController {
                         text = context.getString(R.string.resume_game_short)
                         visibility = View.VISIBLE
                     }
+                    mRestartButton?.visibility = View.INVISIBLE
                     mLocationButton?.isEnabled = false
                     mLetterButton?.isEnabled = false
                     if (oldState != null && oldState != newState) {
@@ -282,6 +284,7 @@ class NBackFragment : Fragment(), INBackController {
                     }
                     mRestartButton?.apply {
                         text = context.getString(R.string.stop_game_short)
+                        visibility = View.VISIBLE
                     }
                     mLocationButton?.apply {
                         isEnabled = board?.expectAnswer == true
@@ -292,8 +295,6 @@ class NBackFragment : Fragment(), INBackController {
                         visibility = View.VISIBLE
                         text = sameSymbolText
                     }
-                    updateTrialCount(0, 0)
-                    updateScore(0, 0)
                     if (oldState != null && oldState != newState) {
 //                        Toast.makeText(
 //                            context,
@@ -607,6 +608,10 @@ class NBackFragment : Fragment(), INBackController {
             mLastLocationSquare = newSquare
             updateAnswerZone(board?.expectAnswer == true)
             updateInfoControlZone()
+            val board = this.board
+            if (board != null) {
+                updateTrialCount(board.answerableCount, board.goal)
+            }
         }
     }
 
@@ -649,8 +654,7 @@ class NBackFragment : Fragment(), INBackController {
             mLetterFeedbackZone?.setBackgroundColor(letterFeedbackColor)
 
             // Update score and counters.
-            updateTrialCount(board.CorrectCount, board.drawCount)
-            updateScore(board.CorrectCount, board.drawCount)
+            updateScoreLabel(board.instantScore)
         }
     }
 
@@ -697,7 +701,7 @@ class NBackFragment : Fragment(), INBackController {
         mTrialCountText?.text = getString(R.string.nback_trial_count, doneCount, totalCount)
     }
 
-    private fun updateScore(score: Int, maxPossibleScore: Int) {
+    private fun updateScoreLabel(score: Int) {
         mScoreText?.text = getString(R.string.nback_score, score)
     }
 
