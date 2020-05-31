@@ -14,7 +14,7 @@ import java.nio.file.Paths
 
 object MemoryResource {
 
-    const val SoundFolderName = ""
+    const val SoundFolderName = "sounds"
     const val CardImageFolderName = "cards"
 
     fun openAsset(context: Context, fileName: String): AssetFileDescriptor? {

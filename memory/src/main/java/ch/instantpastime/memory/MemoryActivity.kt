@@ -7,10 +7,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import ch.instantpastime.PrefManager
+import ch.instantpastime.ValueChange
 import ch.instantpastime.memory.core.MemoryScore
 import ch.instantpastime.memory.core.MemorySettings
 import ch.instantpastime.memory.core.MemorySound
-import ch.instantpastime.memory.ui.BackStackHelper
+import ch.instantpastime.memory.fragments.MemoryFragment
+import ch.instantpastime.memory.ui.FragmentStack
+import ch.instantpastime.memory.ui.MyFragmentHelper
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_memory.*
 
@@ -23,8 +26,12 @@ lateinit var drawer_toolbar: ActionBarDrawerToggle
 
 class MemoryActivity : AppCompatActivity() {
 
-    private val backStackHelper = BackStackHelper(this)
-
+    //private val backStackHelper = BackStackHelper(this)
+    private val fragmentStack: FragmentStack = FragmentStack(
+        activity = this,
+        containerId = R.id.memory_fragment_container,
+        homeTag = MemoryFragment::class.java.simpleName
+    )
     companion object{
         lateinit var prefManager : PrefManager
         lateinit var tuto_slides: IntArray
@@ -44,8 +51,9 @@ class MemoryActivity : AppCompatActivity() {
         // ******************************************
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memory)
-        nav_view.setOnNavigationItemSelectedListener { backStackHelper.onNavigationItemSelected(it) }
-        backStackHelper.loadFragment(nav_view.selectedItemId)
+        nav_view.setOnNavigationItemSelectedListener { bottomMenuItemSelected(it) }
+        fragmentStack.currentTagChanged = { currentFragmentChanged(it) }
+        fragmentStack.pushFragment(fragmentStack.homeTag)
 
         prefManager = PrefManager(this)
 
@@ -108,12 +116,36 @@ class MemoryActivity : AppCompatActivity() {
 
     }
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return if (drawer_toolbar.onOptionsItemSelected(item)) true else super.onOptionsItemSelected(item)
-    }
-    override fun onBackPressed() {
-        if (!backStackHelper.onBackPressed()) {
-            super.onBackPressed()
+        return if (drawer_toolbar?.onOptionsItemSelected(item) == true) {
+            true
+        } else if (item != null) {
+            super.onOptionsItemSelected(item)
+        } else {
+            false
         }
+    }
+    private fun currentFragmentChanged(tag: ValueChange<String>) {
+        // Update the active icon in the bottom menu according to the displayed fragment.
+        val menuId = MyFragmentHelper.getMenuIdFromTag(tag.newValue)
+        if (menuId != null && nav_view.selectedItemId != menuId) {
+            nav_view.selectedItemId = menuId
+        }
+    }
+
+    private fun bottomMenuItemSelected(menuItem: MenuItem): Boolean {
+
+        val tag = MyFragmentHelper.getTagFromMenuId(menuItem.itemId)
+
+        if (tag != null && fragmentStack.currentTag != tag) {
+            val fragment = fragmentStack.pushFragment(tag)
+            return fragment != null
+        }
+        return false
+    }
+
+    @ExperimentalStdlibApi
+    override fun onBackPressed() {
+        fragmentStack.popFragment()
     }
 
 }
