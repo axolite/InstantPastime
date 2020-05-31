@@ -30,7 +30,8 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
     private var googleMapApi: GoogleMapApi? = null
     private var googlePlaceApi: GooglePlaceApi? = null
     private val contextualImages: MutableList<Bitmap> = mutableListOf()
-    private var frozenContextualImages: List<Bitmap>? = listOf()
+    private var frozenContextualImages: List<Bitmap> = listOf()
+    private var keepContextualImages = true
     private val fragmentStack: FragmentStack = FragmentStack(
         activity = this,
         containerId = R.id.nback_fragment_container,
@@ -159,7 +160,17 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
         }
     }
 
-    override fun fetchContextualImages() {
+    override fun enableContextualImages(value: Boolean) {
+        if (value) {
+            fetchContextualImages()
+        } else {
+            useStockImages()
+        }
+    }
+
+    fun fetchContextualImages() {
+        keepContextualImages = true
+
         if (locationHelper == null) {
             locationHelper = LocationHelper()
         }
@@ -180,10 +191,11 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
         }
     }
 
-    override fun useStockImages() {
+    fun useStockImages() {
+        keepContextualImages = false
         // Clear the list of contextual images.
-        frozenContextualImages = null
         contextualImages.clear()
+        frozenContextualImages = listOf()
     }
 
     override fun onRequestPermissionsResult(
@@ -208,31 +220,36 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
         if (location != null) {
             val latitude: Double = location.latitude
             val longitude: Double = location.latitude
-            Toast.makeText(
-                this,
-                "Location is ${LocationActivity.formatLatitude(latitude)}, ${LocationActivity.formatLongitude(
-                    longitude
-                )}",
-                Toast.LENGTH_SHORT
-            ).show()
+//            Toast.makeText(
+//                this,
+//                "Location is ${LocationActivity.formatLatitude(latitude)}, ${LocationActivity.formatLongitude(
+//                    longitude
+//                )}",
+//                Toast.LENGTH_SHORT
+//            ).show()
             googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
         }
     }
 
     private fun imageRequestedReady(placePhoto: PlacePhoto) {
 
+        if (!keepContextualImages) {
+            // The user unchecked the option in the meantime, don't keep the images.
+            return
+        }
+
         val bitmap = placePhoto.bitmap
         contextualImages.add(bitmap)
         Log.d("[IMG]", "Received image ${contextualImages.size}/${googlePlaceApi?.NumImages}")
 
         if (contextualImages.size >= nbSymbols) {
-            Toast.makeText(this, "Loaded all $nbSymbols contextual images", Toast.LENGTH_SHORT)
+            Toast.makeText(this, getString(ch.instantpastime.R.string.loc_loaded_images, contextualImages.size), Toast.LENGTH_SHORT)
                 .show()
         }
     }
 
     private fun processPlaces(places: ArrayList<PlaceInfo>) {
-        Toast.makeText(this, "Fetching contextual images", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(ch.instantpastime.R.string.loc_loading_images), Toast.LENGTH_SHORT).show()
         googlePlaceApi?.getPhotoAndDetail(places, nbImagesRequested = nbSymbols)
     }
 
@@ -255,14 +272,5 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
         fragmentStack.pushFragment(
             GeneralPreferenceFragment::class.java.simpleName
         )
-    }
-
-    private fun enableContextualImages(b: Boolean) {
-        val msg = if (b) {
-            "Location Checked !"
-        } else {
-            "Location Unchecked !"
-        }
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }

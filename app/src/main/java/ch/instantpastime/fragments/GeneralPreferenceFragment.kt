@@ -42,19 +42,19 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat()  {
             key = PrefManager.USE_LOCATION_PREF_KEY
             title = getString(R.string.pref_contextual_image)
             summary = getString(R.string.pref_contextual_image_hint)
+            setDefaultValue(useContextualImage)
             isChecked = useContextualImage
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
                 if (p is SwitchPreference && v is Boolean) {
                     p.isChecked = v
-                    val activity = activity
-                    val specialActivity = activity as ContextualImageUser
-                    if (v) {
-                        if (locationHelper.askLocationAccess(activity)) {
-                            specialActivity.fetchContextualImages()
-                        }
-                    } else {
-                        specialActivity.useStockImages()
-                    }
+                    // Set the value manually in the shared preference otherwise it won't be saved.
+                    // Must be due to a wrong key but cannot find out.
+                    PrefManager.saveLocationPref(context, v)
+
+                    // Transmit the information the activity in order to
+                    // start or stop it can start or stop loading images.
+                    val specialActivity = activity as? ContextualImageUser
+                    specialActivity?.enableContextualImages(v)
                     true
                 } else {
                     false

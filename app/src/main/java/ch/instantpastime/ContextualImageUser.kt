@@ -1,6 +1,5 @@
 package ch.instantpastime
 
 interface ContextualImageUser {
-    fun fetchContextualImages()
-    fun useStockImages()
+    fun enableContextualImages(value: Boolean)
 }
