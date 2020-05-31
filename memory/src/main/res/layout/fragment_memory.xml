@@ -11,7 +11,26 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <!-- Status:  Memory level and score -->
+        <include android:id="@+id/memory_status_include"
+            layout="@layout/memory_status_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/imageView2"/>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:background="@color/colorIdleSquare"
+            app:srcCompat="@drawable/memory" />
+
+        <!--<TextView
             android:id="@+id/welcomeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -19,7 +38,7 @@
             android:layout_weight="1"
             android:foregroundGravity="center_vertical|center_horizontal"
             android:gravity="center"
-            android:text="Welcome to Memory !" />
+            android:text="Welcome to Memory !" />-->
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutPictures"
@@ -87,8 +106,8 @@
 
         <Button
             android:id="@+id/back"
-            android:layout_width="300px"
-            android:layout_height="50px"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.1"
             android:background="@drawable/zzback"
