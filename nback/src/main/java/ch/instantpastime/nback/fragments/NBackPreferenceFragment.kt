@@ -2,6 +2,7 @@ package ch.instantpastime.nback.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.os.SystemClock.uptimeMillis
 import android.widget.Toast
 import androidx.preference.*
 import ch.instantpastime.nback.R
@@ -20,6 +21,8 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
     }
 
     var mSoundPreference: SwitchPreference? = null
+
+    var lastClick: Long = 0
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager?.context?.let { context ->
@@ -76,6 +79,12 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
                 onNBackLevelPreferenceChanged(p, v)
             }
+            setOnPreferenceClickListener {
+                if (isDoubleClick()) {
+                    value = NBackRun.DEFAULT_LEVEL
+                }
+                true
+            }
         }
         gameOptionsCategory.addPreference(nbackLevelPref)
 
@@ -89,6 +98,12 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
             setDefaultValue(NBackRun.DEFAULT_MILLISEC)
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
                 onTimePerTrialPreferenceChanged(p, v)
+            }
+            setOnPreferenceClickListener {
+                if (isDoubleClick()) {
+                    value = NBackRun.DEFAULT_MILLISEC
+                }
+                true
             }
         }
         gameOptionsCategory.addPreference(timePerTrialPref)
@@ -180,5 +195,13 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
         } else {
             "Unknown"
         }
+    }
+
+    private fun isDoubleClick(): Boolean {
+        val current = uptimeMillis()
+        val last = lastClick
+        lastClick = current
+        val diff = current - last
+        return diff < 300
     }
 }
