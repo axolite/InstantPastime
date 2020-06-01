@@ -37,7 +37,7 @@
         android:layout_marginStart="10dp"
         android:background="#00FFFFFF"
         android:text="@string/action_skip"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorDots"
         app:layout_constraintBottom_toBottomOf="@id/start_layout"
         app:layout_constraintStart_toStartOf="@id/start_layout" />
 
@@ -48,7 +48,7 @@
         android:layout_marginEnd="10dp"
         android:background="#00FFFFFF"
         android:text="@string/action_next"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/colorDots"
         app:layout_constraintBottom_toBottomOf="@id/start_layout"
         app:layout_constraintEnd_toEndOf="@id/start_layout" />
 
