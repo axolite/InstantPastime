@@ -57,10 +57,9 @@
             android:layout_gravity="center"
             android:gravity="center"
             tools:visibility="gone">
-            <TextView
+            <TextView android:id="@+id/nback_memorize_prepare_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/nback_memorize_prepare"
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:textSize="16sp"/>

@@ -575,8 +575,19 @@ class NBackFragment : Fragment(), INBackController {
 
     private fun updateInfoControlZone() {
         activity?.runOnUiThread {
-            mPreInfoPanel?.visibility = visibleWhen(board?.expectAnswer == false, View.INVISIBLE)
-            mButtonsPanel?.visibility = visibleWhen(board?.expectAnswer == true, View.INVISIBLE)
+            val board = this.board ?: return@runOnUiThread
+            mPreInfoPanel?.visibility = visibleWhen(board.expectAnswer == false, View.INVISIBLE)
+            mButtonsPanel?.visibility = visibleWhen(board.expectAnswer == true, View.INVISIBLE)
+
+            if (!board.expectAnswer) {
+                view?.safeFindViewById<TextView>(R.id.nback_memorize_prepare_text)?.apply {
+                    val remaining = (board.Level - board.drawCount) + 1
+                    text = resources.getQuantityString(
+                        R.plurals.nback_memorize_prepare,
+                        remaining, remaining
+                    )
+                }
+            }
         }
     }
 

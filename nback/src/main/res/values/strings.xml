@@ -28,7 +28,10 @@
     <string name="nback_symbols_letters">Letters</string>
     <string name="nback_sound">Sound</string>
     <string name="nback_sound_hint">Play sound of letters</string>
-    <string name="nback_memorize_prepare">Memorize and prepare\nto answer 😊</string>
+    <plurals name="nback_memorize_prepare">
+        <item quantity="one">Memorize and prepare\nto answer in %d turn 😊</item>
+        <item quantity="other">Memorize and prepare\nto answer in %d turns 😊</item>
+    </plurals>
     <string name="nback_tuto_text1">\nWelcome to the N-Back game !\n\n\n
         You will see images displayed randomly on a grid,
         \none after another.
