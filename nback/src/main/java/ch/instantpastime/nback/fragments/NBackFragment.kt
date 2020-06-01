@@ -514,6 +514,8 @@ class NBackFragment : Fragment(), INBackController {
             putExtra(ScoreActivity.SCORE_ARG, score)
         }
         startActivity(intent)
+        // Clear the game for when the user comes back from score.
+        processTransition(Transition.Stop)
     }
 
     private fun continueOnCorrect() {

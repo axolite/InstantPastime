@@ -17,8 +17,8 @@
     <string name="nback_interval">Millisecondes par essai</string>
     <string name="nback_interval_hint">Nombre de millisecondes pour répondre</string>
     <plurals name="nback_interval_changed">
-        <item quantity="one">Changé à %d par essai</item>
-        <item quantity="other">Changé à %d par essai</item>
+        <item quantity="one">Changé à %d ms par essai</item>
+        <item quantity="other">Changé à %d ms par essai</item>
     </plurals>
     <string name="nback_score">Score : %1$d</string>
     <string name="nback_trial_count">%1$d / %2$d</string>
@@ -38,8 +38,8 @@
     </string>
     <string name="nback_tuto_text2">Parfois, une image ou une case
         \nsera la même que celle affichée 2 étapes auparavant.</string>
-    <string name="nback_tuto_text3">Souvenez-vous de l’image qu’il y avait
-        \n2 étapes en arrière.
+    <string name="nback_tuto_text3">Souvenez-vous de l’image affichée
+        \n2 étapes auparavant.
         \n\nPuis cliquez sur «Même case» ou «Même image»
         \npour marquer des points !</string>
 </resources>
