@@ -50,4 +50,6 @@
     <string name="credits_game_sources">Game sources</string>
     <string name="credits_google_play_services">Google Play Services</string>
     <string name="credits_clipartmax">ClipartMax</string>
+    <string name="installing_app">Installing app</string>
+    <string name="install_not_implemented">This is a mockup, the installation is not yet implemented</string>
 </resources>

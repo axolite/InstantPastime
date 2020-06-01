@@ -49,4 +49,6 @@
     <string name="credits_game_sources">Sources des jeux</string>
     <string name="credits_google_play_services">Google Play Services</string>
     <string name="credits_clipartmax">ClipartMax</string>
+    <string name="installing_app">En cours d’installation</string>
+    <string name="install_not_implemented">Ceci est une maquette, l’installation n’est pas encore implémentée</string>
 </resources>

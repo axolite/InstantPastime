@@ -125,11 +125,12 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
                         ).show()
                     }
                     ch.instantpastime.R.id.install -> {
-                        Toast.makeText(
-                            this@NBackActivity,
-                            "Installation",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        InstallDialogHelper.showDialog(this, "N-Back")
+//                        Toast.makeText(
+//                            this@NBackActivity,
+//                            "Installation",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
                     }
                     ch.instantpastime.R.id.menu_general_preference -> {
                         showGeneralPreferencesDialog()

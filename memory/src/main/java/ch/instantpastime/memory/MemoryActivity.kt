@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
 import ch.instantpastime.CreditDialogHelper
+import ch.instantpastime.InstallDialogHelper
 import ch.instantpastime.PrefManager
 import ch.instantpastime.PrefManager.Companion.setFirstTime
 import ch.instantpastime.ValueChange
@@ -213,11 +214,12 @@ class MemoryActivity :  AppCompatActivity() {
                         ).show()
                     }
                     ch.instantpastime.R.id.install -> {
-                        Toast.makeText(
-                            this@MemoryActivity,
-                            "Installation",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        InstallDialogHelper.showDialog(this, "Memory")
+//                        Toast.makeText(
+//                            this@MemoryActivity,
+//                            "Installation",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
                     }
                     ch.instantpastime.R.id.menu_general_preference -> {
                         //showGeneralPreferencesDialog()

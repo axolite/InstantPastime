@@ -92,11 +92,12 @@ class MainActivity : AppCompatActivity() {
                         ).show()
                     }
                     ch.instantpastime.R.id.install -> {
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Installation",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        InstallDialogHelper.showDialog(this, "InstantPastime")
+//                        Toast.makeText(
+//                            this@MainActivity,
+//                            "Installation",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
                     }
                     ch.instantpastime.R.id.menu_general_preference -> {
                         //showGeneralPreferencesDialog()
