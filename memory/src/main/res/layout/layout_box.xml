@@ -13,11 +13,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
+        android:tag="64_36_16_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:tag="64_36_16_8">
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <LinearLayout
@@ -25,17 +25,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:tag="64_36_16_8"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:tag="64_36_16_8">
 
             <ImageView
                 android:id="@+id/img1.1_64_36_16_8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64_36_16_8"
                 app:srcCompat="@drawable/back_card" />
 
@@ -43,10 +44,11 @@
                 android:id="@+id/img1.2_64_36_16_8"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64_36_16_8"
                 app:srcCompat="@drawable/back_card" />
 
@@ -54,10 +56,11 @@
                 android:id="@+id/img1.3_64_36"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64_36"
                 app:srcCompat="@drawable/back_card" />
 
@@ -65,10 +68,11 @@
                 android:id="@+id/img1.4_64"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64"
                 app:srcCompat="@drawable/back_card" />
         </LinearLayout>
@@ -78,17 +82,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:tag="64_36_16"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:tag="64_36_16">
 
             <ImageView
                 android:id="@+id/img2.1_64_36_16"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64_36_16"
                 app:srcCompat="@drawable/back_card" />
 
@@ -96,10 +101,11 @@
                 android:id="@+id/img2.2_64_36_16"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64_36_16"
                 app:srcCompat="@drawable/back_card" />
 
@@ -107,10 +113,11 @@
                 android:id="@+id/img2.3_64_36"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64_36"
                 app:srcCompat="@drawable/back_card" />
 
@@ -118,10 +125,11 @@
                 android:id="@+id/img2.4_64"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64"
                 app:srcCompat="@drawable/back_card" />
         </LinearLayout>
@@ -131,17 +139,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:tag="64_36"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:tag="64_36">
 
             <ImageView
                 android:id="@+id/img3.1_64_36"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64_36"
                 app:srcCompat="@drawable/back_card" />
 
@@ -149,10 +158,11 @@
                 android:id="@+id/img3.2_64_36"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64_36"
                 app:srcCompat="@drawable/back_card" />
 
@@ -160,10 +170,11 @@
                 android:id="@+id/img3.3_64_36"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64_36"
                 app:srcCompat="@drawable/back_card" />
 
@@ -171,10 +182,11 @@
                 android:id="@+id/img3.4_64"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64"
                 app:srcCompat="@drawable/back_card" />
         </LinearLayout>
@@ -184,18 +196,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:tag="64"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:tag="64">
 
             <ImageView
                 android:id="@+id/img4.1_64"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
+                android:adjustViewBounds="true"
                 android:background="#00FFFFFF"
-                android:scaleType="fitCenter"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64"
                 app:srcCompat="@drawable/back_card" />
 
@@ -203,13 +216,14 @@
                 android:id="@+id/img4.2_64"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
 
                 android:layout_weight="1"
-                android:background="#00FFFFFF"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
 
+                android:background="#00FFFFFF"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64"
                 app:srcCompat="@drawable/back_card" />
 
@@ -218,11 +232,12 @@
                 android:id="@+id/img4.3_64"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
+                android:adjustViewBounds="true"
                 android:background="#00FFFFFF"
-                android:scaleType="fitCenter"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64"
                 app:srcCompat="@drawable/back_card" />
 
@@ -230,10 +245,11 @@
                 android:id="@+id/img4.5_64"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="1"
-                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:cropToPadding="false"
+                android:scaleType="fitXY"
                 android:tag="64"
                 app:srcCompat="@drawable/back_card" />
 

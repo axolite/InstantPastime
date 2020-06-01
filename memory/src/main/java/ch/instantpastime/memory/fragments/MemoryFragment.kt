@@ -2,12 +2,18 @@ package ch.instantpastime.memory.fragments
 
 import android.Manifest
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
+import android.util.Range
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +34,7 @@ import ch.instantpastime.memory.maximizeBox
 import kotlinx.android.synthetic.main.fragment_memory.*
 import ch.instantpastime.PlaceInfo
 import ch.instantpastime.memory.*
+import ch.instantpastime.memory.MemoryActivity.Companion.gameOngoing
 import ch.instantpastime.memory.MemoryActivity.Companion.memoryScore
 import ch.instantpastime.memory.MemoryActivity.Companion.memorySettings
 import ch.instantpastime.memory.MemoryActivity.Companion.memorySound
@@ -36,8 +43,14 @@ import ch.instantpastime.memory.R
 import ch.instantpastime.memory.core.MemoryScore
 import ch.instantpastime.memory.core.MemorySettings
 import ch.instantpastime.memory.core.MemorySettings.Companion.DEFAULT_LEVEL
+import ch.instantpastime.memory.ui.MemoryResource
+import ch.instantpastime.memory.ui.MemoryResource.getStockImageName
 import kotlinx.android.synthetic.main.fragment_memory.view.*
 import kotlinx.android.synthetic.main.memory_status_view.*
+import org.json.JSONObject
+import java.io.FileDescriptor
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * A simple [Fragment] subclass.
@@ -53,6 +66,10 @@ class MemoryFragment : Fragment() {
         var isMaximize: Boolean = false
     }
 
+    init{
+        val a=1
+
+    }
     //val imageListId = ArrayList<Int>()
     //val drawables = R.drawable::class.java.fields
     val backImage = R.drawable.back_card
@@ -68,20 +85,48 @@ class MemoryFragment : Fragment() {
     var handler = Handler()
     var matching: Boolean = false
 
+    private var frozenContextualImages: List<Bitmap> = listOf()
+    private var keepContextualImages = true
+
     private var locationHelper: LocationHelper? = null
     private var googleMapApi: GoogleMapApi? = null
     private var googlePlaceApi: GooglePlaceApi? = null
 
+    private var title :ImageView? = null
+
+    var myFragmentview: View? =null
+
+
+    override fun onConfigurationChanged (newConfig: Configuration){
+        super.onConfigurationChanged(newConfig)
+        if (newConfig.orientation ==Configuration.ORIENTATION_LANDSCAPE ) {
+            title!!.visibility = View.GONE
+            for (myCard in myCards) {
+                myCard.scaleType= ImageView.ScaleType.FIT_CENTER
+            }
+        }
+        else
+        {
+            title!!.visibility = View.VISIBLE
+            for (myCard in myCards) {
+                myCard.scaleType= ImageView.ScaleType.FIT_XY
+            }
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        if (myFragmentview != null) return myFragmentview
+
+        val view = inflater.inflate(R.layout.fragment_memory, container, false)
+        myFragmentview = view
+
         memoryScore = MemoryScore()
         memorySound.playSound(context!!,0)
 
-
-        val view = inflater.inflate(R.layout.fragment_memory, container, false)
+        title = view.safeFindViewById<ImageView>(R.id.imageView2)
 
         view.safeFindViewById<TextView>(R.id.status_level_text)?.let {
             it.text = getString(R.string.memory_status_level, memorySettings.level)
@@ -90,25 +135,9 @@ class MemoryFragment : Fragment() {
             it.text = getString(R.string.memory_score, 0)
         }
 
-        if (locationHelper == null) {
-            locationHelper = LocationHelper()
-        }
 
-        val ctx = context
-        if (ctx != null) {
-            if (googleMapApi == null) {
-                googleMapApi = GoogleMapApi()
-                googleMapApi?.init(ctx)
-            }
-            if (googlePlaceApi == null) {
-                googlePlaceApi = GooglePlaceApi(
-                    NumImages = memorySettings.num_images,
-                    imageRequestReady = { imageRequestedReady(it) }
-                )
-                googlePlaceApi?.init(ctx)
-            }
-        }
-        locationHelper?.getLocation(this, { processLocation(it) })
+
+
 
         view.box1.setOnClickListener {
             maximizeBox(
@@ -161,76 +190,96 @@ class MemoryFragment : Fragment() {
             )
         }
 
-        val viewsBox1 = view.box1.getAllViews()
-        val viewsBox2 = view.box2.getAllViews()
-        val viewsBox3 = view.box3.getAllViews()
-        val viewsBox4 = view.box4.getAllViews()
 
-        for (myview in viewsBox1) {
-            if (myview is ImageView) {
-                if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
-                    myCards.add(myview as ImageView)
+            val viewsBox1 = view.box1.getAllViews()
+            val viewsBox2 = view.box2.getAllViews()
+            val viewsBox3 = view.box3.getAllViews()
+            val viewsBox4 = view.box4.getAllViews()
+
+            for (myview in viewsBox1) {
+                if (myview is ImageView) {
+                    if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
+                        myCards.add(myview as ImageView)
+                    } else myview.visibility = View.GONE
                 }
-                else myview.visibility = View.GONE
-            }
-            if (myview is LinearLayout) {
-                if (! getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
-                    myview.visibility = View.GONE
-                }
-            }
-        }
-        for (myview in viewsBox2) {
-            if (myview is ImageView) {
-                if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
-                    myCards.add(myview as ImageView)
-                }
-                else myview.visibility = View.GONE
-            }
-            if (myview is LinearLayout) {
-                if (! getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
-                    myview.visibility = View.GONE
+                if (myview is LinearLayout) {
+                    if (!getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
+                        myview.visibility = View.GONE
+                    }
                 }
             }
-        }
-        for (myview in viewsBox3) {
-            if (myview is ImageView) {
-                if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
-                    myCards.add(myview as ImageView)
+            for (myview in viewsBox2) {
+                if (myview is ImageView) {
+                    if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
+                        myCards.add(myview as ImageView)
+                    } else myview.visibility = View.GONE
                 }
-                else myview.visibility = View.GONE
-            }
-            if (myview is LinearLayout) {
-                if (! getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
-                    myview.visibility = View.GONE
-                }
-            }
-        }
-        for (myview in viewsBox4) {
-            if (myview is ImageView) {
-                if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
-                    myCards.add(myview as ImageView)
-                }
-                else myview.visibility = View.GONE
-            }
-            if (myview is LinearLayout) {
-                if (! getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
-                    myview.visibility = View.GONE
+                if (myview is LinearLayout) {
+                    if (!getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
+                        myview.visibility = View.GONE
+                    }
                 }
             }
-        }
+            for (myview in viewsBox3) {
+                if (myview is ImageView) {
+                    if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
+                        myCards.add(myview as ImageView)
+                    } else myview.visibility = View.GONE
+                }
+                if (myview is LinearLayout) {
+                    if (!getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
+                        myview.visibility = View.GONE
+                    }
+                }
+            }
+            for (myview in viewsBox4) {
+                if (myview is ImageView) {
+                    if (getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
+                        myCards.add(myview as ImageView)
+                    } else myview.visibility = View.GONE
+                }
+                if (myview is LinearLayout) {
+                    if (!getResources().getResourceName(myview.id).contains(memorySettings.num_cards.toString())) {
+                        myview.visibility = View.GONE
+                    }
+                }
+            }
+            //disableListeners()
 
 
-//        for (f in drawables) {
-//
-//            imageListId.add(getResources().getIdentifier(f.name,"drawable","ch.instantpastime.memory"))
-//        }
-
-
-        //disableListeners()
+            if (memorySettings.contextCards) {
+                if (locationHelper == null) {
+                    locationHelper = LocationHelper()
+                }
+                val ctx = context
+                if (ctx != null) {
+                    if (googleMapApi == null) {
+                        googleMapApi = GoogleMapApi()
+                        googleMapApi?.init(ctx)
+                    }
+                    if (googlePlaceApi == null) {
+                        googlePlaceApi = GooglePlaceApi(
+                            NumImages = memorySettings.num_images,
+                            imageRequestReady = { imageRequestedReady(it) }
+                        )
+                        googlePlaceApi?.init(ctx)
+                    }
+                }
+                locationHelper?.getLocation(this, { processLocation(it) })
+            } else {
+                stockImagesLoad(context!!)
+            }
 
         return view
     }
 
+    override fun onAttach(context : Context){
+        super.onAttach(context)
+    }
+
+    override fun onDetach(){
+        super.onDetach()
+    }
 
     fun onClick_img(currentCard: View?) {
         if (matching) {
@@ -395,12 +444,51 @@ class MemoryFragment : Fragment() {
                 i += 1
 
             }
+            //stockImagesLoad(context!!)
         }
 
     }
 
+     fun stockImagesLoad(context: Context){
+         var CardsPath: Path?
+
+         for (i in 0..(memorySettings.num_images-1)) {
+             CardsPath = Paths.get(MemoryResource.CardImageFolderName, getStockImageName(i))
+             if (CardsPath != null) {
+                 var image = context.getAssets().open(CardsPath.toString())
+
+                 if (image != null) {
+                     var bmp = BitmapFactory.decodeStream(image)
+                     val reciv_img = bitmapClass(
+                         bmp,
+                         getStockImageName(i)!!.split(".")[0],
+                         JSONObject("""{"location":"Unknown"}""")
+                     )
+                     myBitmaps.add(reciv_img)
+                     myBitmaps.add(reciv_img)
+
+                 }
+             }
+         }
+             //myBitmaps.shuffle()
+             Toast.makeText(
+                 context,
+                 "Ready!!",
+                 Toast.LENGTH_SHORT
+             ).show()
+         var i = 0
+         for (myCard in myCards) {
+
+             myCard.setOnClickListener { onClick_img(it) }
+             myCard.tag = i
+             i += 1
+
+         }
+
+
+    }
     private fun processLocation(location: Location?) {
-        val ctx = context
+
         if (location != null) {
             // Toast.makeText(
             //     ctx,
@@ -409,21 +497,10 @@ class MemoryFragment : Fragment() {
             // ).show()
             googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
 
-            //**** Launch Tuto while the pictures are being loaded *********************
-            if (prefManager.isFirstTimeLaunch()){
-                callingFromSettings = false
-
-                val intent = Intent(ctx, StartActivity::class.java)
-                intent.putExtra( "tuto_slides",  tuto_slides )
-                intent.putExtra("tuto_images", tuto_images )
-                intent.putExtra("tuto_texts", tuto_texts )
-                startActivity(intent)
-                prefManager.setFirstTimeLaunch()
-
-            }
-            //**************************************************************************
+           launchTuto()
 
         }
+
     }
 
     private fun processPlaces(places: ArrayList<PlaceInfo>) {
@@ -449,15 +526,42 @@ class MemoryFragment : Fragment() {
                     locationHelper?.processPermissionStatus(
                         PermissionStatus.RefusedOnce,
                         context, { loc -> processLocation(loc) })
+                    launchTuto()
+                    stockImagesLoad(context)
+
+
                 } else {
                     locationHelper?.processPermissionStatus(
                         PermissionStatus.AlwaysRefused,
                         context, { loc -> processLocation(loc) })
+
+                    launchTuto()
+                    stockImagesLoad(context)
+
                 }
             else -> {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults)
             }
         }
+    }
+
+    fun launchTuto(){
+        val ctx = context
+        //**** Launch Tuto while the pictures are being loaded *********************
+        if (prefManager.isFirstTimeLaunch()){
+            callingFromSettings = false
+
+            val intent = Intent(ctx, StartActivity::class.java)
+            intent.putExtra( "tuto_slides",  tuto_slides )
+            intent.putExtra("tuto_images", tuto_images )
+            intent.putExtra("tuto_texts", tuto_texts )
+            startActivity(intent)
+            prefManager.setFirstTimeLaunch()
+
+        }
+        //**************************************************************************
+
+
     }
 
     inline fun <reified T : View> View.safeFindViewById(@IdRes id: Int): T? {

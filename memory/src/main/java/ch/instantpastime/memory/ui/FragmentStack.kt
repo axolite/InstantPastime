@@ -43,9 +43,18 @@ class FragmentStack(
     private fun showFragment(tag: String): Fragment? {
         val fragment = getOrCreateFragment(tag)
         if (fragment != null) {
-            activity.supportFragmentManager.beginTransaction()
-                .replace(containerId, fragment, tag)
-                .commit()
+
+            val existing = activity.supportFragmentManager.findFragmentByTag("MemoryPreferenceFragment")
+            if (existing != null) {
+                activity.supportFragmentManager.popBackStack()
+            } else {
+                activity.supportFragmentManager.beginTransaction()
+                    .replace(containerId, fragment, tag)
+                    .commit()
+            }
+
+
+
         }
         return fragment
     }

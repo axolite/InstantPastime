@@ -29,6 +29,7 @@
             android:layout_weight="0.1"
 
             android:background="@color/colorIdleSquare"
+            android:visibility="gone"
             app:srcCompat="@drawable/memory" />
 
 

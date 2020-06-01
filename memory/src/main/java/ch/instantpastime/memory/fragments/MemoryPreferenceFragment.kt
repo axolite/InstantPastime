@@ -75,8 +75,8 @@ class MemoryPreferenceFragment : PreferenceFragmentCompat() {
                 setDefaultValue(DEFAULT_LEVEL)
                 onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
                     val newvalue: Int = v as Int
-                    memorySettings.setGameLevel(newvalue)
-                    summary = getString(R.string.memory_level_hint) + " =" + memorySettings.num_cards
+                    //memorySettings.setGameLevel(newvalue)
+                    summary = getString(R.string.memory_level_hint) + " =" + memorySettings.conversionLeveltoCards(newvalue)
                     onMemoryLevelPreferenceChanged(p, v)
                 }
             }
@@ -114,6 +114,25 @@ class MemoryPreferenceFragment : PreferenceFragmentCompat() {
             }
         }
         gameContextCategory.addPreference(soundPref)
+
+
+        val contextCardsPref = SwitchPreference(context).apply {
+            key = MemorySettings.MEMORY_CONTEXT_CARDS_KEY
+            title = getString(R.string.memory_context_cards)
+            summary = getString(R.string.memory_context_cards_hint)
+            isChecked = true
+
+            onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
+                return@OnPreferenceChangeListener if (p is SwitchPreference && v is Boolean) {
+                    p.isChecked = v
+                    //memorySettings.contextCards = v
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+        gameContextCategory.addPreference(contextCardsPref)
 
         // Note from https://developer.android.com/guide/topics/ui/settings/programmatic-hierarchy
         // Warning: Make sure to add the PreferenceCategory to the PreferenceScreen before adding children to it.
