@@ -38,10 +38,11 @@
     <string name="main_choose_game">Choisissez un jeu pour commencer</string>
     <string name="main_memory_description">Mémory classique avec des images contextuelles</string>
     <string name="main_nback_description">Mémory «dynamique»</string>
-    <string name="credits_app_iuam">Cette appli a été réalisée dans le cadre du cours IUAM de la HES-SO.</string>
+    <string name="credits_app_iuam">Cette appli a été réalisée dans le cadre du cours IUAM de la HES-SO</string>
     <string name="credits_thanks_illustrators">Merci aux illustrateurs suivants pour leur travail formidable !</string>
     <string name="credits_pixabay">"Pixabay pour toutes les photos «stock» "</string>
     <string name="credits_close">Fermer</string>
     <string name="credits_freepik">Freepik</string>
     <string name="credits_vectors_market">Vectors market</string>
+    <string name="credits_images_sources">Sources des illustrations</string>
 </resources>
