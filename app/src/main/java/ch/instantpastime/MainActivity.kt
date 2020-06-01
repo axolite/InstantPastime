@@ -1,8 +1,10 @@
 package ch.instantpastime
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -14,7 +16,7 @@ import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private var locationHelper: LocationHelper? = null
+    //private var locationHelper: LocationHelper? = null
     private var drawerLayout: DrawerLayout? = null
     private var drawerToolbar: ActionBarDrawerToggle? = null
 
@@ -22,8 +24,18 @@ class MainActivity : AppCompatActivity() {
         //android.os.Debug.waitForDebugger()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        locationHelper = LocationHelper()
-        locationHelper?.getLocation(this, { processLocation(it) })
+        findViewById<View>(R.id.try_memory_button).setOnClickListener {
+            val urlIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse(MEMORY_INSTANT_URL))
+            startActivity(urlIntent)
+        }
+        findViewById<View>(R.id.try_nback_button).setOnClickListener {
+            val urlIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse(NBACK_INSTANT_URL))
+            startActivity(urlIntent)
+        }
+        //locationHelper = LocationHelper()
+        //locationHelper?.getLocation(this, { processLocation(it) })
 
         initDrawer()
     }
@@ -36,14 +48,14 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             MY_PERMISSION_FINE_LOCATION ->
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationHelper?.processPermissionStatus(PermissionStatus.Accepted,
-                        this, { loc -> processLocation(loc) })
+//                    locationHelper?.processPermissionStatus(PermissionStatus.Accepted,
+//                        this, { loc -> processLocation(loc) })
                 } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-                    locationHelper?.processPermissionStatus(PermissionStatus.RefusedOnce,
-                        this, { loc -> processLocation(loc) })
+//                    locationHelper?.processPermissionStatus(PermissionStatus.RefusedOnce,
+//                        this, { loc -> processLocation(loc) })
                 } else {
-                    locationHelper?.processPermissionStatus(PermissionStatus.AlwaysRefused,
-                        this, { loc -> processLocation(loc) })
+//                    locationHelper?.processPermissionStatus(PermissionStatus.AlwaysRefused,
+//                        this, { loc -> processLocation(loc) })
                 }
             else -> {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -123,4 +135,17 @@ class MainActivity : AppCompatActivity() {
             ).show()
         }
     }
+
+    companion object {
+        /**
+         * URL associated to the InstantPastime Memory game instant app.
+         */
+        const val MEMORY_INSTANT_URL = "http://mountainmind.ch/memory"
+
+        /**
+         * URL associated to the InstantPastime N-Back game instant app.
+         */
+        const val NBACK_INSTANT_URL = "http://mountainmind.ch/nback"
+    }
+
 }
