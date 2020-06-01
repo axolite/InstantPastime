@@ -6,76 +6,81 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        tools:context=".MainActivity">
-
-        <TextView android:text="@string/welcome_to_main_app"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_marginBottom="10dp"/>
-
-        <TextView android:text="@string/main_choose_game"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
+        android:paddingTop="20dp">
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_margin="15dp"
-            android:layout_gravity="center"
-            android:gravity="center">
-            <ImageView
-                android:src="@drawable/logomemory"
-                android:layout_width="wrap_content"
-                android:layout_height="150dp"
-                android:scaleType="centerInside"
-                android:adjustViewBounds="true"
-                />
-            <TextView android:text="@string/main_memory_description"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:width="200dp"
-                android:textAlignment="center"/>
-            <Button android:id="@+id/try_memory_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/try_memory"/>
-        </LinearLayout>
+            android:gravity="center"
+            tools:context=".MainActivity">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="15dp"
-            android:layout_gravity="center"
-            android:gravity="center">
-            <ImageView
-                android:src="@drawable/logonback"
-                android:layout_width="wrap_content"
-                android:layout_height="150dp"
-                android:scaleType="centerInside"
-                android:adjustViewBounds="true"
-                />
-            <TextView android:text="@string/main_nback_description"
-                android:layout_gravity="center"
+            <TextView android:text="@string/welcome_to_main_app"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:width="200dp"
-                android:textAlignment="center"/>
-            <Button android:id="@+id/try_nback_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/try_nback"/>
-        </LinearLayout>
+                android:textSize="18sp"
+                android:layout_marginBottom="10dp"/>
 
-    </LinearLayout>
+            <TextView android:text="@string/main_choose_game"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="15dp"
+                android:layout_gravity="center"
+                android:gravity="center">
+                <ImageView
+                    android:src="@drawable/logomemory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    />
+                <TextView android:text="@string/main_memory_description"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:width="200dp"
+                    android:textAlignment="center"/>
+                <Button android:id="@+id/try_memory_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/try_memory"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="15dp"
+                android:layout_gravity="center"
+                android:gravity="center">
+                <ImageView
+                    android:src="@drawable/logonback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="150dp"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    />
+                <TextView android:text="@string/main_nback_description"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:width="200dp"
+                    android:textAlignment="center"/>
+                <Button android:id="@+id/try_nback_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/try_nback"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view_drawer"
