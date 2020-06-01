@@ -1,5 +1,5 @@
 <resources>
-    <string name="start_game_short">Start</string>
+    <string name="start_game_short">Play</string>
     <string name="stop_game_short">Stop</string>
     <string name="pause_game_short">Pause</string>
     <string name="resume_game_short">Resume</string>
@@ -23,19 +23,19 @@
     <string name="nback_score">Score: %1$d</string>
     <string name="nback_trial_count">%1$d / %2$d</string>
     <string name="game_context">Game context</string>
-    <string name="nback_symbols_long">N-back symbols</string>
+    <string name="nback_symbols_long">Game symbols</string>
     <string name="nback_symbols_images">Images</string>
     <string name="nback_symbols_letters">Letters</string>
     <string name="nback_sound">Sound</string>
     <string name="nback_sound_hint">Play sound of letters</string>
-    <string name="nback_memorize_prepare">Memorize and prepare to answer 😊</string>
-    <string name="nback_tuto_text1">Welcome to the N-Back game !\n\n
+    <string name="nback_memorize_prepare">Memorize and prepare\nto answer 😊</string>
+    <string name="nback_tuto_text1">\nWelcome to the N-Back game !\n\n\n
         You will see images displayed randomly on a grid,
         \none after another.
     </string>
     <string name="nback_tuto_text2">Sometimes, the image or location
         \nwill be the same as 2 steps before.</string>
-    <string name="nback_tuto_text3">Memorize the image that was displayed
+    <string name="nback_tuto_text3">Remember the image that was displayed
         \n2 steps back.
         \n\nThen click on “Same location” or “Same image”
         \nto mark points!</string>

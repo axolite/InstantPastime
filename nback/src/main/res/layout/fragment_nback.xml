@@ -62,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/nback_memorize_prepare"
                 android:layout_gravity="center"
+                android:textAlignment="center"
                 android:textSize="16sp"/>
         </LinearLayout>
 
