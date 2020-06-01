@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">InstantPastime</string>
+    <string name="title_memory">Memory Game</string>
+    <string name="title_nback">N-Back</string>
+
+    <string name="action_next">SUIVANT</string>
+    <string name="action_skip">PASSER</string>
+    <string name="action_got">COMMENCER</string>
+
+    <string name="play_again">Rejouer</string>
+    <string name="install_app">Installer l’appli</string>
+    <string name="trophy">Trophée</string>
+    <string name="thank_you">Merci</string>
+    <string name="score">Score</string>
+    <string name="loc_allow">Autoriser localisation</string>
+    <string name="loc_refuse">Non merci</string>
+    <string name="loc_can_change_later">Peut être changé plus tard dans</string>
+    <string name="loc_breadcrumb"><![CDATA[Préférences > Localisation]]></string>
+    <string name="loc_long_question">Télécharger les images de lieux aux alentours ?</string>
+    <string name="loc_location">Localisation</string>
+    <string name="loc_location_accepted">Localisation acceptée</string>
+    <string name="loc_location_refused">Localisation refusée</string>
+    <string name="loc_ack_refusal">Votre localisation ne sera pas utilisée</string>
+    <string name="loc_image_progress">Image %1$d/%2$d</string>
+    <string name="loc_loading_images">Chargement des images contextuelles</string>
+    <string name="loc_loaded_images">%1$d images contextuelles chargées</string>
+    <string name="menu_about">À propos</string>
+    <string name="menu_install_app">Installer l’appli</string>
+    <string name="menu_general_preference">Préférences</string>
+    <string name="menu_credits">Crédits</string>
+    <string name="pref_geolocation_category">Géolocalisation</string>
+    <string name="pref_contextual_image">Images contextuelles</string>
+    <string name="pref_contextual_image_hint">Utiliser des images de lieux à proximité</string>
+    <string name="menu_tutorial">Tutoriel</string>
+    <string name="try_memory">Essayer le Mémory</string>
+    <string name="try_nback">Essayer le N-Back</string>
+    <string name="welcome_to_main_app">Bienvenue sur InstantPastime !</string>
+    <string name="main_choose_game">Choisissez un jeu pour commencer</string>
+    <string name="main_memory_description">Mémory classique avec des images contextuelles</string>
+    <string name="main_nback_description">Mémory «dynamique»</string>
+    <string name="credits_app_iuam">Cette appli a été réalisée dans le cadre du cours IUAM de la HES-SO.</string>
+    <string name="credits_thanks_illustrators">Merci aux illustrateurs suivants pour leur travail formidable !</string>
+    <string name="credits_pixabay">"Pixabay pour toutes les photos «stock» "</string>
+    <string name="credits_close">Fermer</string>
+    <string name="credits_freepik">Freepik</string>
+    <string name="credits_vectors_market">Vectors market</string>
+</resources>

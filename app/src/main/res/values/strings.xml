@@ -34,7 +34,7 @@
     <string name="menu_tutorial">Tutorial</string>
     <string name="try_memory">Try Memory</string>
     <string name="try_nback">Try N-Back</string>
-    <string name="welcome_to_main_app">Welcome to InstanPastime!</string>
+    <string name="welcome_to_main_app">Welcome to InstantPastime!</string>
     <string name="main_choose_game">Choose a game to start playing</string>
     <string name="main_memory_description">Classical memory game with contextual images</string>
     <string name="main_nback_description">“Dynamic” memory game</string>
