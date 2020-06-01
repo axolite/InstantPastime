@@ -1,5 +1,6 @@
 package ch.instantpastime.memory
 
+import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -8,7 +9,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.preference.PreferenceManager
+import ch.instantpastime.CreditDialogHelper
 import ch.instantpastime.PrefManager
+import ch.instantpastime.PrefManager.Companion.setFirstTime
 import ch.instantpastime.ValueChange
 import ch.instantpastime.memory.core.MemoryScore
 import ch.instantpastime.memory.core.MemorySettings
@@ -37,7 +40,7 @@ class MemoryActivity :  AppCompatActivity() {
     )*/
 
     private var mFragmentManager = supportFragmentManager
-    private var MemoryFragment = MemoryFragment()
+    var MemoryFragment = MemoryFragment()
     private var MemoryPreferenceFragment = MemoryPreferenceFragment()
 
     private var drawerToolbar: ActionBarDrawerToggle? = null
@@ -187,7 +190,7 @@ class MemoryActivity :  AppCompatActivity() {
         }
 
     private fun initDrawer() {
-        val drawerLayout = findViewById<View>(R.id.nav_view_drawer) as? DrawerLayout
+        val drawerLayout = findViewById<View>(R.id.activity_main) as? DrawerLayout
         this.drawerLayout = drawerLayout
         if (drawerLayout != null) {
             val drawerToolbar = ActionBarDrawerToggle(this, drawerLayout, 0, 0).apply {
@@ -220,7 +223,11 @@ class MemoryActivity :  AppCompatActivity() {
                         //showGeneralPreferencesDialog()
                     }
                     ch.instantpastime.R.id.menu_tutorial -> {
-                        //NBackTutoHelper.startTutoActivity(this)
+                        setFirstTime(MemoryFragment.context!! , false)
+                        MemoryFragment.launchTuto(true)
+                    }
+                    ch.instantpastime.R.id.menu_credits -> {
+                        CreditDialogHelper.showCredits(this)
                     }
                     else -> {
                     }

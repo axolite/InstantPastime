@@ -14,11 +14,8 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.util.Range
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import android.widget.*
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
@@ -45,6 +42,7 @@ import ch.instantpastime.memory.core.MemorySettings
 import ch.instantpastime.memory.core.MemorySettings.Companion.DEFAULT_LEVEL
 import ch.instantpastime.memory.ui.MemoryResource
 import ch.instantpastime.memory.ui.MemoryResource.getStockImageName
+import kotlinx.android.synthetic.main.activity_memory.*
 import kotlinx.android.synthetic.main.fragment_memory.view.*
 import kotlinx.android.synthetic.main.memory_status_view.*
 import org.json.JSONObject
@@ -391,14 +389,14 @@ class MemoryFragment : Fragment() {
         val okBtn = dialog .findViewById(R.id.ok_popup) as Button
         okBtn.setOnClickListener {
             if ( memoryScore.num_mathches== memorySettings.num_images){
-                var finalScore = DialogScore()
-                finalScore.showDialog(this@MemoryFragment.getContext()!!, memoryScore.totalScore().toString())
-                Toast.makeText(
+                showDialogScore(this@MemoryFragment.getContext()!!, memoryScore.totalScore().toString())
+
+                /*Toast.makeText(
                     this@MemoryFragment.getContext(),
                     "You have completed the memory!! Score: " +  memoryScore.totalScore(),
                     Toast.LENGTH_SHORT
                 )
-                    .show();
+                    .show();*/
                 memorySound.playSound(context!!,3)
             }
             dialog .dismiss()
@@ -407,6 +405,43 @@ class MemoryFragment : Fragment() {
 
     }
 
+    fun showDialogScore(context: Context, score: String) {
+
+
+        val dialog = Dialog(context)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(true)
+        dialog.setContentView(ch.instantpastime.R.layout.activity_score)
+
+        val score_text = dialog.findViewById(ch.instantpastime.R.id.score_final_text) as TextView
+        score_text.text = score
+
+        val PlayAgainBtn = dialog .findViewById(ch.instantpastime.R.id.score_replay_button) as Button
+        PlayAgainBtn.setOnClickListener {
+
+            //Start Game again...
+
+            dialog .dismiss()
+        }
+        val InstallBtn = dialog .findViewById(ch.instantpastime.R.id.score_install_button) as Button
+        InstallBtn.setOnClickListener {
+            Toast.makeText(
+                context,
+                "Install",
+                Toast.LENGTH_SHORT
+            ).show()
+            dialog .dismiss()
+        }
+
+        val lp = WindowManager.LayoutParams()
+        lp.copyFrom(dialog.getWindow()!!.getAttributes())
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT
+        dialog.show()
+        dialog.getWindow()!!.setAttributes(lp)
+
+
+    }
 
     fun imageRequestedReady(placePhoto: PlacePhoto) {
         val bitmap = placePhoto.response.bitmap
@@ -497,7 +532,7 @@ class MemoryFragment : Fragment() {
             // ).show()
             googleMapApi?.requestNearbyPlaces(location) { processPlaces(it) }
 
-           launchTuto()
+           launchTuto(false)
 
         }
 
@@ -526,7 +561,7 @@ class MemoryFragment : Fragment() {
                     locationHelper?.processPermissionStatus(
                         PermissionStatus.RefusedOnce,
                         context, { loc -> processLocation(loc) })
-                    launchTuto()
+                    launchTuto(false)
                     stockImagesLoad(context)
 
 
@@ -535,7 +570,7 @@ class MemoryFragment : Fragment() {
                         PermissionStatus.AlwaysRefused,
                         context, { loc -> processLocation(loc) })
 
-                    launchTuto()
+                    launchTuto(false)
                     stockImagesLoad(context)
 
                 }
@@ -545,13 +580,13 @@ class MemoryFragment : Fragment() {
         }
     }
 
-    fun launchTuto(){
-        val ctx = context
+    fun launchTuto(bypassFirstTime: Boolean){
+        //val ctx = context
         //**** Launch Tuto while the pictures are being loaded *********************
-        if (prefManager.isFirstTimeLaunch()){
+        if ((prefManager.isFirstTimeLaunch()) or (bypassFirstTime)){
             callingFromSettings = false
 
-            val intent = Intent(ctx, StartActivity::class.java)
+            val intent = Intent(context, StartActivity::class.java)
             intent.putExtra( "tuto_slides",  tuto_slides )
             intent.putExtra("tuto_images", tuto_images )
             intent.putExtra("tuto_texts", tuto_texts )
