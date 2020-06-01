@@ -1,6 +1,7 @@
 package ch.instantpastime.nback.core
 
 import android.content.Context
+import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
 import android.util.Log
 import ch.instantpastime.nback.ui.NBackResource
@@ -24,40 +25,52 @@ class NBackSound {
 
     fun playArticle(context: Context, index: Int): Boolean {
         if (index in 0 until letterCount) {
-            _player?.apply {
-                reset()
-                val soundPath: Path? = Paths.get(NBackResource.SoundFolderName, _sounds[index])
-                if (soundPath != null) {
-                    val afd = NBackResource.openAsset(context, soundPath.toString())
-                    if (afd != null) {
-
-                        // Set the sound file to play.
-                        try {
-                            setDataSource(afd)
-                        } catch (ex: Exception) {
-                            Log.d(
-                                javaClass.simpleName,
-                                "Error setting player source",
-                                ex
-                            )
-                        }
-
-                        // Set an error listener.
-                        setOnErrorListener { mp, what, extra ->
-                            Log.d(javaClass.simpleName, "Player error occurred")
-                            true
-                        }
-
-                        // Prepare and play when player is prepared.
-                        prepareAsync()
-                        setOnPreparedListener {
-                            it.start()
-                            Log.d(javaClass.simpleName, "Player is prepared")
-                        }
-                        return true
-                    }
-                }
+            val soundPath: Path? = Paths.get(NBackResource.SoundFolderName, _sounds[index])
+            if (soundPath != null) {
+                val ret = playSound(context, soundPath)
+                return ret
             }
+        }
+        return false
+    }
+
+    fun playSound(context: Context, soundPath: Path): Boolean {
+        val afd = NBackResource.openAsset(context, soundPath.toString())
+        if (afd != null) {
+            val ret = playSound(afd)
+            return ret
+        }
+        return false
+    }
+
+    fun playSound(afd: AssetFileDescriptor): Boolean {
+        _player?.apply {
+            reset()
+
+            // Set the sound file to play.
+            try {
+                setDataSource(afd)
+            } catch (ex: Exception) {
+                Log.d(
+                    javaClass.simpleName,
+                    "Error setting player source",
+                    ex
+                )
+            }
+
+            // Set an error listener.
+            setOnErrorListener { mp, what, extra ->
+                Log.d(javaClass.simpleName, "Player error occurred")
+                true
+            }
+
+            // Prepare and play when player is prepared.
+            prepareAsync()
+            setOnPreparedListener {
+                it.start()
+                Log.d(javaClass.simpleName, "Player is prepared")
+            }
+            return true
         }
         return false
     }

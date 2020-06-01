@@ -67,7 +67,15 @@ class NBackScore {
         CORRECT_SAME,
         CORRECT_DIFFERENT,
         WRONG_ACTUALLY_SAME,
-        WRONG_ACTUALLY_DIFFERENT,
+        WRONG_ACTUALLY_DIFFERENT,;
+
+        fun isCorrect(): Boolean {
+            return when (this) {
+                CORRECT_SAME -> true
+                CORRECT_DIFFERENT -> true
+                else -> false
+            }
+        }
     }
 
     var scoreRecord: NBackScoreRecord = NBackScoreRecord(Total = 0, Correct = 0, Wrong = 0)

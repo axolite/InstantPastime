@@ -24,6 +24,7 @@ import ch.instantpastime.nback.R
 import ch.instantpastime.nback.core.*
 import ch.instantpastime.nback.ui.NBackResource
 import ch.instantpastime.nback.ui.NBackResource.getSquare
+import java.nio.file.Paths
 
 /**
  * A simple [Fragment] subclass.
@@ -684,6 +685,12 @@ class NBackFragment : Fragment(), INBackController {
 
             // Update score and counters.
             updateScoreLabel(board.instantScore)
+
+//            if ((locationCorrectness == NBackScore.Correctness.CORRECT_SAME ||
+//                letterCorrectness == NBackScore.Correctness.CORRECT_SAME)
+//                && mEnvironmentSettings?.playSound == true) {
+//                nbackSound.playSound(context, Paths.get("sounds", "match.wav"))
+//            }
         }
     }
 
