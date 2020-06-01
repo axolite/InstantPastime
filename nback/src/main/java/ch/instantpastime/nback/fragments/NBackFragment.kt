@@ -73,7 +73,12 @@ class NBackFragment : Fragment(), INBackController {
 
     private val sameSymbolText: String
         get() = when (currentSymbolType) {
-            NBackEnvironmentSettings.SymbolType.Letter -> getString(R.string.same_letter)
+            NBackEnvironmentSettings.SymbolType.Letter ->
+                if (mEnvironmentSettings?.playSound == true) {
+                    getString(R.string.same_sound)
+                } else {
+                    getString(R.string.same_letter)
+                }
             else -> getString(R.string.same_image)
         }
 
@@ -83,10 +88,13 @@ class NBackFragment : Fragment(), INBackController {
         savedInstanceState: Bundle?
     ): View? {
         val nbackSettings = loadNBackSettings()
-        board = NBackBoard(
-            nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level,
-            uiControl = this
-        )
+        mEnvironmentSettings = loadGameEnvironmentSettings()
+        if (board == null) {
+            board = NBackBoard(
+                nbLetters = nbackSound.letterCount, nBackLevel = nbackSettings.level,
+                uiControl = this
+            )
+        }
         timer?.totalMilliseconds = nbackSettings.time_per_trial
         val view = inflater.inflate(R.layout.fragment_nback, container, false)
         mInfoControlPanel = view.safeFindViewById(R.id.nback_info_control)
@@ -103,24 +111,22 @@ class NBackFragment : Fragment(), INBackController {
         mScoreText = view.safeFindViewById(R.id.status_score_text)
         mTrialCountText = view.safeFindViewById(R.id.status_trial_count_text)
 
-        context?.let {
-            nbackSound.init(it)
-            updateControls(oldState = null, newState = state)
-        }
+        nbackSound.init()
 
         mRestartButton?.setOnClickListener { restartButtonClicked() }
         mPauseButton?.setOnClickListener { pauseButtonClicked() }
         mLocationButton?.setOnClickListener { locationButtonClicked() }
         mLetterButton?.setOnClickListener { letterButtonClicked() }
-        applySettings(nbackSettings, view)
 
-        timer = NBackCountDown(totalMilliseconds = nbackSettings.time_per_trial,
-            onTick = {
-            },
-            onFinish = {
-                board?.tick()
-            }
-        )
+        if (timer == null) {
+            timer = NBackCountDown(totalMilliseconds = nbackSettings.time_per_trial,
+                onTick = {
+                },
+                onFinish = {
+                    board?.tick()
+                }
+            )
+        }
 
         // Enable "cheat" hints.
         view.safeFindViewById<View>(R.id.case0)?.setOnClickListener { squareClicked(it) }
@@ -140,6 +146,16 @@ class NBackFragment : Fragment(), INBackController {
             mPastLocationsPanel?.visibility = View.GONE
             mPastLettersPanel?.visibility = View.GONE
         }
+
+        applySettings(nbackSettings, view)
+        val board = this.board
+        if (board != null) {
+            updateTrialCount(board.answerableCount, board.goal)
+            updateScoreLabel(board.instantScore)
+        }
+        updateInfoControlZone()
+        mLetterButton?.text = sameSymbolText
+        updateControls(oldState = null, newState = state)
 
         return view
     }
@@ -593,7 +609,9 @@ class NBackFragment : Fragment(), INBackController {
                         )
                     )
                     // Play or show the next letter.
-                    nbackSound.playArticle(context, next.symbol.index)
+                    if (mEnvironmentSettings?.playSound == true) {
+                        nbackSound.playArticle(context, next.symbol.index)
+                    }
                     nbackSound.getLetter(next.symbol.index)?.let { c ->
                         val drawableId = NBackResource.getLetterDrawableId(c)
                         val drawable = ContextCompat.getDrawable(context, drawableId)

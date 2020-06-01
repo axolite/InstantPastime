@@ -16,7 +16,7 @@ class NBackSound {
     val letterCount: Int
         get() = _sounds.size
 
-    fun init(context: Context) {
+    fun init() {
         val player = MediaPlayer().apply {
         }
         _player = player
