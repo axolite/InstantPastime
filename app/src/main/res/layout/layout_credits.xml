@@ -49,7 +49,7 @@
                 android:layout_columnWeight="1"
                 android:layout_gravity="center"
                 android:layout_margin="20dp"
-                android:text="ClipartMax" />
+                android:text="@string/credits_clipartmax" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -127,7 +127,7 @@
                 android:layout_columnWeight="1"
                 android:layout_gravity="center"
                 android:layout_margin="20dp"
-                android:text="Google Play Services" />
+                android:text="@string/credits_google_play_services" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -161,7 +161,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:width="260dp"
-            android:text="Game sources"
+            android:text="@string/credits_game_sources"
             android:textAlignment="center"
             android:layout_margin="20dp"
             android:textSize="16sp" />
@@ -181,7 +181,7 @@
                 android:textAlignment="center"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="5dp"
-                android:text="The N-Back game is based on Brain Workshop" />
+                android:text="@string/credits_brain_workshop" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -190,7 +190,7 @@
                 android:textAlignment="center"
                 android:layout_marginBottom="20dp"
                 android:textColor="#0099ff"
-                android:text="brainworkshop.sourceforge.net/"/>
+                android:text="@string/credits_brain_workshop_url"/>
         </LinearLayout>
 
         <Button

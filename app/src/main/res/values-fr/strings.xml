@@ -45,4 +45,8 @@
     <string name="credits_freepik">Freepik</string>
     <string name="credits_vectors_market">Vectors market</string>
     <string name="credits_images_sources">Sources des illustrations</string>
+    <string name="credits_brain_workshop">Le mini-jeu N-Back est basé sur Brain Workshop</string>
+    <string name="credits_game_sources">Sources des jeux</string>
+    <string name="credits_google_play_services">Google Play Services</string>
+    <string name="credits_clipartmax">ClipartMax</string>
 </resources>

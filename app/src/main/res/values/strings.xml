@@ -45,4 +45,9 @@
     <string name="credits_vectors_market">Vectors market</string>
     <string name="credits_pixabay">Pixabay for all the stock pictures</string>
     <string name="credits_close">Close</string>
+    <string name="credits_brain_workshop">The N-Back game is based on Brain Workshop</string>
+    <string name="credits_brain_workshop_url" translatable="false">brainworkshop.sourceforge.net/</string>
+    <string name="credits_game_sources">Game sources</string>
+    <string name="credits_google_play_services">Google Play Services</string>
+    <string name="credits_clipartmax">ClipartMax</string>
 </resources>
