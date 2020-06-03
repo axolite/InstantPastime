@@ -32,14 +32,10 @@
         <item quantity="one">Memorize and prepare\nto answer in %d turn 😊</item>
         <item quantity="other">Memorize and prepare\nto answer in %d turns 😊</item>
     </plurals>
-    <string name="nback_tuto_text1">\nWelcome to the N-Back game !\n\n\n
-        You will see images displayed randomly on a grid,
-        \none after another.
+    <string name="nback_tuto_text1">\nWelcome to the N-Back game!\n\n\n
+        You will see images displayed randomly on a grid, one after another.
     </string>
-    <string name="nback_tuto_text2">Sometimes, the image or location
-        \nwill be the same as 2 steps before.</string>
-    <string name="nback_tuto_text3">Remember the image that was displayed
-        \n2 steps back.
-        \n\nThen click on “Same location” or “Same image”
-        \nto mark points!</string>
+    <string name="nback_tuto_text2">Sometimes, the image or location will be the same as 2 steps before.</string>
+    <string name="nback_tuto_text3">Remember the image that was displayed 2 steps back.
+        \n\nThen click on “Same location” or “Same image” to mark points!</string>
 </resources>

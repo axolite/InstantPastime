@@ -33,13 +33,9 @@
         <item quantity="other">Mémorisez et soyez prêts\nà répondre dans %d tours 😊</item>
     </plurals>
     <string name="nback_tuto_text1">\nBienvenue dans le jeu N-Back !\n\n\
-        Des images vont s’afficher aléatoirement sur une grille,
-        \nl’une après l’autre.
+        Des images vont s’afficher aléatoirement sur une grille, l’une après l’autre.
     </string>
-    <string name="nback_tuto_text2">Parfois, une image ou une case
-        \nsera la même que celle affichée 2 étapes auparavant.</string>
-    <string name="nback_tuto_text3">Souvenez-vous de l’image affichée
-        \n2 étapes auparavant.
-        \n\nPuis cliquez sur «Même case» ou «Même image»
-        \npour marquer des points !</string>
+    <string name="nback_tuto_text2">Parfois, une image ou une case sera la même que celle affichée 2 étapes auparavant.</string>
+    <string name="nback_tuto_text3">Souvenez-vous de l’image affichée 2 étapes auparavant.
+        \n\nPuis cliquez sur «Même case» ou «Même image» pour marquer des points !</string>
 </resources>
