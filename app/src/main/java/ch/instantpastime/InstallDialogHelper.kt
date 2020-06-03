@@ -2,9 +2,6 @@ package ch.instantpastime
 
 import android.app.Dialog
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
@@ -12,7 +9,7 @@ import android.widget.TextView
 
 object InstallDialogHelper {
 
-    fun showDialog(context: Context, appName: String) {
+    fun showDialog(context: Context, appName: String, closed: () -> Unit = { }) {
 
         val dialog = Dialog(context)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -21,6 +18,7 @@ object InstallDialogHelper {
 
         dialog.findViewById<Button>(R.id.install_close_button).setOnClickListener {
             dialog.dismiss()
+            closed()
         }
 
         dialog.findViewById<TextView>(R.id.install_app_title).text = appName

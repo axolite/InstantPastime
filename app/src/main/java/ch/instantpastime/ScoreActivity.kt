@@ -1,22 +1,25 @@
 package ch.instantpastime
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
 class ScoreActivity : AppCompatActivity() {
 
     companion object {
         const val SCORE_ARG: String = "score"
+        const val GAME_NAME_ARG: String = "game_name"
     }
+
+    var gameName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_score)
 
         val score = intent.getIntExtra(SCORE_ARG, -1)
+        gameName = intent.getStringExtra(GAME_NAME_ARG) ?: "InstantPastime"
 
         findViewById<TextView>(R.id.score_final_text).apply {
             text = score.toString()
@@ -34,6 +37,8 @@ class ScoreActivity : AppCompatActivity() {
     }
 
     private fun installButtonClicked() {
-        Toast.makeText(this, "Installing...", Toast.LENGTH_SHORT).show()
+        InstallDialogHelper.showDialog(this, gameName, closed = {
+            finish()
+        })
     }
 }
