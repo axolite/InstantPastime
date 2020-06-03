@@ -64,7 +64,7 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
     private fun PreferenceScreen.addGameOptionsSettings() {
         val gameOptionsCategory = PreferenceCategory(context).apply {
             key = NBackSettings.NBACK_OPTIONS_CAT_KEY
-            title = getString(R.string.game_options_full)
+            title = getString(R.string.game_levels)
         }
         addPreference(gameOptionsCategory)
 
