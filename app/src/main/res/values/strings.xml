@@ -52,4 +52,8 @@
     <string name="credits_clipartmax">ClipartMax</string>
     <string name="installing_app">Installing app</string>
     <string name="install_not_implemented">This is a mockup, the installation is not yet implemented</string>
+    <string name="about_instantpastime">\t\t Instant app with quick brain training games which can be launched from QR codes in specific areas as an easy way to entertain the users and minimize the constraint of waiting for companies with services that require a waiting time.</string>
+    <string name="about_instantpastime_next">\t\t At the same time, the project counts on a subvention from the state to promote areas of Switzerland and discovers interesting places and with games of type brain trainers to stimulate also intelectualmente the users.</string>
+
+    <string name="about_games">Instant games:</string>
 </resources>

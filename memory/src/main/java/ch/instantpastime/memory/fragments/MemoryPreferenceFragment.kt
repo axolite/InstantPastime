@@ -116,7 +116,7 @@ class MemoryPreferenceFragment : PreferenceFragmentCompat() {
         gameContextCategory.addPreference(soundPref)
 
 
-        val contextCardsPref = SwitchPreference(context).apply {
+        /*val contextCardsPref = SwitchPreference(context).apply {
             key = MemorySettings.MEMORY_CONTEXT_CARDS_KEY
             title = getString(R.string.memory_context_cards)
             summary = getString(R.string.memory_context_cards_hint)
@@ -132,30 +132,12 @@ class MemoryPreferenceFragment : PreferenceFragmentCompat() {
                 }
             }
         }
-        gameContextCategory.addPreference(contextCardsPref)
+        gameContextCategory.addPreference(contextCardsPref)*/
 
         // Note from https://developer.android.com/guide/topics/ui/settings/programmatic-hierarchy
         // Warning: Make sure to add the PreferenceCategory to the PreferenceScreen before adding children to it.
         // Preferences cannot be added to a PreferenceCategory that isn’t attached to the root screen.
     }
 
-    private fun onTimePerTrialPreferenceChanged(preference: Preference, newValue: Any?): Boolean {
-        return if (newValue is Int && preference is SeekBarPreference) {
-            val oldValue = preference.value
-            if (oldValue != newValue) {
-                preference.value = newValue
-                Toast.makeText(
-                    preference.context,
-                    resources.getQuantityString(
-                        R.plurals.nback_interval_changed,
-                        newValue,
-                        newValue
-                    ),
-                    Toast.LENGTH_SHORT
-                ).show()
-                true
-            } else false
-        } else false
-    }
 
 }

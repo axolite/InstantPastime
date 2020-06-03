@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">InstantPastime</string>
+
+    <string name="game_options_short">Options</string>
+    <string name="game_options_full">Options de jeu</string>
+    <string name="memory_level">Niveau Memory (%1$d &#x2013; %2$d)</string>
+    <string name="memory_level_hint">Nombre de cartes</string>
+    <string name="memory_level_changed">Niveau Memory a changé à %1$d</string>
+    <string name="memory_status_level">Niveau %1$d</string>
+    <string name="memory_score">Score: %1$d</string>
+
+    <string name="game_context">Paramettres du jeu</string>
+    <string name="memory_sound">Son</string>
+    <string name="memory_sound_hint">Jouer un son pour chaque match ou échoue</string>
+
+    <string name="memory_context_cards_hint">Images avec localitation contexte</string>
+    <string name="memory_context_cards">Contexte</string>
+
+    <string name="memory_tuto_text1">\Bienvenu a le jeu Memory!\n
+        Vous avez un tableau de cartes à l’envers. Chaque carte contient une image.
+    </string>
+    <string name="memory_tuto_text2">Toutes les cartes sont doublées.
+    \nCliquez dessus pour visualiser l’image.</string>
+    <string name="memory_tuto_text3">Faites correspondre toutes les cartes pour gagner le jeu</string>
+    <string name="home_memory">Accueil</string>
+</resources>

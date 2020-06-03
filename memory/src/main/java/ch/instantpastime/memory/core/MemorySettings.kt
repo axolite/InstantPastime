@@ -3,6 +3,7 @@ package ch.instantpastime.memory.core
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
+import ch.instantpastime.PrefManager.Companion.USE_LOCATION_PREF_KEY
 
 class MemorySettings(context:Context) {
     val numCards_array  = intArrayOf(8, 16, 36, 64)
@@ -26,7 +27,7 @@ class MemorySettings(context:Context) {
     var num_images: Int
     var soundOn: Boolean
     var contextCards: Boolean
-            var sharedPreferences: SharedPreferences
+    var sharedPreferences: SharedPreferences
 
     init {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -41,7 +42,7 @@ class MemorySettings(context:Context) {
         num_cards =numCards_array[level-1]
         num_images = num_cards/2
         contextCards = sharedPreferences.getBoolean(
-            MEMORY_CONTEXT_CARDS_KEY,
+            USE_LOCATION_PREF_KEY,
             true
         )
     }
@@ -71,7 +72,7 @@ class MemorySettings(context:Context) {
 
     fun isContextImagesChanged():Boolean {
         val new_context = sharedPreferences.getBoolean(
-            MEMORY_CONTEXT_CARDS_KEY,
+            USE_LOCATION_PREF_KEY,
             true
         )
         if (new_context != contextCards) {

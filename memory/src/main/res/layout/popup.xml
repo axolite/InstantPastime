@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:orientation="vertical"
-android:gravity="center"
-android:background="@color/quantum_amber50">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="35dp"
+    android:background="@color/quantum_amber50"
+    android:gravity="center"
+    android:orientation="vertical">
 
-<!-- Image source: vector-markets vi flaticons  -->
+    <!-- Image source: vector-markets vi flaticons  -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
@@ -31,11 +32,12 @@ android:background="@color/quantum_amber50">
 
     <Button
         android:id="@+id/ok_popup"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@android:string/ok"
-        android:layout_marginBottom="10dp"/>
-
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="25dp"
+        android:text="@android:string/ok" />
 
 
 </LinearLayout>

@@ -1,27 +1,21 @@
 package ch.instantpastime.memory
 
-import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.preference.PreferenceManager
-import ch.instantpastime.CreditDialogHelper
-import ch.instantpastime.InstallDialogHelper
-import ch.instantpastime.PrefManager
+import ch.instantpastime.*
 import ch.instantpastime.PrefManager.Companion.setFirstTime
-import ch.instantpastime.ValueChange
+import ch.instantpastime.fragments.GeneralPreferenceFragment
 import ch.instantpastime.memory.core.MemoryScore
 import ch.instantpastime.memory.core.MemorySettings
 import ch.instantpastime.memory.core.MemorySound
 import ch.instantpastime.memory.fragments.MemoryFragment
 import ch.instantpastime.memory.fragments.MemoryPreferenceFragment
-import ch.instantpastime.memory.ui.FragmentStack
+import ch.instantpastime.memory.ui.MemoryTutoHelper
 import ch.instantpastime.memory.ui.MyFragmentHelper
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_memory.*
 
@@ -31,18 +25,13 @@ import kotlinx.android.synthetic.main.activity_memory.*
 
 
 
-class MemoryActivity :  AppCompatActivity() {
+class MemoryActivity :  AppCompatActivity(), MemoryFragment.reStartGame {
 
-    //private val backStackHelper = BackStackHelper(this)
-   /* private val fragmentStack: FragmentStack = FragmentStack(
-        activity = this,
-        containerId = R.id.memory_fragment_container,
-        homeTag = MemoryFragment::class.java.simpleName
-    )*/
 
     private var mFragmentManager = supportFragmentManager
     var MemoryFragment = MemoryFragment()
     private var MemoryPreferenceFragment = MemoryPreferenceFragment()
+    private var GeneralPreferenceFragment = GeneralPreferenceFragment()
 
     private var drawerToolbar: ActionBarDrawerToggle? = null
     private var drawerLayout: DrawerLayout? = null
@@ -50,9 +39,6 @@ class MemoryActivity :  AppCompatActivity() {
 
     companion object{
         lateinit var prefManager : PrefManager
-        lateinit var tuto_slides: IntArray
-        lateinit var tuto_images: IntArray
-        lateinit var tuto_texts: IntArray
         lateinit var memoryScore : MemoryScore
         lateinit var memorySettings : MemorySettings
         lateinit var memorySound : MemorySound
@@ -68,11 +54,6 @@ class MemoryActivity :  AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memory)
         nav_view.setOnNavigationItemSelectedListener { bottomMenuItemSelected(it) }
-        /*fragmentStack.currentTagChanged = { currentFragmentChanged(it) }
-        fragmentStack.pushFragment(fragmentStack.homeTag)*/
-
-
-        //MemoryFragment.stockImagesLoad(this)
 
 
         mFragmentManager.beginTransaction()
@@ -88,28 +69,6 @@ class MemoryActivity :  AppCompatActivity() {
 
 
 
-        /* *************************************************************** */
-        /* Define Slides for Tuto **************************************** */
-        /* ******* Layouts *********************************************** */
-        tuto_slides = intArrayOf(
-            ch.instantpastime.R.layout.activity_start_content01,
-            ch.instantpastime.R.layout.activity_start_content01,
-            ch.instantpastime.R.layout.activity_start_content01
-        )
-        /* ******* Images ************************************************ */
-        tuto_images = intArrayOf(
-            R.drawable.tutoslide01,
-            R.drawable.tutoslide02,
-            R.drawable.tutoslide03
-
-        )
-        /* ******* Texts ************************************************* */
-        tuto_texts = intArrayOf(
-            R.string.start01,
-            R.string.start02,
-            R.string.start03
-        )
-        /* *************************************************************** */
 
 
     }
@@ -120,13 +79,6 @@ class MemoryActivity :  AppCompatActivity() {
             super.onOptionsItemSelected(item)
         } else {
             false
-        }
-    }
-    private fun currentFragmentChanged(tag: ValueChange<String>) {
-        // Update the active icon in the bottom menu according to the displayed fragment.
-        val menuId = MyFragmentHelper.getMenuIdFromTag(tag.newValue)
-        if (menuId != null && nav_view.selectedItemId != menuId) {
-            nav_view.selectedItemId = menuId
         }
     }
 
@@ -146,16 +98,7 @@ class MemoryActivity :  AppCompatActivity() {
     private fun showHome(){
 
        if ((memorySettings.isLevelChanged() or (memorySettings.isContextImagesChanged()))){
-           gameOngoing=false
-           MemoryFragment = MemoryFragment()
-           mFragmentManager.beginTransaction()
-               .add(
-                   R.id.memory_fragment_container,
-                   MemoryFragment,
-                   "MemoryFragment"
-               )
-               .addToBackStack("MemoryFragment")
-               .commit()
+           reStartGame()
         }
         else{
            mFragmentManager.popBackStack()
@@ -184,6 +127,20 @@ class MemoryActivity :  AppCompatActivity() {
             .commit()
     }
 
+
+    override fun reStartGame(){
+        gameOngoing=false
+        MemoryFragment = MemoryFragment()
+        mFragmentManager.beginTransaction()
+            .add(
+                R.id.memory_fragment_container,
+                MemoryFragment,
+                "MemoryFragment"
+            )
+            .addToBackStack("MemoryFragment")
+            .commit()
+
+    }
     override fun onBackPressed(){
         super.onBackPressed()
         nav_view.getMenu().findItem(R.id.navigation_home).setChecked(true);
@@ -201,17 +158,15 @@ class MemoryActivity :  AppCompatActivity() {
             drawerLayout.addDrawerListener(drawerToolbar)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
+        //drawerNavView.menu.findItem(R.id.menu_general_preference)?.isVisible = false
 
         val drawerNavView = findViewById<View>(R.id.nav_view_drawer) as? NavigationView
         if (drawerNavView != null) {
             drawerNavView.setNavigationItemSelectedListener {
                 when (it.itemId) {
                     ch.instantpastime.R.id.info -> {
-                        Toast.makeText(
-                            this@MemoryActivity,
-                            "À propos de ..",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        AboutDialogHelper.showCredits(this)
+
                     }
                     ch.instantpastime.R.id.install -> {
                         InstallDialogHelper.showDialog(this, "Memory")
@@ -222,11 +177,11 @@ class MemoryActivity :  AppCompatActivity() {
 //                        ).show()
                     }
                     ch.instantpastime.R.id.menu_general_preference -> {
-                        //showGeneralPreferencesDialog()
+                        showGeneralPreferencesDialog()
                     }
                     ch.instantpastime.R.id.menu_tutorial -> {
                         setFirstTime(MemoryFragment.context!! , false)
-                        MemoryFragment.launchTuto(true)
+                        MemoryTutoHelper.startTutoActivity(this, true)
                     }
                     ch.instantpastime.R.id.menu_credits -> {
                         CreditDialogHelper.showCredits(this)
@@ -239,5 +194,15 @@ class MemoryActivity :  AppCompatActivity() {
             }
         }
     }
+    private fun showGeneralPreferencesDialog() {
+        mFragmentManager.beginTransaction()
+            .replace(
+                R.id.memory_fragment_container,
+                GeneralPreferenceFragment,
+                "GeneralPreferenceFragment"
+            )
+            .addToBackStack("GeneralPreferenceFragment")
+            .commit()
 
+    }
 }

@@ -118,11 +118,8 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
             drawerNavView.setNavigationItemSelectedListener {
                 when (it.itemId) {
                     ch.instantpastime.R.id.info -> {
-                        Toast.makeText(
-                            this@NBackActivity,
-                            "À propos de ..",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        AboutDialogHelper.showCredits(this)
+
                     }
                     ch.instantpastime.R.id.install -> {
                         InstallDialogHelper.showDialog(this, "N-Back")

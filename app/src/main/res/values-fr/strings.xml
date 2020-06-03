@@ -51,4 +51,8 @@
     <string name="credits_clipartmax">ClipartMax</string>
     <string name="installing_app">En cours d’installation</string>
     <string name="install_not_implemented">Ceci est une maquette, l’installation n’est pas encore implémentée</string>
+    <string name="about_instantpastime">\t\t Instant app avec des jeux d’entraînement cérébral rapides pouvant être lancés à partir de codes QR dans des domaines spécifiques comme un moyen facile de divertir les utilisateurs et de minimiser la contrainte d’attendre pour les entreprises avec des services qui nécessitent un temps d’attente.</string>
+    <string name="about_instantpastime_next">\t\t Au même temps, le projet compte sur une subvention de l’Etat pour promouvoir les régions de la Suisse et découvre des lieux intéressants et avec des jeux de type brain trainers pour stimuler également l’intelectualmente les utilisateurs.</string>
+
+    <string name="about_games">Instant jeux:</string>
 </resources>
