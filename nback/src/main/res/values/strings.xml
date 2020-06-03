@@ -3,7 +3,7 @@
     <string name="stop_game_short">Stop</string>
     <string name="pause_game_short">Pause</string>
     <string name="resume_game_short">Resume</string>
-    <string name="same_location">Same location</string>
+    <string name="same_location">Same position</string>
     <string name="same_image">Same image</string>
     <string name="same_sound">Same sound</string>
     <string name="same_letter">Same letter</string>
@@ -35,7 +35,7 @@
     <string name="nback_tuto_text1">\nWelcome to the N-Back game!\n\n\n
         You will see images displayed randomly on a grid, one after another.
     </string>
-    <string name="nback_tuto_text2">Sometimes, the image or location will be the same as 2 steps before.</string>
+    <string name="nback_tuto_text2">Sometimes, the image or position will be the same as 2 steps before.</string>
     <string name="nback_tuto_text3">Remember the image that was displayed 2 steps back.
-        \n\nThen click on “Same location” or “Same image” to mark points!</string>
+        \n\nThen click on “Same position” or “Same image” to mark points!</string>
 </resources>
