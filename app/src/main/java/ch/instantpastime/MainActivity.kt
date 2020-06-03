@@ -50,12 +50,9 @@ class MainActivity : AppCompatActivity() {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 //                    locationHelper?.processPermissionStatus(PermissionStatus.Accepted,
 //                        this, { loc -> processLocation(loc) })
-                } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-//                    locationHelper?.processPermissionStatus(PermissionStatus.RefusedOnce,
-//                        this, { loc -> processLocation(loc) })
                 } else {
-//                    locationHelper?.processPermissionStatus(PermissionStatus.AlwaysRefused,
-//                        this, { loc -> processLocation(loc) })
+                    // Disable contextual images if the user refused geolocation.
+                    PrefManager.saveLocationPref(this, value = false)
                 }
             else -> {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults)

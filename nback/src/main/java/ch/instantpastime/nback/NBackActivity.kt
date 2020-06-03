@@ -225,6 +225,9 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
                     locationHelper?.processPermissionStatus(PermissionStatus.Accepted, this) {
                         processLocation(it)
                     }
+                } else {
+                    // Disable contextual images if the user refused geolocation.
+                    PrefManager.saveLocationPref(this, value = false)
                 }
             else -> {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults)
