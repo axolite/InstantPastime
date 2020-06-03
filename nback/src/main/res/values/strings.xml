@@ -9,7 +9,7 @@
     <string name="same_letter">Same letter</string>
     <string name="home_nback">Home</string>
     <string name="game_options_short">Options</string>
-    <string name="game_options_full">Game options</string>
+    <string name="game_levels">Game levels</string>
     <string name="nback_level">N-Back level (%1$d &#x2013; %2$d)</string>
     <string name="nback_level_hint">Number of events to remember</string>
     <string name="nback_level_changed">N-Back level changed to %1$d</string>
