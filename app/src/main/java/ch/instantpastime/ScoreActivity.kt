@@ -38,7 +38,8 @@ class ScoreActivity : AppCompatActivity() {
 
     private fun installButtonClicked() {
         InstallDialogHelper.showDialog(this, gameName, closed = {
-            finish()
+            // Also close the score activity if needed.
+            // finish()
         })
     }
 }
