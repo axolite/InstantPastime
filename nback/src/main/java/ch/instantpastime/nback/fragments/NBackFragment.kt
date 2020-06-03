@@ -512,6 +512,7 @@ class NBackFragment : Fragment(), INBackController {
         val intent = Intent(activity, ScoreActivity::class.java).apply {
             val score = (NBackScore.SCORE_MAX * correct) / total
             putExtra(ScoreActivity.SCORE_ARG, score)
+            putExtra(ScoreActivity.GAME_NAME_ARG, "N-Back")
         }
         startActivity(intent)
         // Clear the game for when the user comes back from score.
