@@ -37,5 +37,5 @@
     </string>
     <string name="nback_tuto_text2">Sometimes, the image or position will be the same as 2 steps before.</string>
     <string name="nback_tuto_text3">Remember the image that was displayed 2 steps back.
-        \n\nThen click on “Same position” or “Same image” to mark points!</string>
+        \n\nThen click on “Same position” or “Same image” to score points!</string>
 </resources>
