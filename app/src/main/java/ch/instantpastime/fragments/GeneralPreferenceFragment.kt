@@ -43,7 +43,6 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat()  {
             title = getString(R.string.pref_contextual_image)
             summary = getString(R.string.pref_contextual_image_hint)
             setDefaultValue(useContextualImage)
-            isChecked = useContextualImage
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->
                 if (p is SwitchPreference && v is Boolean) {
                     p.isChecked = v
@@ -62,6 +61,8 @@ class GeneralPreferenceFragment : PreferenceFragmentCompat()  {
             }
         }
         geolocationCategory.addPreference(contextualImagePref)
+        // Set the value after having added the preference to the category otherwise it won't work.
+        contextualImagePref.isChecked = useContextualImage
 
         // Note from https://developer.android.com/guide/topics/ui/settings/programmatic-hierarchy
         // Warning: Make sure to add the PreferenceCategory to the PreferenceScreen before adding children to it.
