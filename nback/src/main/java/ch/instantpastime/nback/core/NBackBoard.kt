@@ -142,24 +142,39 @@ class NBackBoard(nbLetters: Int, nBackLevel: Int, val uiControl: INBackControlle
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     override fun onEnterBlank() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     override fun onEnterDrawing() {
         val last = lastDraw
         val next = getNextTrial()
         play.raiseDrawn(last = last, next = next)
     }
 
+    /**
+     * {@inheritDoc}
+     */
     override fun onEnterWaiting(last: NBackTrial?, next: NBackTrial) {
         uiControl.onNextTrial(last = last, next = next)
     }
 
+    /**
+     * {@inheritDoc}
+     */
     override fun onEnterCorrecting() {
         val (locationCorrectness, letterCorrectness) = checkCurrentAnswer()
         uiControl.onCorrectResult(locationCorrectness, letterCorrectness)
     }
 
+    /**
+     * {@inheritDoc}
+     */
     override fun onEnterFinished() {
         uiControl.onFinished(CorrectCount, checkCount)
     }
