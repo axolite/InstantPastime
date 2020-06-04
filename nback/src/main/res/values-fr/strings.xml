@@ -14,7 +14,7 @@
     <string name="nback_level_hint">Nombre d’évènements à se rappeler</string>
     <string name="nback_level_changed">Niveau N-Back changé à %1$d</string>
     <string name="nback_status_level">Niveau %1$d</string>
-    <string name="nback_interval">Millisecondes par essai</string>
+    <string name="nback_interval">Temps par essai</string>
     <string name="nback_interval_hint">Nombre de millisecondes pour répondre</string>
     <plurals name="nback_interval_changed">
         <item quantity="one">Changé à %d ms par essai</item>
