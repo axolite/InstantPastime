@@ -1,96 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:animateLayoutChanges="true"
-    tools:context=".LocationActivity">
-
-    <ImageView
-        android:src="@drawable/ic_location"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="20dp"
-        />
-    <TextView android:text="@string/loc_location"
-        android:textSize="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"/>
-
-    <!-- Location question panel -->
-    <LinearLayout android:id="@+id/loc_question_panel"
-        android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center">
-        <TextView
-            android:text="@string/loc_long_question"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:layout_marginBottom="30dp"/>
+        android:gravity="center"
 
-        <Button android:id="@+id/loc_accept_button"
-            android:text="@string/loc_allow"
-            android:layout_width="match_parent"
+        android:animateLayoutChanges="true"
+        tools:context=".LocationActivity">
+
+        <ImageView
+            android:src="@drawable/ic_location"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="20dp"
+            />
+        <TextView android:text="@string/loc_location"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"/>
-        <Button android:id="@+id/loc_refuse_button"
-            android:text="@string/loc_refuse"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"/>
 
-        <TextView
-            android:text="@string/loc_can_change_later"
+        <!-- Location question panel -->
+        <LinearLayout android:id="@+id/loc_question_panel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"/>
-        <TextView
-            android:text="@string/loc_breadcrumb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:text="@string/loc_long_question"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginBottom="30dp"/>
 
-    <!-- Location accepted panel -->
-    <LinearLayout android:id="@+id/loc_accepted_panel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone">
-        <ProgressBar
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:progress="25"
-            android:layout_marginBottom="10dp"
-            />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView android:id="@+id/loc_progress_text"
+            <Button android:id="@+id/loc_accept_button"
+                android:text="@string/loc_allow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"/>
+            <Button android:id="@+id/loc_refuse_button"
+                android:text="@string/loc_refuse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"/>
+
+            <TextView
+                android:text="@string/loc_can_change_later"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Image 7/10"/>
+                android:textAlignment="center"/>
+            <TextView
+                android:text="@string/loc_breadcrumb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
-    </LinearLayout>
 
-    <!-- Location refused panel -->
-    <LinearLayout android:id="@+id/loc_refused_panel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone">
-        <TextView android:text="@string/loc_ack_refusal"
+        <!-- Location accepted panel -->
+        <LinearLayout android:id="@+id/loc_accepted_panel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+            <ProgressBar
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:progress="25"
+                android:layout_marginBottom="10dp"
+                />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView android:id="@+id/loc_progress_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Image 7/10"/>
+            </LinearLayout>
+        </LinearLayout>
 
-</LinearLayout>
+        <!-- Location refused panel -->
+        <LinearLayout android:id="@+id/loc_refused_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+            <TextView android:text="@string/loc_ack_refusal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
