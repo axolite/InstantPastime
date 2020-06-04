@@ -1,7 +1,9 @@
 package ch.instantpastime.nback
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.location.Location
@@ -45,8 +47,14 @@ class NBackActivity : AppCompatActivity(), ContextualImageUser {
      */
     val nbSymbols: Int = 8
 
+    // TODO agr: implement horizontal orientation support.
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         //android.os.Debug.waitForDebugger()
+
+        //Block the screen orientation (caution: bad practise).
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nback)
 
