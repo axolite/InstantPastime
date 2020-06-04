@@ -93,7 +93,7 @@
                     android:layout_margin="10dp"
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
-                    android:src="@drawable/logocommon"
+                    android:src="@drawable/logonback"
                     app:srcCompat="@drawable/logonback"
                     tools:srcCompat="@drawable/logonback" />
             </LinearLayout>
@@ -121,7 +121,7 @@
                     android:layout_margin="10dp"
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_location"
+                    android:src="@drawable/logomemory"
                     app:srcCompat="@drawable/logomemory"
                     tools:srcCompat="@drawable/logomemory" />
             </LinearLayout>
