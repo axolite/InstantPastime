@@ -238,7 +238,7 @@ class MemoryFragment : Fragment() {
                     }
                 }
             }
-            //disableListeners()
+
 
 
             if (memorySettings.contextCards) {
@@ -378,6 +378,7 @@ class MemoryFragment : Fragment() {
         val okBtn = dialog .findViewById(R.id.ok_popup) as Button
         okBtn.setOnClickListener {
             if ( memoryScore.num_mathches== memorySettings.num_images){
+                isMaximize=false
                 showDialogScore(this@MemoryFragment.getContext()!!, memoryScore.totalScore().toString())
                 memorySound.playSound(context!!,3)
             }
@@ -564,6 +565,11 @@ class MemoryFragment : Fragment() {
         mListener = null
     }
 
+    fun disableListeners(){
+        for (myCard in myCards) {
+            myCard.setOnClickListener { null }
+        }
+    }
 
     inline fun <reified T : View> View.safeFindViewById(@IdRes id: Int): T? {
         val view = findViewById<View>(id)
