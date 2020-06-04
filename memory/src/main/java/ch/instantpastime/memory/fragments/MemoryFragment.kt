@@ -510,10 +510,16 @@ class MemoryFragment : Fragment() {
         when (requestCode) {
             MY_PERMISSION_FINE_LOCATION ->
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Enable contextual images if the user accepted geolocation.
+                    PrefManager.saveLocationPref(context, value = true)
+
                     locationHelper?.processPermissionStatus(
                         PermissionStatus.Accepted,
                         context, { loc -> processLocation(loc) })
                 } else if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    // Disable contextual images if the user refused geolocation.
+                    PrefManager.saveLocationPref(context, value = false)
+
                     locationHelper?.processPermissionStatus(
                         PermissionStatus.RefusedOnce,
                         context, { loc -> processLocation(loc) })
@@ -522,6 +528,9 @@ class MemoryFragment : Fragment() {
 
 
                 } else {
+                    // Disable contextual images if the user refused geolocation.
+                    PrefManager.saveLocationPref(context, value = false)
+
                     locationHelper?.processPermissionStatus(
                         PermissionStatus.AlwaysRefused,
                         context, { loc -> processLocation(loc) })
