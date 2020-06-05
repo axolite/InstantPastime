@@ -6,6 +6,7 @@ import android.os.SystemClock.uptimeMillis
 import android.widget.Toast
 import androidx.preference.*
 import ch.instantpastime.nback.R
+import ch.instantpastime.nback.core.NBackEnvironmentSettings
 import ch.instantpastime.nback.core.NBackRun
 import ch.instantpastime.nback.ui.TranslatableValue
 
@@ -150,7 +151,7 @@ class NBackPreferenceFragment : PreferenceFragmentCompat() {
             key = NBackSettings.NBACK_SOUND_KEY
             title = getString(R.string.nback_sound)
             summary = getString(R.string.nback_sound_hint)
-            isChecked = false
+            setDefaultValue(NBackEnvironmentSettings.PLAY_SOUND_DEFAULT)
             isVisible = savedSymbolEntry == SYMBOL_LETTER
             mSoundPreference = this
             onPreferenceChangeListener = Preference.OnPreferenceChangeListener { p, v ->

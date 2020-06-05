@@ -722,7 +722,7 @@ class NBackFragment : Fragment(), INBackController {
         }
         val playSound = sharedPreferences.getBoolean(
             NBackSettings.NBACK_SOUND_KEY,
-            symbolType == NBackEnvironmentSettings.SymbolType.Letter
+            NBackEnvironmentSettings.PLAY_SOUND_DEFAULT
         )
         return NBackEnvironmentSettings(
             symbolType = symbolType,
