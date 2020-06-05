@@ -399,7 +399,7 @@ class MemoryFragment : Fragment() {
     fun imageRequestedReady(placePhoto: PlacePhoto) {
         val bitmap = placePhoto.response.bitmap
         val placeInfo = placePhoto.info
-
+        isMaximize=false
         if ((bitmap != null) and (imgindex < memorySettings.num_images)) {
             val reciv_img = bitmapClass(bitmap, placeInfo.placeDesc, placeInfo.placeLoc)
             myBitmaps.add(reciv_img)
@@ -432,14 +432,15 @@ class MemoryFragment : Fragment() {
                 i += 1
 
             }
-            //stockImagesLoad(context!!)
+
+
         }
 
     }
 
      fun stockImagesLoad(context: Context){
          var CardsPath: Path?
-
+         isMaximize=false
          for (i in 0..(memorySettings.num_images-1)) {
              CardsPath = Paths.get(MemoryResource.CardImageFolderName, getStockImageName(i))
              if (CardsPath != null) {
